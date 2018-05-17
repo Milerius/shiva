@@ -16,7 +16,7 @@ endif()
 
 ##! Internal Debug configuration
 macro(__internal_debug_unix_cxx_flags)
-    set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g3 -g -ggdb ${STANDARD_UNIX_CXX_FLAGS}")
+    set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g3 ${STANDARD_UNIX_CXX_FLAGS}")
 endmacro()
 
 macro(__internal_debug_msvc_cxx_flags)

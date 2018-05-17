@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 3.9)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 ##! Project
-project(rs_engine)
+project(shiva)
 
 ##! Prerequisites CTEST
 enable_testing()
@@ -16,18 +16,18 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 include(library)
 
 ##! Project options
-option(RS_ENGINE_BUILD_TESTS "Build tests of rs_engine C++ engine" ON)
-option(RS_ENGINE_BUILD_EXAMPLES "Build examples of rs_engine C++ engine" OFF)
+option(SHIVA_BUILD_TESTS "Build tests of shiva C++ engine" ON)
+option(SHIVA_BUILD_EXAMPLES "Build examples of shiva C++ engine" OFF)
 
 ##! Project modules
 add_subdirectory(modules)
 
 ##! Project tests
-if (RS_ENGINE_BUILD_TESTS)
+if (SHIVA_BUILD_TESTS)
     add_subdirectory(tests)
 endif ()
 
 ##! Project examples
-if (RS_ENGINE_BUILD_EXAMPLES)
+if (SHIVA_BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif ()
