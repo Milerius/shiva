@@ -20,6 +20,13 @@ test_script:
       echo $var
       & ./$var --gtest_output="xml:$var-windows-release-result.xml"
     }
+- cd ..
+- mkdir test-result
+- cd test-result
+- mkdir ctest
+- cd ..
+- cp bin/*.xml test-result/
+- cp build/Testing/*/*.xml test-result/ctest
 
 after_test:
-  - echo "lol"
+  $wc = New-Object 'System.Net.WebClient'
