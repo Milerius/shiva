@@ -13,6 +13,6 @@ for i in *-test; do
     mkdir -p test-result/ctest
     cp bin/*.xml test-result/
 cp build/Testing/*/*.xml test-result/ctest/
-rm -rf Testing
-rm -rf build
-rm -rf test-result
+#rm -rf Testing
+#rm -rf build
+#rm -rf test-result
