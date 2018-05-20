@@ -3,7 +3,14 @@ image:
 - Ubuntu
 
 install:
-- vcpkg install gtest:x64-Windows
+- ps: |
+    if ($isWindows) {
+          vcpkg install gtest:x64-Windows
+        } else {
+          git clone https://github.com/Microsoft/vcpkg.git
+          cd vcpkg
+        }
+- sh: ./bootstrap-vcpkg.sh
 
 build_script:
   - mkdir build
@@ -38,18 +45,3 @@ on_finish:
       $wc = New-Object 'System.Net.WebClient'
       $wc.UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\ctest-to-junit-results.xml))
   - echo "finish"
-
-
-for:
-  -
-    matrix:
-      only:
-      - platform: Ubuntu
-        install:
-          - sh: echo Install
-        build_script:
-          - sh: echo Build_Script
-        test_script:
-          - sh: echo Ubuntu
-        on_finish:
-          - sh: on Finish
