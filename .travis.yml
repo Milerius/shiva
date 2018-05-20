@@ -33,12 +33,14 @@ matrix:
              - libc++-dev
       env: COMPILER=clang++-6.0 CXXSTD=17
 
+before_install:
+    - if [ "$CXX" = "clang++" ]; then export CXX="$COMPILER -stdlib=libc++"; fi
+    - if [ "$CXX" = "g++" ]; then export CXX="$COMPILER"; fi
+
 install:
     - git clone https://github.com/Microsoft/vcpkg.git && cd vcpkg && ./bootstrap-vcpkg.sh
     - ./vcpkg install gtest
     - export VCPKG_ROOT="$PWD" && echo $VCPKG_ROOT
-    - if [ "$CXX" = "clang++" ]; then export CXX="$COMPILER -stdlib=libc++"; fi
-    - if [ "$CXX" = "g++" ]; then export CXX="$COMPILER"; fi
 
 script:
       ./scripts/run_unix.sh
