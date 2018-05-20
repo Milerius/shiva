@@ -11,7 +11,7 @@ install:
           cd vcpkg
         }
 - sh: sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y && sudo apt-get update -y && sudo apt-get install g++-7 -y
-- sh: ./bootstrap-vcpkg.sh
+- sh: ./bootstrap-vcpkg.sh && ./vcpkg install gtest && ls && pwd && ls ../
 
 build_script:
   - mkdir build
