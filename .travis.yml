@@ -21,8 +21,7 @@ before_install:
 install:
     - git clone https://github.com/Kitware/CMake.git && cd CMake && ./bootstrap && make -j2 && sudo make install
     - git clone https://github.com/Microsoft/vcpkg.git && cd vcpkg && cd toolsrc && mkdir build && cd build
-    - cmake -DCMAKE_BUILD_TYPE=Release .. && make -j2 && cd ../..
-    - ./vcpkg install gtest
+    - cmake -DCMAKE_BUILD_TYPE=Release .. && make -j2 && cd ../.. && ./vcpkg install gtest
     - export VCPKG_ROOT="$PWD" && echo $VCPKG_ROOT
 
 script:
