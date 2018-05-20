@@ -11,9 +11,9 @@ build_script:
   - cmake --build . --config Release -- /verbosity:minimal /maxcpucount:3
   - ctest --no-compress-output -T Test -C Release
   - cd ../bin
-  - ps:  |
-         foreach ($file in get-ChildItem *-test.exe) {
-            $var = $file.name
-            echo $var
-            & ./$var --gtest_output="xml:$var-windows-$type-result.xml"
+  - ps: |
+      foreach ($file in get-ChildItem *-test.exe) {
+              $var = $file.name
+              echo $var
+              & ./$var --gtest_output="xml:$var-windows-$type-result.xml"
         }
