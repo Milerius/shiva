@@ -45,11 +45,11 @@ for:
     matrix:
       only:
       - platform: Ubuntu
-    install:
-      - sh: echo Install
-    build_script:
-      - sh: echo Build_Script
-    test_script:
-      - sh: echo Ubuntu
-    on_finish:
-      - sh: on Finish
+      install:
+        - sh: echo Install
+      build_script:
+        - sh: echo Build_Script
+      test_script:
+        - sh: echo Ubuntu
+      on_finish:
+        - sh: on Finish
