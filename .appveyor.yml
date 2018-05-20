@@ -28,7 +28,7 @@ test_script:
 - cp bin/*.xml test-result/
 - cp build/Testing/*/*.xml test-result/ctest
 
-after_test:
+on_finish:
   - ps: |
       $wc = New-Object 'System.Net.WebClient'
       $wc.UploadFile("https://ci.appveyor.com/api/testresults/xunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\test-result\ctest\Test.xml))
