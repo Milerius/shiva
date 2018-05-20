@@ -1,6 +1,9 @@
 os:
 - Visual Studio 2017
 
+install:
+- vcpkg install gtest:x64-Windows
+
 build_script:
   - mkdir build
   - cd build
