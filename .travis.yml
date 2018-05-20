@@ -22,6 +22,7 @@ install:
     - git clone https://github.com/Kitware/CMake.git && cd CMake && ./bootstrap && make && make install
     - git clone https://github.com/Microsoft/vcpkg.git && cd vcpkg && cd toolsrc && mkdir build && cd build
     - cmake -DCMAKE_BUILD_TYPE=Release .. && cd ../..
+    - make
     - ./vcpkg install gtest
     - export VCPKG_ROOT="$PWD" && echo $VCPKG_ROOT
 
