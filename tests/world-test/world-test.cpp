@@ -6,5 +6,5 @@
 
 TEST(world_testing, basic)
 {
-
+    ASSERT_EQ(1, 1);
 }

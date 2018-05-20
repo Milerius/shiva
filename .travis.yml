@@ -1,0 +1,40 @@
+language: cpp
+
+dist: trusty
+sudo: false
+
+matrix:
+  include:
+    - compiler: gcc
+      addons:
+        apt:
+          sources:
+             - ubuntu-toolchain-r-test
+          packages:
+             - g++-7
+      env: COMPILER=g++-7 CXXSTD=17
+    - compiler: gcc
+      addons:
+        apt:
+          sources:
+             - ubuntu-toolchain-r-test
+          packages:
+             - g++-8
+      env: COMPILER=g++-8 CXXSTD=17
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+             - llvm-toolchain-trusty-6.0
+             - ubuntu-toolchain-r-test
+          packages:
+             - clang++-6.0
+             - libc++-dev
+      env: COMPILER=clang++-6.0 CXXSTD=17
+
+install:
+    - if [ "$CXX" = "clang++" ]; then export CXX="$COMPILER -stdlib=libc++"; fi
+    - if [ "$CXX" = "g++" ]; then export CXX="$COMPILER"; fi
+
+script:
+      ./scripts/run_unix.sh
