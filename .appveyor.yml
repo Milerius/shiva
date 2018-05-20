@@ -10,6 +10,7 @@ install:
           git clone https://github.com/Microsoft/vcpkg.git
           cd vcpkg
         }
+- sh: sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y && sudo apt-get update -y && sudo apt-get install g++-7 -y
 - sh: ./bootstrap-vcpkg.sh
 
 build_script:
