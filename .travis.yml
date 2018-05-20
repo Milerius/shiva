@@ -24,6 +24,7 @@ matrix:
     - compiler: clang
       addons:
         apt:
+          update: true
           sources:
              - llvm-toolchain-trusty-6.0
              - ubuntu-toolchain-r-test
