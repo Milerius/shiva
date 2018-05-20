@@ -13,40 +13,40 @@ for:
     matrix:
       only:
       - platform: Visual Studio 2017
-    install:
-    - vcpkg install gtest:x64-Windows
+      install:
+      - vcpkg install gtest:x64-Windows
 
-    build_script:
-      - mkdir build
-      - cd build
-      - cmake -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_BUILD_TYPE=Release -DSHIVA_BUILD_TESTS=ON -DSHIVA_BUILD_EXAMPLES=ON -G "Visual Studio 15 2017 Win64" ..
-      - cmake --build . --config Release -- /verbosity:minimal /maxcpucount:3
+      build_script:
+        - mkdir build
+        - cd build
+        - cmake -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_BUILD_TYPE=Release -DSHIVA_BUILD_TESTS=ON -DSHIVA_BUILD_EXAMPLES=ON -G "Visual Studio 15 2017 Win64" ..
+        - cmake --build . --config Release -- /verbosity:minimal /maxcpucount:3
 
-    test_script:
-    - ctest --no-compress-output -T Test -C Release
-    - cd ../bin
-    - ps: |
-        foreach ($file in get-ChildItem *-test.exe)
-        {
-          $var = $file.name
-          echo $var
-          & ./$var --gtest_output="xml:$var-windows-release-result.xml"
-        }
-    - cd ..
-    - mkdir test-result
-    - cd test-result
-    - mkdir ctest
-    - cd ..
-    - cp bin/*.xml test-result/
-    - cp build/Testing/*/*.xml test-result/ctest
-
-    on_finish:
-      - cd test-result/ctest
+      test_script:
+      - ctest --no-compress-output -T Test -C Release
+      - cd ../bin
       - ps: |
-          $XSLInputElement = New-Object System.Xml.Xsl.XslCompiledTransform
-          $XSLInputElement.Load("https://raw.githubusercontent.com/rpavlik/jenkins-ctest-plugin/master/ctest-to-junit.xsl")
-          $XSLInputElement.Transform((Resolve-Path .\Test.xml), (Join-Path (Resolve-Path .) "ctest-to-junit-results.xml"))
-          $wc = New-Object 'System.Net.WebClient'
-          $wc.UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\ctest-to-junit-results.xml))
-      - echo "finish"
+          foreach ($file in get-ChildItem *-test.exe)
+          {
+            $var = $file.name
+            echo $var
+            & ./$var --gtest_output="xml:$var-windows-release-result.xml"
+          }
+      - cd ..
+      - mkdir test-result
+      - cd test-result
+      - mkdir ctest
+      - cd ..
+      - cp bin/*.xml test-result/
+      - cp build/Testing/*/*.xml test-result/ctest
+
+      on_finish:
+        - cd test-result/ctest
+        - ps: |
+            $XSLInputElement = New-Object System.Xml.Xsl.XslCompiledTransform
+            $XSLInputElement.Load("https://raw.githubusercontent.com/rpavlik/jenkins-ctest-plugin/master/ctest-to-junit.xsl")
+            $XSLInputElement.Transform((Resolve-Path .\Test.xml), (Join-Path (Resolve-Path .) "ctest-to-junit-results.xml"))
+            $wc = New-Object 'System.Net.WebClient'
+            $wc.UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\ctest-to-junit-results.xml))
+        - echo "finish"
 
