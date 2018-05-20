@@ -12,8 +12,9 @@ build_script:
   - ctest --no-compress-output -T Test -C Release
   - cd ../bin
   - ps: |
-      foreach ($file in get-ChildItem *-test.exe) {
+      foreach ($file in get-ChildItem *-test.exe)
+      {
               $var = $file.name
               echo $var
               & ./$var --gtest_output="xml:$var-windows-release-result.xml"
-        }
+      }
