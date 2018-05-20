@@ -15,5 +15,5 @@ build_script:
       foreach ($file in get-ChildItem *-test.exe) {
               $var = $file.name
               echo $var
-              & ./$var --gtest_output="xml:$var-windows-$type-result.xml"
+              & ./$var --gtest_output="xml:$var-windows-release-result.xml"
         }
