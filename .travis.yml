@@ -13,25 +13,6 @@ matrix:
           packages:
              - g++-7
       env: COMPILER=g++-7 CXXSTD=17
-    - compiler: gcc
-      addons:
-        apt:
-          sources:
-             - ubuntu-toolchain-r-test
-          packages:
-             - g++-8
-      env: COMPILER=g++-8 CXXSTD=17
-    - compiler: clang
-      addons:
-        apt:
-          update: true
-          sources:
-             - llvm-toolchain-trusty-6.0
-             - ubuntu-toolchain-r-test
-          packages:
-             - clang++-6.0
-             - libc++-dev
-      env: COMPILER=clang++-6.0 CXXSTD=17
 
 before_install:
     - if [ "$CXX" = "clang++" ]; then export CXX="$COMPILER -stdlib=libc++"; fi
