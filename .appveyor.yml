@@ -15,10 +15,9 @@ install:
         }
 
 build_script:
-  - sh: pwd
-  - mkdir build
-  - cd build
   - ps: |
+      mkdir build
+      cd build
       if ($isWindows) {
             cmake -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_BUILD_TYPE=Release -DSHIVA_BUILD_TESTS=ON -DSHIVA_BUILD_EXAMPLES=ON -G "Visual Studio 15 2017 Win64" ..
             cmake --build . --config Release -- /verbosity:minimal /maxcpucount:3
@@ -28,11 +27,11 @@ build_script:
           }
 
 test_script:
-- ctest --no-compress-output -T Test -C Release
-- cd ../bin
 - ps: |
+    ctest --no-compress-output -T Test -C Release
+    cd ../bin
     if ($isWindows) {
-      foreach ($file in get-ChildItem *-test.exe)
+      foreach ($file in get-ChildItem *-test)
       {
         $var = $file.name
         echo $var
