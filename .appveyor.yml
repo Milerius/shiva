@@ -6,6 +6,9 @@ configuration:
   - Debug
   - Release
 
+environment:
+  - COVERALLS_REPO_TOKEN: tKb9oAOoT6THAcsctlbQQ0bO6UeUTtDX3
+
 platform:
   - x64
 
@@ -20,10 +23,10 @@ init:
 
 install:
 - ps: |
-    pip install --user cpp-coveralls
     if ($isWindows) {
           vcpkg install gtest:x64-Windows
         } else {
+          pip install --user cpp-coveralls
           git clone https://github.com/Microsoft/vcpkg.git /home/appveyor/projects/vcpkg
           cd /home/appveyor/projects/vcpkg
           sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
