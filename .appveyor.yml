@@ -13,8 +13,10 @@ init:
 - ps: |
     env
     Write-Host "APPVEYOR_BUILD_WORKER_IMAGE ->  $env:APPVEYOR_BUILD_WORKER_IMAGE"
-    Write-Host "PLATFORM is $env:PLATFORM"
-    Write-Host "CONFIGURATION is $env:CONFIGURATION"
+    Write-Host "PLATFORM is $env:Platform"
+    Write-Host "CONFIGURATION is $env:Configuration"
+    Write-Host "cmake -DCMAKE_BUILD_TYPE=$($env:Configuration)"
+    Write-Host "cmake --build . --config $($env:Configuration)"
 
 install:
 - ps: |
