@@ -48,8 +48,8 @@ test_script:
     	./$i --gtest_output="xml:${i}-release-result.xml" || exit 1
     done
 - ps: |
-    (cd ..) -and (mkdir test-result) -and (cd test-result) -and (mkdir ctest)
-    (cd ..) -and (cp bin/*.xml test-result/) -and (cp build/Testing/*/*.xml test-result/ctest)
+    pwd
+    (mkdir test-result) -and (cd test-result) -and (mkdir ctest) -and (cd ..) -and (cp bin/*.xml test-result/) -and (cp build/Testing/*/*.xml test-result/ctest)
 
 on_finish:
   - ps: |
