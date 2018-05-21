@@ -31,7 +31,7 @@ test_script:
     ctest --no-compress-output -T Test -C Release
     cd ../bin
     if ($isWindows) {
-      foreach ($file in get-ChildItem *-test)
+      foreach ($file in get-ChildItem *-test.exe)
       {
         $var = $file.name
         echo $var
