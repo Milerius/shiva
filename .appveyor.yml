@@ -11,7 +11,7 @@ install:
           cd /tmp/vcpkg
         }
 - sh: sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y && sudo apt-get update -y && sudo apt-get install g++-7 -y
-- sh: ./bootstrap-vcpkg.sh && ./vcpkg install gtest && echo $PWD > /tmp/vcpkg_root_directory && cd -
+- sh: ./bootstrap-vcpkg.sh && ./vcpkg install gtest && cd -
 
 build_script:
   - mkdir build
@@ -20,9 +20,10 @@ build_script:
       if ($isWindows) {
             cmake -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_BUILD_TYPE=Release -DSHIVA_BUILD_TESTS=ON -DSHIVA_BUILD_EXAMPLES=ON -G "Visual Studio 15 2017 Win64" ..
             cmake --build . --config Release -- /verbosity:minimal /maxcpucount:3
+          } else {
+            cmake -DCMAKE_TOOLCHAIN_FILE=/tmp/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_BUILD_TYPE=Release -DSHIVA_BUILD_TESTS=ON -DSHIVA_BUILD_EXAMPLES=ON ..
+            cmake --build . --config Release
           }
-  - sh:  cmake -DCMAKE_TOOLCHAIN_FILE=/tmp/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_BUILD_TYPE=Release -DSHIVA_BUILD_TESTS=ON -DSHIVA_BUILD_EXAMPLES=ON ..
-  - sh:  cmake --build . --config Release
 
 test_script:
 - ctest --no-compress-output -T Test -C Release
