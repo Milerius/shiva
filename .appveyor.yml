@@ -30,18 +30,23 @@ build_script:
 test_script:
 - ctest --no-compress-output -T Test -C Release
 - cd ../bin
+- pwd
 - ps: |
-    foreach ($file in get-ChildItem *-test.exe)
-    {
-      $var = $file.name
-      echo $var
-      & ./$var --gtest_output="xml:$var-windows-release-result.xml"
+    if ($isWindows) {
+      foreach ($file in get-ChildItem *-test.exe)
+      {
+        $var = $file.name
+        echo $var
+        & ./$var --gtest_output="xml:$var-release-result.xml"
+      }
     }
+- sh: |
+    for i in *-test; do
+    	./$i --gtest_output="xml:${i}-release-result.xml" || exit 1
+    done
 - cd ..
-- mkdir test-result
-- cd test-result
-- mkdir ctest
-- cd ..
+- mkdir -p test-result
+- mkdir -p test-result/ctest
 - cp bin/*.xml test-result/
 - cp build/Testing/*/*.xml test-result/ctest
 
