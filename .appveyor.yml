@@ -45,8 +45,8 @@ test_script:
     	./$i --gtest_output="xml:${i}-release-result.xml" || exit 1
     done
 - cd ..
-- mkdir -p test-result
-- mkdir -p test-result/ctest
+- mkdir test-result
+- mkdir test-result/ctest
 - cp bin/*.xml test-result/
 - cp build/Testing/*/*.xml test-result/ctest
 
