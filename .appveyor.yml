@@ -3,6 +3,7 @@ image:
 - Ubuntu
 
 install:
+- sh: pwd
 - ps: |
     if ($isWindows) {
           vcpkg install gtest:x64-Windows
@@ -11,9 +12,10 @@ install:
           cd /tmp/vcpkg
         }
 - sh: sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y && sudo apt-get update -y && sudo apt-get install g++-7 -y
-- sh: ./bootstrap-vcpkg.sh && ./vcpkg install gtest && cd -
+- sh: ./bootstrap-vcpkg.sh && ./vcpkg install gtest && pwd && cd - && pwd
 
 build_script:
+  - sh: pwd
   - mkdir build
   - cd build
   - ps: |
