@@ -2,6 +2,18 @@ image:
 - Visual Studio 2017
 - Ubuntu
 
+configuration:
+  - Debug
+  - Release
+  - Asan
+  - Tsan
+
+init:
+- ps: |
+    Write-Host "APPVEYOR_BUILD_WORKER_IMAGE ->  $env:APPVEYOR_BUILD_WORKER_IMAGE"
+    Write-Host "PLATFORM is $env:PLATFORM"
+    Write-Host "CONFIGURATION is $env:CONFIGURATION"
+
 install:
 - ps: |
     if ($isWindows) {
