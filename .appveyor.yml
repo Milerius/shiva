@@ -30,7 +30,6 @@ build_script:
 test_script:
 - ctest --no-compress-output -T Test -C Release
 - cd ../bin
-- pwd
 - ps: |
     if ($isWindows) {
       foreach ($file in get-ChildItem *-test.exe)
@@ -46,7 +45,9 @@ test_script:
     done
 - cd ..
 - mkdir test-result
-- mkdir test-result/ctest
+- cd test-result
+- mkdir ctest
+- cd ..
 - cp bin/*.xml test-result/
 - cp build/Testing/*/*.xml test-result/ctest
 
