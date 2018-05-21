@@ -42,20 +42,16 @@ test_script:
     for i in *-test; do
     	./$i --gtest_output="xml:${i}-release-result.xml" || exit 1
     done
-- cd ..
-- mkdir test-result
-- cd test-result
-- mkdir ctest
-- cd ..
-- cp bin/*.xml test-result/
-- cp build/Testing/*/*.xml test-result/ctest
+- ps: |
+    (cd ..) -and (mkdir test-result) -and (cd test-result) -and (mkdir ctest)
+    (cd ..) -and (cp bin/*.xml test-result/) -and (cp build/Testing/*/*.xml test-result/ctest)
 
 on_finish:
-  - cd test-result/ctest
   - ps: |
+      cd test-result/ctest
       $XSLInputElement = New-Object System.Xml.Xsl.XslCompiledTransform
       $XSLInputElement.Load("https://raw.githubusercontent.com/rpavlik/jenkins-ctest-plugin/master/ctest-to-junit.xsl")
       $XSLInputElement.Transform((Resolve-Path .\Test.xml), (Join-Path (Resolve-Path .) "ctest-to-junit-results.xml"))
       $wc = New-Object 'System.Net.WebClient'
       $wc.UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\ctest-to-junit-results.xml))
-  - echo "finish"
+      echo "finish"
