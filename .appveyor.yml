@@ -3,15 +3,15 @@ image:
 - Ubuntu
 
 install:
-- sh: pwd
 - ps: |
     if ($isWindows) {
           vcpkg install gtest:x64-Windows
         } else {
           git clone https://github.com/Microsoft/vcpkg.git /home/appveyor/projects/vcpkg
           cd /home/appveyor/projects/vcpkg
+          sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+          (sudo apt-get update -y) -and (sudo apt-get install g++-7 -y) -and (sudo apt-get install make -y)
         }
-- sh: sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y && sudo apt-get update -y && sudo apt-get install g++-7 -y && sudo apt-get install make -y
 - sh: ./bootstrap-vcpkg.sh && ./vcpkg install gtest && cd /home/appveyor/projects/shiva
 
 build_script:
