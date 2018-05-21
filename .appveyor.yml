@@ -8,11 +8,11 @@ install:
     if ($isWindows) {
           vcpkg install gtest:x64-Windows
         } else {
-          git clone https://github.com/Microsoft/vcpkg.git /tmp/vcpkg
-          cd /tmp/vcpkg
+          git clone https://github.com/Microsoft/vcpkg.git /home/appveyor/projects/vcpkg
+          cd /home/appveyor/projects/vcpkg
         }
 - sh: sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y && sudo apt-get update -y && sudo apt-get install g++-7 -y
-- sh: ./bootstrap-vcpkg.sh && ./vcpkg install gtest && pwd && cd - && pwd
+- sh: ./bootstrap-vcpkg.sh && ./vcpkg install gtest && /home/appveyor/projects/shiva
 
 build_script:
   - sh: pwd
@@ -23,7 +23,7 @@ build_script:
             cmake -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_BUILD_TYPE=Release -DSHIVA_BUILD_TESTS=ON -DSHIVA_BUILD_EXAMPLES=ON -G "Visual Studio 15 2017 Win64" ..
             cmake --build . --config Release -- /verbosity:minimal /maxcpucount:3
           } else {
-            cmake -DCMAKE_TOOLCHAIN_FILE=/tmp/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_BUILD_TYPE=Release -DSHIVA_BUILD_TESTS=ON -DSHIVA_BUILD_EXAMPLES=ON ..
+            cmake -DCMAKE_TOOLCHAIN_FILE=/home/appveyor/projects/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_BUILD_TYPE=Release -DSHIVA_BUILD_TESTS=ON -DSHIVA_BUILD_EXAMPLES=ON ..
             cmake --build . --config Release
           }
 
