@@ -20,6 +20,7 @@ init:
 
 install:
 - ps: |
+    pip install --user cpp-coveralls
     if ($isWindows) {
           vcpkg install gtest:x64-Windows
         } else {
