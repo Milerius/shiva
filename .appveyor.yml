@@ -49,7 +49,16 @@ test_script:
     done
 - ps: |
     pwd
-    (mkdir test-result) -and (cd test-result) -and (mkdir ctest) -and (cd ..) -and (cp bin/*.xml test-result/) -and (cp build/Testing/*/*.xml test-result/ctest)
+    cd ..
+    pwd
+    mkdir test-result
+    cd test-result
+    pwd
+    mkdir ctest
+    cd ..
+    pwd
+    cp bin/*.xml test-result
+    cp build/Testing/*/*.xml test-result/ctest
 
 on_finish:
   - ps: |
