@@ -50,6 +50,7 @@ endmacro()
 
 ##! Compiler Configuration.
 if(CMAKE_BUILD_TYPE MATCHES Debug)
+    MESSAGE("ICI")
     add_definitions(-DDEBUG)
     __internal_debug_cxx_flags()
     MSG_YELLOW_BOLD(STATUS "CMAKE_CXX_FLAGS_DEBUG:" "${CMAKE_CXX_FLAGS_DEBUG}" "")
