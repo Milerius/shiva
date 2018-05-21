@@ -40,7 +40,11 @@ test_script:
       $var = $file.name
       & ./$var --gtest_output="xml:$var-release-result.xml"
     }
-    (popd) -and (mkdir test-result) -and (pushd test-result) -and (mkdir ctest) -and (popd)
+    cd ..
+    mkdir test-result
+    cd test-result
+    mkdir ctest
+    cd ..
     cp bin/*.xml test-result
     cp build/Testing/*/*.xml test-result/ctest
 
