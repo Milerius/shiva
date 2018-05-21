@@ -35,28 +35,17 @@ test_script:
     } else {
       $filePattern = '*-test'
     }
-    if ($isWindows) {
-      foreach ($file in get-ChildItem $filePattern)
-      {
-        $var = $file.name
-        echo $var
-        & ./$var --gtest_output="xml:$var-release-result.xml"
-      }
+    foreach ($file in get-ChildItem $filePattern)
+    {
+      $var = $file.name
+      echo $var
+      & ./$var --gtest_output="xml:$var-release-result.xml"
     }
-- sh: |
-    for i in *-test; do
-    	./$i --gtest_output="xml:${i}-release-result.xml" || exit 1
-    done
-- ps: |
-    pwd
     cd ..
-    pwd
     mkdir test-result
     cd test-result
-    pwd
     mkdir ctest
     cd ..
-    pwd
     cp bin/*.xml test-result
     cp build/Testing/*/*.xml test-result/ctest
 
