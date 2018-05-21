@@ -5,8 +5,9 @@ image:
 configuration:
   - Debug
   - Release
-  - Asan
-  - Tsan
+
+platform:
+  - x64
 
 init:
 - ps: |
