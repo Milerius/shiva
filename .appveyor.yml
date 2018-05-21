@@ -11,8 +11,8 @@ install:
           cd /home/appveyor/projects/vcpkg
           sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
           (sudo apt-get update -y) -and (sudo apt-get install g++-7 -y) -and (sudo apt-get install make -y)
+          (sh bootstrap-vcpkg.sh) -and (./vcpkg install gtest) -and (cd /home/appveyor/projects/shiva)
         }
-- sh: ./bootstrap-vcpkg.sh && ./vcpkg install gtest && cd /home/appveyor/projects/shiva
 
 build_script:
   - sh: pwd
