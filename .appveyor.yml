@@ -3,8 +3,8 @@ image:
 - Ubuntu
 
 configuration:
-  - Debug
-  - Release
+- Debug
+- Release
 
 environment:
   - COVERALLS_REPO_TOKEN: tKb9oAOoT6THAcsctlbQQ0bO6UeUTtDX3
