@@ -45,7 +45,7 @@ build_script:
 
 test_script:
 - ps: |
-    ctest --no-compress-output -T Test -C Release
+    ctest --no-compress-output -T Test -C $env:Configuration
     cd ../bin
     if ($isWindows) {
       $filePattern = '*-test.exe'
