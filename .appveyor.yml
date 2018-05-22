@@ -6,9 +6,6 @@ configuration:
 - Debug
 - Release
 
-environment:
-  - COVERALLS_REPO_TOKEN: tKb9oAOoT6THAcsctlbQQ0bO6UeUTtDX3
-
 platform:
   - x64
 
