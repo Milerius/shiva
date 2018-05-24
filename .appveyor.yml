@@ -74,7 +74,10 @@ test_script:
     cp build/Testing/*/*.xml test-result/ctest
 
 on_success:
-  - coveralls --gcov gcov-7 --gcov-options '\-lp' --root ${APPVEYOR_BUILD_FOLDER} --build-root ${APPVEYOR_BUILD_FOLDER}/build --extension cpp --extension hpp --exclude deps --include src --include tests
+  - ps: |
+      if (($isLinux) -and ($env:Configuration -eq "Debug")) {
+        coveralls --gcov gcov-7 --gcov-options '\-lp' --root ${APPVEYOR_BUILD_FOLDER} --build-root ${APPVEYOR_BUILD_FOLDER}/build --extension cpp --extension hpp --exclude deps --include src --include tests
+      }
 
 on_finish:
   - ps: |
