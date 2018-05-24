@@ -3,7 +3,7 @@ image:
 - Ubuntu
 
 configuration:
-- Debug
+-  Debug
 - Release
 
 platform:
@@ -41,9 +41,10 @@ build_script:
             cmake --build . --config $($env:Configuration) -- /verbosity:minimal /maxcpucount:3
           } else {
             if ($env:Configuration -eq "Debug") {
-              $CXXFLAGS = "-O0 --coverage"
+              cmake -DCMAKE_TOOLCHAIN_FILE="/home/appveyor/projects/vcpkg/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE="$($env:Configuration)" -DSHIVA_BUILD_TESTS=ON -DSHIVA_BUILD_EXAMPLES=ON -DPROJECT_COVERAGE=1 ..
+            } else {
+              cmake -DCMAKE_TOOLCHAIN_FILE="/home/appveyor/projects/vcpkg/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE="$($env:Configuration)" -DSHIVA_BUILD_TESTS=ON -DSHIVA_BUILD_EXAMPLES=ON ..
             }
-            cmake -DCMAKE_TOOLCHAIN_FILE="/home/appveyor/projects/vcpkg/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE="$($env:Configuration)" -DSHIVA_BUILD_TESTS=ON -DSHIVA_BUILD_EXAMPLES=ON ..
             cmake --build . --config $($env:Configuration)
           }
 
