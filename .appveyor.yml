@@ -9,6 +9,9 @@ configuration:
 platform:
   - x64
 
+environment:
+  COVERALLS_REPO_TOKEN:
+    secure: FQ1lM0r4iUJaYrmsIIfMfYU7p/S6/8TZ3pgV26mIQYrwDNocGao2g9KMw0pU3S3E
 init:
 - ps: |
     env
@@ -69,6 +72,9 @@ test_script:
     cd ..
     cp bin/*.xml test-result
     cp build/Testing/*/*.xml test-result/ctest
+
+on_success:
+  - coveralls --gcov gcov-7 --gcov-options '\-lp' --root ${APPVEYOR_BUILD_FOLDER} --build-root ${APPVEYOR_BUILD_FOLDER}/build --extension cpp --extension hpp --exclude deps --include src --include tests
 
 on_finish:
   - ps: |
