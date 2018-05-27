@@ -4,7 +4,7 @@ image:
 
 configuration:
 -  Debug
-- Release
+-  Release
 
 platform:
   - x64
@@ -12,6 +12,11 @@ platform:
 environment:
   COVERALLS_REPO_TOKEN:
     secure: FQ1lM0r4iUJaYrmsIIfMfYU7p/S6/8TZ3pgV26mIQYrwDNocGao2g9KMw0pU3S3E
+
+branches:
+  only:
+  - master
+
 init:
 - ps: |
     env
@@ -76,7 +81,7 @@ test_script:
 on_success:
   - ps: |
       if (($isLinux) -and ($env:Configuration -eq "Debug")) {
-        coveralls --gcov gcov-7 --gcov-options '\-lp' --root $env:APPVEYOR_BUILD_FOLDER --build-root $env:APPVEYOR_BUILD_FOLDER/build --extension cpp --extension hpp --exclude deps --include src --include tests
+        coveralls --gcov gcov-7 --gcov-options '\-lp' --root $env:APPVEYOR_BUILD_FOLDER --build-root $env:APPVEYOR_BUILD_FOLDER/build --extension cpp --extension hpp --exclude build --include modules
       }
 
 on_finish:
