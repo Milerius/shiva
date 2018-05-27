@@ -15,6 +15,9 @@ enable_testing()
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 include(library)
 
+set(SFML_STATIC_LIBRARIES TRUE)
+find_package(SFML CONFIG COMPONENTS graphics window REQUIRED)
+
 ##! Project options
 option(SHIVA_BUILD_TESTS "Build tests of shiva C++ engine" ON)
 option(SHIVA_BUILD_EXAMPLES "Build examples of shiva C++ engine" OFF)

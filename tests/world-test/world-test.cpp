@@ -3,6 +3,7 @@
 //
 
 #include <gtest/gtest.h>
+#include <shiva/world/world.hpp>
 
 TEST(world_testing, basic)
 {
