@@ -29,7 +29,7 @@ init:
 install:
 - ps: |
     if ($isWindows) {
-          cd $env:VCPKG_ROOT
+          cd C:\tools\vcpkg
           git pull
           vcpkg install gtest:x64-Windows entt:x64-Windows eastl:x64-Windows
         } else {
