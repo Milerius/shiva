@@ -1,4 +1,5 @@
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_C_STANDARD 11)
 
 ##! Msvc flags info
 # /Zi - Produces a program database (PDB) that contains type information and symbolic debugging information for use with the debugger.
@@ -11,7 +12,7 @@ set(CMAKE_CXX_STANDARD 17)
 if (UNIX)
     set(STANDARD_UNIX_CXX_FLAGS "-Wall -Wextra -Wfatal-errors")
 elseif(MSVC)
-    add_compile_options("/std:c++latest")
+    add_compile_options("/std:c++latest /W4 /permissive-")
 endif()
 
 ##! Internal Debug configuration
