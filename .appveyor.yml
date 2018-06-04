@@ -32,6 +32,7 @@ install:
           cd C:\tools\vcpkg
           git pull
           vcpkg install gtest:x64-Windows entt:x64-Windows eastl:x64-Windows
+          cd $env:APPVEYOR_BUILD_FOLDER
         } else {
           pip install --user cpp-coveralls
           git clone https://github.com/Microsoft/vcpkg.git /home/appveyor/projects/vcpkg
