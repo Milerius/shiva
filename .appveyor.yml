@@ -30,6 +30,7 @@ install:
 - ps: |
     if ($isWindows) {
           cd C:\tools\vcpkg
+          git --no-pager log --decorate=short --pretty=oneline -n10
           git pull
           vcpkg install gtest:x64-Windows entt:x64-Windows eastl:x64-Windows
           cd $env:APPVEYOR_BUILD_FOLDER
