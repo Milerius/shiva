@@ -10,9 +10,9 @@ set(CMAKE_C_STANDARD 11)
 
 ##! Global Configuration
 if (UNIX)
-    set(STANDARD_UNIX_CXX_FLAGS "-Wall -Wextra -Wfatal-errors -std=c++17")
+    set(STANDARD_UNIX_CXX_FLAGS "-Wall -Wextra -Wfatal-errors")
 elseif(MSVC)
-    add_compile_options("/std:c++latest")
+    set(STANDARD_MSVC_CXX_FLAGS "/std:c++latest /W4 /permissive-")
 endif()
 
 ##! Internal Debug configuration
@@ -21,7 +21,7 @@ macro(__internal_debug_unix_cxx_flags)
 endmacro()
 
 macro(__internal_debug_msvc_cxx_flags)
-    set(CMAKE_CXX_FLAGS_DEBUG "/Zi /FS /DEBUG /Od /MP /MDd")
+    set(CMAKE_CXX_FLAGS_DEBUG "${STANDARD_MSVC_CXX_FLAGS} /Zi /FS /DEBUG /Od /MP /MDd")
 endmacro()
 
 macro(__internal_debug_cxx_flags)
@@ -38,7 +38,7 @@ macro(__internal_release_unix_cxx_flags)
 endmacro()
 
 macro(__internal_release_msvc_cxx_flags)
-    set(CMAKE_CXX_FLAGS_RELEASE "/O2 -DNDEBUG /MP")
+    set(CMAKE_CXX_FLAGS_RELEASE "${STANDARD_MSVC_CXX_FLAGS} /O2 -DNDEBUG /MP")
 endmacro()
 
 macro(__internal_release_cxx_flags)
