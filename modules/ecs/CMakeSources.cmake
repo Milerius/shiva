@@ -1,0 +1,17 @@
+set(MODULE_PATH
+        ${CMAKE_CURRENT_SOURCE_DIR}/shiva/ecs)
+
+set(MODULE_PUBLIC_HEADERS
+        "${MODULE_PATH}/system_type.hpp"
+        "${MODULE_PATH}/system_manager.hpp"
+        "${MODULE_PATH}/ecs.hpp"
+        "${MODULE_PATH}/base_system.hpp"
+
+        )
+
+set(MODULE_PRIVATE_HEADERS
+        "")
+
+set(MODULE_SOURCES
+        ${MODULE_PUBLIC_HEADERS}
+        ${MODULE_PRIVATE_HEADERS})
