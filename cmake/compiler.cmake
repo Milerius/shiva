@@ -10,9 +10,9 @@ set(CMAKE_C_STANDARD 11)
 
 ##! Global Configuration
 if (UNIX)
-    set(STANDARD_UNIX_CXX_FLAGS "-Wall -Wextra -Wfatal-errors")
+    set(STANDARD_UNIX_CXX_FLAGS "-Wall -Wextra -Wfatal-errors -std=c++17")
 elseif(MSVC)
-    add_compile_options("/std:c++latest /W4 /permissive-")
+    add_compile_options("/std:c++latest")
 endif()
 
 ##! Internal Debug configuration
