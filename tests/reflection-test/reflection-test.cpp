@@ -135,7 +135,7 @@ TEST(reflection, member_functions)
                  shiva::refl::MemberNotFound);
     shiva::refl::MemberNotFound mnf;
 
-    ASSERT_EQ(mnf.what(), "Member not found");
+    ASSERT_EQ(std::string(mnf.what()), "Member not found");
 }
 
 TEST(reflection, class_name)
