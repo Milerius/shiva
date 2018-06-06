@@ -8,17 +8,9 @@
 #include <EASTL/vector.h>
 #include <EASTL/unique_ptr.h>
 #include <EASTL/array.h>
-#include <entt/entity/registry.hpp>
-#include <entt/signal/dispatcher.hpp>
+#include <shiva/ecs/using_alias_library.hpp>
 #include <shiva/ecs/base_system.hpp>
 #include <shiva/ecs/system_type.hpp>
-
-// Using alias with good case
-namespace shiva::ecs
-{
-    using dispatcher = entt::Dispatcher;
-    using entity_registry = entt::DefaultRegistry;
-}
 
 namespace shiva::ecs
 {

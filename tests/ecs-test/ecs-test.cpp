@@ -6,6 +6,7 @@
 //#include <shiva/ecs/eastl_static.hpp>
 //#include <EASTL/allocator_malloc.h>
 //#include <EASTL/vector.h>
+#include <shiva/reflection/reflection.hpp>
 #include <shiva/ecs/ecs.hpp>
 #include <entt/signal/dispatcher.hpp>
 #include <shiva/ecs/system_manager.hpp>
