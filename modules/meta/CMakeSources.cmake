@@ -3,13 +3,13 @@
 set(MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/shiva/meta)
 
 set(MODULE_PUBLIC_HEADERS
-        ${MODULE_PATH}/List.hpp
-        ${MODULE_PATH}/PriorityTag.hpp
-        ${MODULE_PATH}/Visitor.hpp
-        ${MODULE_PATH}/TypeTraits.hpp
-        ${MODULE_PATH}/TupleForEach.hpp
-        ${MODULE_PATH}/Map.hpp
-        ${MODULE_PATH}/Meta.hpp
+        ${MODULE_PATH}/list.hpp
+        ${MODULE_PATH}/priority_tag.hpp
+        ${MODULE_PATH}/visitor.hpp
+        ${MODULE_PATH}/type_traits.hpp
+        ${MODULE_PATH}/tuple_for_each.hpp
+        ${MODULE_PATH}/map.hpp
+        ${MODULE_PATH}/meta.hpp
         )
 
 set(MODULE_PRIVATE_HEADERS "")
