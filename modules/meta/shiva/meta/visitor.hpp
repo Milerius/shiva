@@ -8,7 +8,7 @@
 
 namespace meta
 {
-#if defined(_MSC_VER)
+#ifdef _MSC_VER
     template <typename ...Funcs>
     class Visitor : public Funcs...
     {
