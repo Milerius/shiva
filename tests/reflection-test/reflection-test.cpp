@@ -133,6 +133,9 @@ TEST(reflection, member_functions)
 
     ASSERT_THROW(shiva::refl::callFunction<int()>(i_have_refl_member_functions::reflectedFunctions(), "lala", iharf2),
                  shiva::refl::MemberNotFound);
+    shiva::refl::MemberNotFound mnf;
+
+    ASSERT_EQ(std::string(mnf.what()), "Member not found");
 }
 
 TEST(reflection, class_name)
