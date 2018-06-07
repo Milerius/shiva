@@ -40,7 +40,7 @@ namespace shiva::ecs
         //! Override functions
         void update() noexcept override = 0;
 
-        const std::string &getName() const noexcept final
+        const std::string &get_name() const noexcept final
         {
             return system_derived::class_name();
         }
