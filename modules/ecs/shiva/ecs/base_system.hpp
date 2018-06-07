@@ -23,7 +23,7 @@ namespace shiva::ecs
     public:
         //! Pure virtual functions
         virtual void update() noexcept = 0;
-        virtual const std::string &getName() const noexcept = 0;
+        virtual const std::string &get_name() const noexcept = 0;
 
         public:
         //! Public member functions

@@ -52,6 +52,16 @@ namespace shiva::ecs
             return systems_[sys_type].size();
         }
 
+        template <typename t_system>
+        bool has_system() const noexcept
+        {
+            constexpr const auto sys_type = t_system::get_system_type();
+            return eastl::any_of(eastl::begin(systems_[sys_type]), eastl::end(systems_[sys_type]), [](auto &&ptr)
+            {
+                return ptr->get_name() == t_system::class_name();
+            });
+        }
+
     private:
         template <typename t_system>
         base_system &add_system_(system_ptr &&system) noexcept

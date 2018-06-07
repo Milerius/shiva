@@ -78,5 +78,6 @@ TEST_F(fixture_system, add_simple_system)
     auto system = system_manager_.create_system<test_system>();
     ASSERT_EQ(system_manager_.nb_systems(), 1u);
     ASSERT_EQ(system_manager_.nb_systems(shiva::ecs::post_update), 1u);
+    ASSERT_TRUE(system_manager_.has_system<test_system>());
     system.update();
 }
