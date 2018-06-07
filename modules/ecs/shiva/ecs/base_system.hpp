@@ -12,7 +12,7 @@ namespace shiva::ecs
     {
     public:
         //! Constructors / Destructor
-        explicit base_system(const dispatcher &dispatcher, const entity_registry& entity_registry) noexcept :
+        explicit base_system(dispatcher &dispatcher, entity_registry& entity_registry) noexcept :
             dispatcher_(dispatcher),
             entity_registry_(entity_registry)
         {
@@ -58,9 +58,8 @@ namespace shiva::ecs
         }
 
     private:
-        //TODO: Remove const when we will go further in the project
-        [[maybe_unused]] const dispatcher &dispatcher_;
-        [[maybe_unused]] const entity_registry &entity_registry_;
+        dispatcher &dispatcher_;
+        entity_registry &entity_registry_;
         bool marked_{false};
         bool enabled_{false};
     };

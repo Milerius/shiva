@@ -10,6 +10,10 @@ set(MODULE_PUBLIC_HEADERS
         ${MODULE_PATH}/tuple_for_each.hpp
         ${MODULE_PATH}/map.hpp
         ${MODULE_PATH}/meta.hpp
+        ${MODULE_PATH}/crtp.hpp
+        ${MODULE_PATH}/named_type.hpp
+        ${MODULE_PATH}/named_type_impl.hpp
+        ${MODULE_PATH}/underlying_functionalities.hpp
         )
 
 set(MODULE_PRIVATE_HEADERS "")

@@ -12,7 +12,8 @@ set(MODULE_PUBLIC_HEADERS
         )
 
 set(MODULE_PRIVATE_HEADERS
-        "")
+        "${MODULE_PATH}/details/system_type_traits.hpp"
+        "${MODULE_PATH}/details/utils.hpp")
 
 set(MODULE_SOURCES
         ${MODULE_PUBLIC_HEADERS}
