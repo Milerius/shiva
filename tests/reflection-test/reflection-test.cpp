@@ -140,5 +140,5 @@ TEST(reflection, member_functions)
 
 TEST(reflection, class_name)
 {
-    ASSERT_EQ(i_have_a_reflectible_name::className(), "i_have_a_reflectible_name");
+    ASSERT_EQ(i_have_a_reflectible_name::class_name(), "i_have_a_reflectible_name");
 }
