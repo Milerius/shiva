@@ -22,34 +22,46 @@ namespace shiva::ecs
         using system_array = eastl::vector<system_ptr, eastl::allocator_malloc>;
         using system_registry = eastl::array<system_array, system_type::size>;
     public:
-        explicit system_manager(dispatcher& dispatcher, entity_registry &registry) noexcept :
+        explicit system_manager(dispatcher &dispatcher, entity_registry &registry) noexcept :
             dispatcher_(dispatcher),
             ett_registry_(registry)
         {
-
         }
 
         template <typename system, typename ... system_args>
-        system& create_system(system_args &&...args)
+        system &create_system(system_args &&...args)
         {
-            auto creator = [this](auto &&... args){
+            auto creator = [this](auto &&... args) {
                 return eastl::make_unique<system>(this->dispatcher_, this->ett_registry_,
-                        eastl::forward<decltype(args)>(args)...);
+                                                  eastl::forward<decltype(args)>(args)...);
             };
             system_ptr sys = creator(eastl::forward<system_args>(args)...);
             return static_cast<system &>(add_system_<system>(eastl::move(sys)));
         }
 
+        size_t nb_systems() const noexcept
+        {
+            return std::accumulate(eastl::begin(systems_), eastl::end(systems_), 0u,
+                                   [](size_t accumulator, auto &&vec) {
+                                       return accumulator + vec.size();
+                                   });
+        }
+
+        size_t nb_systems(system_type sys_type) const noexcept
+        {
+            return systems_[sys_type].size();
+        }
+
     private:
-        template<typename t_system>
-        base_system &add_system_(system_ptr&& system) noexcept
+        template <typename t_system>
+        base_system &add_system_(system_ptr &&system) noexcept
         {
             return *systems_[t_system::get_system_type()].emplace_back(eastl::move(system));
         }
 
     private:
         system_registry systems_{{}};
-        dispatcher& dispatcher_;
-        entity_registry & ett_registry_;
+        dispatcher &dispatcher_;
+        entity_registry &ett_registry_;
     };
 }
