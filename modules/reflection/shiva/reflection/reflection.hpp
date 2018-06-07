@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <utility>
 #include <functional>
 #include <optional>
 #include <type_traits>
@@ -21,7 +22,7 @@ namespace shiva::refl
     using function_map_t = decltype(T::reflectedFunctions());
 
     template <typename T>
-    using class_name_t = decltype(T::className());
+    using class_name_t = decltype(T::class_name());
 
     template <typename T>
     using has_reflectible_members = meta::is_detected<member_map_t, T>;
@@ -61,7 +62,7 @@ namespace shiva::refl
 #define reflect_function(func)          shiva::refl::details::skipNamespaceName(pp_stringviewify(func)), func
 
 #define reflect_class(cls)                                                  \
-    static const std::string &className() noexcept                          \
+    static const std::string &class_name() noexcept                          \
     {                                                                       \
         static const std::string name = pp_stringify(cls);                  \
         return name;                                                        \
