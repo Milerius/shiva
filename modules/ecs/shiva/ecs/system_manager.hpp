@@ -41,10 +41,10 @@ namespace shiva::ecs
         }
 
     private:
-        template <typename system>
+        template<typename t_system>
         base_system &add_system_(system_ptr&& system) noexcept
         {
-            return *systems_[system::get_system_type()].emplace_back(eastl::move(system));
+            return *systems_[t_system::get_system_type()].emplace_back(eastl::move(system));
         }
 
     private:

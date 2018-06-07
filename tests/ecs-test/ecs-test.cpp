@@ -70,7 +70,7 @@ TEST(ecs_testing, constructor)
 
 TEST(ecs_testing, type_traits)
 {
-    FakeSystem<shiva::ecs::system_logic_update>;
+    [[maybe_unused]] FakeSystem<shiva::ecs::system_logic_update> s;
 }
 
 TEST_F(fixture_system, add_simple_system)

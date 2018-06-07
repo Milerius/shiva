@@ -58,8 +58,8 @@ namespace shiva::ecs
         }
 
     private:
-        dispatcher &dispatcher_;
-        entity_registry &entity_registry_;
+        [[maybe_unused]] dispatcher &dispatcher_;
+        [[maybe_unused]] entity_registry &entity_registry_;
         bool marked_{false};
         bool enabled_{false};
     };
