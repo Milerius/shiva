@@ -5,6 +5,7 @@
 #pragma once
 
 #include <type_traits>
+#include <shiva/reflection/reflection.hpp>
 #include <shiva/ecs/system_type.hpp>
 #include <shiva/meta/list.hpp>
 

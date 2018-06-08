@@ -9,7 +9,7 @@
 #include <shiva/ecs/ecs.hpp>
 #include <shiva/ecs/system_manager.hpp>
 #include <shiva/ecs/details/system_type_traits.hpp>
-
+#include <shiva/world/world.hpp>
 
 template<typename system_type>
 class FakeSystem
@@ -25,7 +25,7 @@ public:
     }
 };
 
-class fixture_system : public ::testing::Test
+class fixture_system : public ::shiva::world, public ::testing::Test
 {
 protected:
     void SetUp() override
@@ -35,11 +35,6 @@ protected:
     void TearDown() override
     {
     }
-
-protected:
-    entt::Dispatcher dispatcher_{};
-    entt::DefaultRegistry registry_{};
-    shiva::ecs::system_manager system_manager_{dispatcher_, registry_};
 };
 
 class test_system : public shiva::ecs::system<test_system, shiva::ecs::system_post_update>
@@ -47,7 +42,7 @@ class test_system : public shiva::ecs::system<test_system, shiva::ecs::system_po
 public:
     reflect_class(test_system);
 public:
-   test_system(shiva::ecs::dispatcher &dispatcher, shiva::ecs::entity_registry& registry) :
+   test_system(shiva::entt::dispatcher &dispatcher, shiva::entt::entity_registry& registry) :
    system(dispatcher, registry)
    {
 
@@ -65,7 +60,7 @@ class another_test_system : public shiva::ecs::system<another_test_system, shiva
 public:
     reflect_class(another_test_system);
 public:
-    another_test_system(shiva::ecs::dispatcher &dispatcher, shiva::ecs::entity_registry& registry) :
+    another_test_system(shiva::entt::dispatcher &dispatcher, shiva::entt::entity_registry& registry) :
         system(dispatcher, registry)
     {
 
