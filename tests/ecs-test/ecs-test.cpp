@@ -60,6 +60,24 @@ public:
 private:
 };
 
+class another_test_system : public shiva::ecs::system<another_test_system, shiva::ecs::system_pre_update>
+{
+public:
+    reflect_class(another_test_system);
+public:
+    another_test_system(shiva::ecs::dispatcher &dispatcher, shiva::ecs::entity_registry& registry) :
+        system(dispatcher, registry)
+    {
+
+    }
+
+    void update() noexcept override
+    {
+        std::cout << "YOY" << std::endl;
+    }
+private:
+};
+
 TEST(ecs_testing, constructor)
 {
     entt::Dispatcher dispatcher{};
@@ -77,7 +95,15 @@ TEST_F(fixture_system, add_simple_system)
 {
     auto system = system_manager_.create_system<test_system>();
     ASSERT_EQ(system_manager_.nb_systems(), 1u);
-    ASSERT_EQ(system_manager_.nb_systems(shiva::ecs::post_update), 1u);
     ASSERT_TRUE(system_manager_.has_system<test_system>());
     system.update();
+}
+
+TEST_F(fixture_system, get_simple_system)
+{
+    system_manager_.create_system<test_system>();
+    [[maybe_unused]] const auto& c_sys = system_manager_.get_system<test_system>();
+    [[maybe_unused]] auto& sys = system_manager_.get_system<test_system>();
+
+    system_manager_.get_system<another_test_system>();
 }
