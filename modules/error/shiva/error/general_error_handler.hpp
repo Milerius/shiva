@@ -17,7 +17,7 @@ namespace shiva::error
     public:
         void receive(const shiva::event::fatal_error_occured &evt)
         {
-            entity_registry_.template each([this](auto entity) {
+            entity_registry_.each([this](auto entity) {
                 this->entity_registry_.destroy(entity);
             });
             dispatcher_.trigger<shiva::event::quit_game>(evt.ec_.value());
