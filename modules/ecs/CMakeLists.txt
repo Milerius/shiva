@@ -2,8 +2,6 @@ include(CMakeSources.cmake)
 set(MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 
 ##! ENTT
-#find_path(ENTT_INCLUDE_DIR entt/entt.hpp)
-#MSG_YELLOW_BOLD(STATUS "ENTT_INCLUDE_DIR: " "${ENTT_INCLUDE_DIR}" "")
 
 ##! EASTL
 find_library(EASTL_LIBRARY EASTL)
