@@ -29,4 +29,9 @@ namespace shiva::ecs::details
     {
         return std::disjunction_v<types ...>;
     }
+
+    template <typename t_system>
+    static constexpr bool is_system_v = std::is_base_of_v<base_system, t_system> &&
+                                        refl::has_reflectible_class_name_v<t_system> &&
+                                        t_system::get_system_type() < system_type::size;
 }
