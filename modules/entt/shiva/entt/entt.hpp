@@ -4,8 +4,7 @@
 
 #pragma once
 
-#include <entt/entity/registry.hpp>
-#include <entt/signal/dispatcher.hpp>
+#include <entt/entt.hpp>
 
 // Using alias with good case
 namespace shiva::entt
