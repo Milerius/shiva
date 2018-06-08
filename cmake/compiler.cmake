@@ -7,10 +7,11 @@ set(CMAKE_C_STANDARD 11)
 # /DEBUG - Enable debug during linking
 # /Od - Disables optimization
 # /Ox - Full optimization
+# /Oy- do not suppress frame pointers (recommended for debugging)
 
 ##! Global Configuration
 if (UNIX)
-    set(STANDARD_UNIX_CXX_FLAGS "-Wall -Wextra -Wfatal-errors")
+    set(STANDARD_UNIX_CXX_FLAGS "-Wall -Wextra -Weffc++ -Wfatal-errors")
 elseif(MSVC)
     set(STANDARD_MSVC_CXX_FLAGS "/std:c++latest /W4 /permissive-")
     add_definitions(-DNOMINMAX)
@@ -22,7 +23,7 @@ macro(__internal_debug_unix_cxx_flags)
 endmacro()
 
 macro(__internal_debug_msvc_cxx_flags)
-    set(CMAKE_CXX_FLAGS_DEBUG "${STANDARD_MSVC_CXX_FLAGS} /Zi /FS /DEBUG /Od /MP /MDd")
+    set(CMAKE_CXX_FLAGS_DEBUG "${STANDARD_MSVC_CXX_FLAGS} /Zi /FS /DEBUG /Od /MP /MDd /Oy-")
 endmacro()
 
 macro(__internal_debug_cxx_flags)
