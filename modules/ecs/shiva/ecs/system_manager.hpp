@@ -14,6 +14,7 @@
 #include <shiva/ecs/using_alias_library.hpp>
 #include <shiva/ecs/system.hpp>
 #include <shiva/ecs/system_type.hpp>
+#include <shiva/event/fatal_error_occured.hpp>
 
 namespace shiva::ecs
 {
@@ -24,17 +25,24 @@ namespace shiva::ecs
         using system_array = eastl::vector<system_ptr, eastl::allocator_malloc>;
         using system_registry = eastl::array<system_array, system_type::size>;
     public:
+        //! Callbacks
+        void receive(const shiva::event::fatal_error_occured &evt)
+        {
+            std::cerr << evt.ec_.message() << std::endl;
+        }
+    public:
         explicit system_manager(dispatcher &dispatcher, entity_registry &registry) noexcept :
             dispatcher_(dispatcher),
             ett_registry_(registry)
         {
+            dispatcher_.sink<shiva::event::fatal_error_occured>().connect(this);
         }
 
         template <typename t_system>
         const t_system &get_system() const noexcept
         {
-            auto ret = get_system_<t_system>().or_else([](const std::error_code &ec) {
-                std::cerr << ec.message() << std::endl;
+            const auto ret = get_system_<t_system>().or_else([this](const std::error_code &ec) {
+                this->dispatcher_.trigger<shiva::event::fatal_error_occured>(ec);
             });
             return (*ret).get();
         }
@@ -43,9 +51,7 @@ namespace shiva::ecs
         t_system &get_system() noexcept
         {
             auto ret = get_system_<t_system>().or_else([this](const std::error_code &ec) {
-                //TODO: replace by proper error
-                //this->dispatcher_.trigger<shiva::evt::fatal_internal_error>(ec);
-                std::cerr << ec.message() << std::endl;
+                this->dispatcher_.trigger<shiva::event::fatal_error_occured>(ec);
             });
             return (*ret).get();
         }
