@@ -10,11 +10,13 @@
 #include <EASTL/vector.h>
 #include <EASTL/unique_ptr.h>
 #include <EASTL/array.h>
+#include <shiva/stacktrace/stacktrace.hpp>
 #include <shiva/error/expected.hpp>
 #include <shiva/ecs/using_alias_library.hpp>
 #include <shiva/ecs/system.hpp>
 #include <shiva/ecs/system_type.hpp>
 #include <shiva/event/fatal_error_occured.hpp>
+#include <shiva/event/quit_game.hpp>
 
 namespace shiva::ecs
 {
@@ -26,16 +28,15 @@ namespace shiva::ecs
         using system_registry = eastl::array<system_array, system_type::size>;
     public:
         //! Callbacks
-        void receive(const shiva::event::fatal_error_occured &evt)
+        void receive(const shiva::event::quit_game &evt)
         {
-            std::cerr << evt.ec_.message() << std::endl;
         }
     public:
-        explicit system_manager(dispatcher &dispatcher, entity_registry &registry) noexcept :
+        explicit system_manager(entt::dispatcher &dispatcher, entt::entity_registry &registry) noexcept :
             dispatcher_(dispatcher),
             ett_registry_(registry)
         {
-            dispatcher_.sink<shiva::event::fatal_error_occured>().connect(this);
+            dispatcher_.sink<shiva::event::quit_game>().connect(this);
         }
 
         template <typename t_system>
@@ -152,7 +153,7 @@ namespace shiva::ecs
 
     private:
         system_registry systems_{{}};
-        dispatcher &dispatcher_;
-        entity_registry &ett_registry_;
+        entt::dispatcher &dispatcher_;
+        entt::entity_registry &ett_registry_;
     };
 }

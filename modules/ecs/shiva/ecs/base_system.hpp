@@ -12,7 +12,7 @@ namespace shiva::ecs
     {
     public:
         //! Constructors / Destructor
-        explicit base_system(dispatcher &dispatcher, entity_registry& entity_registry) noexcept :
+        explicit base_system(entt::dispatcher &dispatcher, entt::entity_registry& entity_registry) noexcept :
             dispatcher_(dispatcher),
             entity_registry_(entity_registry)
         {
@@ -58,8 +58,8 @@ namespace shiva::ecs
         }
 
     private:
-        [[maybe_unused]] dispatcher &dispatcher_;
-        [[maybe_unused]] entity_registry &entity_registry_;
+        [[maybe_unused]] entt::dispatcher &dispatcher_;
+        [[maybe_unused]] entt::entity_registry &entity_registry_;
         bool marked_{false};
         bool enabled_{false};
     };
