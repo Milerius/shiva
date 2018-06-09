@@ -50,17 +50,16 @@ public:
 
     void update() noexcept override
     {
-       std::cout << "YOY" << std::endl;
+
     }
-private:
 };
 
 class another_test_system : public shiva::ecs::system<another_test_system, shiva::ecs::system_pre_update>
 {
 public:
     reflect_class(another_test_system);
-public:
-    another_test_system(shiva::entt::dispatcher &dispatcher, shiva::entt::entity_registry& registry) :
+
+	another_test_system(shiva::entt::dispatcher &dispatcher, shiva::entt::entity_registry& registry) :
         system(dispatcher, registry)
     {
 
@@ -70,7 +69,6 @@ public:
     {
         std::cout << "YOY" << std::endl;
     }
-private:
 };
 
 TEST(ecs_testing, constructor)

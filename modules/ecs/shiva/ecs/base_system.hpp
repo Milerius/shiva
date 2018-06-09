@@ -37,7 +37,7 @@ namespace shiva::ecs
             marked_ = false;
         }
 
-        bool isMarked() const noexcept
+        bool is_marked() const noexcept
         {
             return marked_;
         }
@@ -52,7 +52,7 @@ namespace shiva::ecs
             enabled_ = false;
         }
 
-        bool isEnabled() const noexcept
+        bool is_enabled() const noexcept
         {
             return enabled_;
         }
