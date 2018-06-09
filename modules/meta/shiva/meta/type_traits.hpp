@@ -6,7 +6,7 @@
 
 #include <type_traits>
 
-namespace meta
+namespace shiva::meta
 {
     namespace details
     {

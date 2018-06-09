@@ -6,7 +6,7 @@
 
 #include <utility>
 
-namespace meta
+namespace shiva::meta
 {
 #ifdef _MSC_VER
     template <typename ...Funcs>

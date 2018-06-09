@@ -84,7 +84,7 @@ namespace shiva::refl
     static inline constexpr auto getMember(MapT &&map, KeyT &&k) noexcept
     {
         std::optional<MemberPtrT> result;
-        auto visitor = meta::makeVisitor([&result]([[maybe_unused]] auto &&k, MemberPtrT v) {
+        auto visitor = shiva::meta::makeVisitor([&result]([[maybe_unused]] auto &&k, MemberPtrT v) {
             result = v;
         }, []([[maybe_unused]] auto &&k, [[maybe_unused]] auto &&v) {
         });
