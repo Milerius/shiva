@@ -4,8 +4,6 @@
 
 #pragma once
 
-#include <range/v3/algorithm/find_if.hpp>
-#include <range/v3/algorithm/any_of.hpp>
 #include <EASTL/algorithm.h>
 #include <EASTL/utility.h>
 #include <EASTL/allocator_malloc.h>
