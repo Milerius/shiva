@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <string.h>
 #include <iostream>
 #include <fstream>
 #include <shiva/filesystem/filesystem.hpp>
@@ -17,10 +18,14 @@ namespace shiva::error
     public:
         void receive(const shiva::event::fatal_error_occured &evt)
         {
+            using namespace std::string_literals;
             entity_registry_.each([this](auto entity) {
                 this->entity_registry_.destroy(entity);
             });
             dispatcher_.trigger<shiva::event::quit_game>(evt.ec_.value());
+            std::cerr << shiva::bs::stacktrace() << std::endl;
+            shiva::bs::safe_dump_to(backtrace_path_.string().c_str());
+            throw std::logic_error("fatal_error_occured: "s + evt.ec_.message());
         }
 
         general_handler(entt::dispatcher &dispatcher, entt::entity_registry &entity_registry) noexcept :
@@ -28,21 +33,18 @@ namespace shiva::error
             entity_registry_(entity_registry)
         {
             this->dispatcher_.sink<shiva::event::fatal_error_occured>().connect(this);
-            if (shiva::fs::exists("stacktrace/backtrace.dump")) {
-                // there is a backtrace
-                std::ifstream ifs("stacktrace/backtrace.dump");
-
+            if (shiva::fs::exists(backtrace_path_)) {
+                std::ifstream ifs(backtrace_path_.string());
                 shiva::bs::stacktrace st = shiva::bs::stacktrace::from_dump(ifs);
                 std::cerr << "Previous run crashed:\n" << st << std::endl;
-
-                // cleaning up
                 ifs.close();
-                shiva::fs::remove("stacktrace/backtrace.dump");
+                shiva::fs::remove(backtrace_path_);
             }
         }
 
     private:
         entt::dispatcher &dispatcher_;
         entt::entity_registry &entity_registry_;
+        shiva::fs::path backtrace_path_{shiva::fs::temp_directory_path() /= "backtrace.dump"};
     };
 }

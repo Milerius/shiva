@@ -28,7 +28,7 @@ namespace shiva::ecs
         using system_registry = eastl::array<system_array, system_type::size>;
     public:
         //! Callbacks
-        void receive(const shiva::event::quit_game &evt)
+        void receive([[maybe_unused]] const shiva::event::quit_game &evt)
         {
         }
     public:
@@ -39,8 +39,13 @@ namespace shiva::ecs
             dispatcher_.sink<shiva::event::quit_game>().connect(this);
         }
 
+        size_t update() noexcept
+        {
+            return 0;
+        }
+
         template <typename t_system>
-        const t_system &get_system() const noexcept
+        const t_system &get_system() const
         {
             const auto ret = get_system_<t_system>().or_else([this](const std::error_code &ec) {
                 this->dispatcher_.trigger<shiva::event::fatal_error_occured>(ec);
@@ -49,12 +54,24 @@ namespace shiva::ecs
         }
 
         template <typename t_system>
-        t_system &get_system() noexcept
+        t_system &get_system()
         {
             auto ret = get_system_<t_system>().or_else([this](const std::error_code &ec) {
                 this->dispatcher_.trigger<shiva::event::fatal_error_occured>(ec);
             });
             return (*ret).get();
+        }
+
+        template <typename ...systems>
+        std::tuple<std::add_lvalue_reference_t<systems>...> get_systems()
+        {
+            return {get_system<systems>()...};
+        }
+
+        template <typename ...systems>
+        std::tuple<std::add_lvalue_reference_t<std::add_const_t<systems>>...> get_systems() const
+        {
+            return {get_system<systems>()...};
         }
 
         template <typename t_system>
