@@ -97,8 +97,16 @@ TEST_F(fixture_system, add_simple_system)
 TEST_F(fixture_system, get_simple_system)
 {
     system_manager_.create_system<test_system>();
-    [[maybe_unused]] const auto& c_sys = system_manager_.get_system<test_system>();
-    [[maybe_unused]] auto& sys = system_manager_.get_system<test_system>();
+    ASSERT_NO_THROW(system_manager_.get_system<test_system>());
+    [[maybe_unused]] const auto& sys = system_manager_.get_system<test_system>();
 
-    system_manager_.get_system<another_test_system>();
+    ASSERT_ANY_THROW(system_manager_.get_system<another_test_system>()) ;
+}
+
+TEST_F(fixture_system, get_multiple_systems)
+{
+    system_manager_.create_system<test_system>();
+    system_manager_.create_system<another_test_system>();
+    [[maybe_unused]] const auto& [test_sys, another_test_sys] = system_manager_.get_systems<test_system, another_test_system>();
+    [[maybe_unused]] auto [test_sys_nc, another_test_sys_nc] = system_manager_.get_systems<test_system, another_test_system>();
 }
