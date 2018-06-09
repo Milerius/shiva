@@ -37,36 +37,32 @@ namespace shiva::ecs
         {
             dispatcher_.sink<shiva::event::quit_game>().connect(this);
         }
-	    
+
         size_t update() noexcept
         {
-			if (!nb_systems())
-				return 0u;
-			size_t nb_systems_updated = 0u;
+            if (!nb_systems())
+                return 0u;
+            size_t nb_systems_updated = 0u;
 
-			auto update_system_functor = [&nb_systems_updated](auto&& sys)
-			{
-				if (sys->is_enabled())
-				{
-					sys->update();
-					nb_systems_updated++;
-				}
-			};
+            auto update_system_functor = [&nb_systems_updated](auto &&sys) {
+                if (sys->is_enabled()) {
+                    sys->update();
+                    nb_systems_updated++;
+                }
+            };
 
-			shiva::ranges::for_each(systems_, [this, update_system_functor](auto &&vec)
-			{
-				system_type current_system_type = vec.front()->get_system_type_RTTI();
-				shiva::ranges::for_each(this->systems_[current_system_type], [current_system_type, update_system_functor](auto&& sys)
-				{
-                    if (current_system_type != system_type::logic_update)
-					    update_system_functor(eastl::forward<decltype(sys)>(sys));
-				});
-			});
+            shiva::ranges::for_each(systems_, [this, update_system_functor](auto &&vec) {
+                system_type current_system_type = vec.front()->get_system_type_RTTI();
+                shiva::ranges::for_each(this->systems_[current_system_type],
+                                        [current_system_type, update_system_functor](auto &&sys) {
+                                            if (current_system_type != system_type::logic_update)
+                                                update_system_functor(eastl::forward<decltype(sys)>(sys));
+                                        });
+            });
 
-			if (need_to_sweep_systems_)
-			{
-				sweep_systems_();
-			}
+            if (need_to_sweep_systems_) {
+                sweep_systems_();
+            }
 
             return nb_systems_updated;
         }
@@ -118,63 +114,61 @@ namespace shiva::ecs
             return (has_system<Systems>() && ...);
         }
 
-		template<typename TSystem>
-		bool mark_system() noexcept
-		{
-			static_assert(details::is_system_v<TSystem>,
-				"The system type given as template parameter doesn't seems to be valid");
-			if (has_system<TSystem>()) {
-				get_system<TSystem>().mark();
-				need_to_sweep_systems_ = true;
-				return true;
-			}
-			need_to_sweep_systems_ = false;
-			return false;
-		}
-
-		template<typename ... Systems>
-		bool mark_systems() noexcept
+        template <typename TSystem>
+        bool mark_system() noexcept
         {
-			return (mark_system<Systems>() && ...);
+            static_assert(details::is_system_v<TSystem>,
+                          "The system type given as template parameter doesn't seems to be valid");
+            if (has_system<TSystem>()) {
+                get_system<TSystem>().mark();
+                need_to_sweep_systems_ = true;
+                return true;
+            }
+            need_to_sweep_systems_ = false;
+            return false;
         }
 
-		template<typename TSystem>
-		bool enable_system() noexcept
+        template <typename ... Systems>
+        bool mark_systems() noexcept
         {
-			static_assert(details::is_system_v<TSystem>,
-				"The system type given as template parameter doesn't seems to be valid");
-			if (has_system<TSystem>())
-			{
-				get_system<TSystem>().enable();
-				return true;
-			}
-			return false;
+            return (mark_system<Systems>() && ...);
         }
 
-		template<typename ... Systems>
-		bool enable_systems() noexcept
+        template <typename TSystem>
+        bool enable_system() noexcept
         {
-			return (enable_system<Systems>() && ...);
+            static_assert(details::is_system_v<TSystem>,
+                          "The system type given as template parameter doesn't seems to be valid");
+            if (has_system<TSystem>()) {
+                get_system<TSystem>().enable();
+                return true;
+            }
+            return false;
         }
 
-		template<typename TSystem>
-		bool disable_system() noexcept
-		{
-			static_assert(details::is_system_v<TSystem>,
-				"The system type given as template parameter doesn't seems to be valid");
-			if (has_system<TSystem>())
-			{
-				get_system<TSystem>().disable();
-				return true;
-			}
-			return false;
-		}
+        template <typename ... Systems>
+        bool enable_systems() noexcept
+        {
+            return (enable_system<Systems>() && ...);
+        }
 
-		template<typename ... Systems>
-		bool disable_systems() noexcept
-		{
-			return (disable_system<Systems>() && ...);
-		}
+        template <typename TSystem>
+        bool disable_system() noexcept
+        {
+            static_assert(details::is_system_v<TSystem>,
+                          "The system type given as template parameter doesn't seems to be valid");
+            if (has_system<TSystem>()) {
+                get_system<TSystem>().disable();
+                return true;
+            }
+            return false;
+        }
+
+        template <typename ... Systems>
+        bool disable_systems() noexcept
+        {
+            return (disable_system<Systems>() && ...);
+        }
 
         template <typename TSystem, typename ... SystemArgs>
         TSystem &create_system(SystemArgs &&...args)
@@ -260,21 +254,18 @@ namespace shiva::ecs
             return tl::make_unexpected(std::make_error_code(std::errc::result_out_of_range));
         };
 
-		void sweep_systems_() noexcept
-		{
-			shiva::ranges::for_each(systems_, [](auto &&vec_system)
-			{
-				vec_system.erase(eastl::remove_if(eastl::begin(vec_system), eastl::end(vec_system), [](auto &&sys)
-				{
-					return sys->is_marked();
-				}));
-			});
-		}
-
+        void sweep_systems_() noexcept
+        {
+            shiva::ranges::for_each(systems_, [](auto &&vec_system) {
+                vec_system.erase(eastl::remove_if(eastl::begin(vec_system), eastl::end(vec_system), [](auto &&sys) {
+                    return sys->is_marked();
+                }));
+            });
+        }
 
         system_registry systems_{{}};
         entt::dispatcher &dispatcher_;
         entt::entity_registry &ett_registry_;
-		bool need_to_sweep_systems_{false};
+        bool need_to_sweep_systems_{false};
     };
 }
