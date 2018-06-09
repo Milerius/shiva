@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include <range/v3/detail/config.hpp>
+#include <shiva/range/nanorange.hpp>
 
 namespace shiva
 {
-    namespace ranges = ::ranges::v3;
+    namespace ranges = ::nano::ranges;
 }
