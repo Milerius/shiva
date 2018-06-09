@@ -11,7 +11,7 @@ set(CMAKE_C_STANDARD 11)
 
 ##! Global Configuration
 if (UNIX)
-    set(STANDARD_UNIX_CXX_FLAGS "-Wall -Wextra -Weffc++ -Wfatal-errors")
+    set(STANDARD_UNIX_CXX_FLAGS "-Wall -Wextra -Wfatal-errors")
 elseif(MSVC)
     set(STANDARD_MSVC_CXX_FLAGS "/std:c++latest /W4 /permissive-")
     add_definitions(-DNOMINMAX)

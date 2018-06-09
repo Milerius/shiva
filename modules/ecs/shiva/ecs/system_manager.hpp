@@ -44,7 +44,7 @@ namespace shiva::ecs
 				return 0u;
 			size_t nb_systems_updated = 0u;
 
-			auto update_system_functor = [&nb_systems_updated](system_type sys_type, auto&& sys)
+			auto update_system_functor = [&nb_systems_updated](auto&& sys)
 			{
 				if (sys->is_enabled())
 				{
@@ -58,7 +58,8 @@ namespace shiva::ecs
 				system_type current_system_type = vec.front()->get_system_type_RTTI();
 				shiva::ranges::for_each(this->systems_[current_system_type], [current_system_type, update_system_functor](auto&& sys)
 				{
-					update_system_functor(current_system_type, eastl::forward<decltype(sys)>(sys));
+                    if (current_system_type != system_type::logic_update)
+					    update_system_functor(eastl::forward<decltype(sys)>(sys));
 				});
 			});
 
