@@ -6,7 +6,7 @@
 
 #include <tuple>
 
-namespace meta
+namespace shiva::meta
 {
     namespace details
     {

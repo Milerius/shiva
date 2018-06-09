@@ -6,6 +6,7 @@
 #include <entt/signal/dispatcher.hpp>
 #include <shiva/reflection/reflection.hpp>
 #include <shiva/meta/list.hpp>
+#include <shiva/meta/tuple_for_each.hpp>
 #include <shiva/ecs/ecs.hpp>
 #include <shiva/ecs/system_manager.hpp>
 #include <shiva/ecs/details/system_type_traits.hpp>
@@ -149,4 +150,48 @@ TEST_F(fixture_system, get_multiple_systems)
     system_manager_.create_system<another_test_system>();
     [[maybe_unused]] const auto& [test_sys, another_test_sys] = system_manager_.get_systems<test_system, another_test_system>();
     [[maybe_unused]] auto [test_sys_nc, another_test_sys_nc] = system_manager_.get_systems<test_system, another_test_system>();
+}
+
+TEST_F(fixture_system, enable_single_system)
+{
+	auto& system = system_manager_.create_system<test_system>();
+	system.disable();
+	ASSERT_FALSE(system.is_enabled());
+	system_manager_.enable_system<test_system>();
+	ASSERT_TRUE(system.is_enabled());
+}
+
+TEST_F(fixture_system, enable_multiple_systems)
+{
+	auto systems = system_manager_.load_systems<test_system, another_test_system>();
+	shiva::meta::tuple_for_each(systems, [](auto& sys) 
+	{ 
+		sys.disable();
+		ASSERT_FALSE(sys.is_enabled()); 
+	});
+	
+	bool res = this->system_manager_.enable_systems<test_system, another_test_system>();
+	ASSERT_TRUE(res);
+}
+
+TEST_F(fixture_system, disable_single_system)
+{
+	auto& system = system_manager_.create_system<test_system>();
+
+	ASSERT_TRUE(system.is_enabled());
+	ASSERT_TRUE(system_manager_.disable_system<test_system>());
+	ASSERT_FALSE(system.is_enabled());
+}
+
+TEST_F(fixture_system, disable_multiple_systems)
+{
+	auto systems = system_manager_.load_systems<test_system, another_test_system>();
+	
+	shiva::meta::tuple_for_each(systems, [](auto& sys)
+	{
+		ASSERT_TRUE(sys.is_enabled());
+	});
+
+	bool res = system_manager_.disable_systems<test_system, another_test_system>();
+	ASSERT_TRUE(res);
 }
