@@ -108,9 +108,16 @@ namespace shiva::ecs
 			return static_cast<TSystem &>(add_system_<TSystem>(eastl::move(sys)));
 		}
 
+		template<typename ...TSystems>
+		decltype(auto) load_systems()
+		{
+			(create_system<TSystems>(), ...);
+			return get_systems<TSystems ...>();
+		}
+
 		size_t nb_systems() const noexcept
 		{
-			return std::accumulate(eastl::begin(systems_), eastl::end(systems_), 0u,
+			return std::accumulate(eastl::begin(systems_), eastl::end(systems_), static_cast<size_t>(0u),
 			                       [](size_t accumulator, auto&& vec)
 			                       {
 				                       return accumulator + vec.size();

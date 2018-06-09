@@ -19,7 +19,7 @@ namespace shiva::error
         void receive(const shiva::event::fatal_error_occured &evt)
         {
             using namespace std::string_literals;
-            entity_registry_.each([this](auto entity) {
+            entity_registry_.each([this](const shiva::entt::entity_registry::entity_type entity) {
                 this->entity_registry_.destroy(entity);
             });
             dispatcher_.trigger<shiva::event::quit_game>(evt.ec_.value());
