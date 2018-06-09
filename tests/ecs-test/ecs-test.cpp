@@ -20,7 +20,7 @@ public:
 
     FakeSystem()
     {
-        using is_same_list = meta::list::Transform<shiva::ecs::details::valid_systems_list, is_same_system>;
+        using is_same_list = shiva::meta::list::Transform<shiva::ecs::details::valid_systems_list, is_same_system>;
         static_assert(shiva::ecs::details::is_valid_system_v(is_same_list{}));
     }
 };

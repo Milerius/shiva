@@ -7,7 +7,7 @@
 #include <type_traits>
 #include <cstddef>
 
-namespace meta
+namespace shiva::meta
 {
     template <typename ...Types>
     struct TypeList

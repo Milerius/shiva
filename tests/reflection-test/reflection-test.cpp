@@ -28,7 +28,7 @@ namespace
     public:
         static constexpr auto reflectedMembers() noexcept
         {
-            return meta::makeMap(
+            return shiva::meta::makeMap(
                 reflect_member(&i_like_refl::_i),
                 reflect_member(&i_like_refl::_s),
                 reflect_member(&i_like_refl::_d)
@@ -50,7 +50,7 @@ namespace
 
         static constexpr auto reflectedFunctions() noexcept
         {
-            return meta::makeMap(reflect_function(&i_have_refl_member_functions::func));
+            return shiva::meta::makeMap(reflect_function(&i_have_refl_member_functions::func));
         }
     };
 }
@@ -83,7 +83,7 @@ TEST(reflection, members)
 
     i_like_refl ilr{1, "salut", 3.2};
 
-    auto visitor = meta::makeVisitor([&i, &ilr](auto &&, int i_like_refl::* iPtr) {
+    auto visitor = shiva::meta::makeVisitor([&i, &ilr](auto &&, int i_like_refl::* iPtr) {
         i = ilr.*iPtr;
     }, [&s, &ilr](auto &&, std::string i_like_refl::* sPtr) {
         s = ilr.*sPtr;
@@ -91,7 +91,7 @@ TEST(reflection, members)
         d = ilr.*dPtr;
     });
 
-    meta::for_each(i_like_refl::reflectedMembers(), visitor);
+    shiva::meta::for_each(i_like_refl::reflectedMembers(), visitor);
     ASSERT_EQ(i, 1);
     ASSERT_EQ(s, "salut");
     ASSERT_EQ(d, 3.2);
