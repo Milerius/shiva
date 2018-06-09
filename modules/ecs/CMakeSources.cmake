@@ -8,13 +8,19 @@ set(MODULE_PUBLIC_HEADERS
         "${MODULE_PATH}/system_manager.hpp"
         "${MODULE_PATH}/ecs.hpp"
         "${MODULE_PATH}/base_system.hpp"
-
         )
 
 set(MODULE_PRIVATE_HEADERS
         "${MODULE_PATH}/details/system_type_traits.hpp"
-        "${MODULE_PATH}/details/utils.hpp")
+        "${MODULE_PATH}/details/utils.hpp"
+		)
 
 set(MODULE_SOURCES
-        ${MODULE_PUBLIC_HEADERS}
-        ${MODULE_PRIVATE_HEADERS})
+        "${MODULE_PUBLIC_HEADERS}"
+        "${MODULE_PRIVATE_HEADERS}"
+		)
+		
+if (WIN32)
+	set(SHIVA_WIN32_ECS_PUBLIC_MODULE_SOURCES "${MODULE_PUBLIC_HEADERS}" CACHE INTERNAL "" FORCE)
+	set(SHIVA_WIN32_ECS_PRIVATE_MODULE_SOURCES "${MODULE_PRIVATE_HEADERS}" CACHE INTERNAL "" FORCE)
+endif()
