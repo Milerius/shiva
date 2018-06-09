@@ -5,13 +5,11 @@
 #pragma once
 
 #include <EASTL/algorithm.h>
-#include <EASTL/utility.h>
 #include <EASTL/allocator_malloc.h>
 #include <EASTL/vector.h>
 #include <EASTL/unique_ptr.h>
 #include <EASTL/array.h>
 #include <shiva/range/range.hpp>
-#include <shiva/stacktrace/stacktrace.hpp>
 #include <shiva/error/expected.hpp>
 #include <shiva/ecs/using_alias_library.hpp>
 #include <shiva/ecs/system.hpp>
@@ -39,10 +37,37 @@ namespace shiva::ecs
         {
             dispatcher_.sink<shiva::event::quit_game>().connect(this);
         }
-
+	    
         size_t update() noexcept
         {
-            return 0;
+			if (!nb_systems())
+				return 0u;
+			size_t nb_systems_updated = 0u;
+
+			auto update_system_functor = [&nb_systems_updated](system_type sys_type, auto&& sys)
+			{
+				if (sys->is_enabled())
+				{
+					sys->update();
+					nb_systems_updated++;
+				}
+			};
+
+			shiva::ranges::for_each(systems_, [this, update_system_functor](auto &&vec)
+			{
+				system_type current_system_type = vec.front()->get_system_type_RTTI();
+				shiva::ranges::for_each(this->systems_[current_system_type], [current_system_type, update_system_functor](auto&& sys)
+				{
+					update_system_functor(current_system_type, eastl::forward<decltype(sys)>(sys));
+				});
+			});
+
+			if (need_to_sweep_systems_)
+			{
+				sweep_systems_();
+			}
+
+            return nb_systems_updated;
         }
 
         template <typename TSystem>
@@ -91,6 +116,64 @@ namespace shiva::ecs
         {
             return (has_system<Systems>() && ...);
         }
+
+		template<typename TSystem>
+		bool mark_system() noexcept
+		{
+			static_assert(details::is_system_v<TSystem>,
+				"The system type given as template parameter doesn't seems to be valid");
+			if (has_system<TSystem>()) {
+				get_system<TSystem>().mark();
+				need_to_sweep_systems_ = true;
+				return true;
+			}
+			need_to_sweep_systems_ = false;
+			return false;
+		}
+
+		template<typename ... Systems>
+		bool mark_systems() noexcept
+        {
+			return (mark_system<Systems>() && ...);
+        }
+
+		template<typename TSystem>
+		bool enable_system() noexcept
+        {
+			static_assert(details::is_system_v<TSystem>,
+				"The system type given as template parameter doesn't seems to be valid");
+			if (has_system<TSystem>())
+			{
+				get_system<TSystem>().enable();
+				return true;
+			}
+			return false;
+        }
+
+		template<typename ... Systems>
+		bool enable_systems() noexcept
+        {
+			return (enable_system<Systems>() && ...);
+        }
+
+		template<typename TSystem>
+		bool disable_system() noexcept
+		{
+			static_assert(details::is_system_v<TSystem>,
+				"The system type given as template parameter doesn't seems to be valid");
+			if (has_system<TSystem>())
+			{
+				get_system<TSystem>().disable();
+				return true;
+			}
+			return false;
+		}
+
+		template<typename ... Systems>
+		bool disable_systems() noexcept
+		{
+			return (disable_system<Systems>() && ...);
+		}
 
         template <typename TSystem, typename ... SystemArgs>
         TSystem &create_system(SystemArgs &&...args)
@@ -176,8 +259,21 @@ namespace shiva::ecs
             return tl::make_unexpected(std::make_error_code(std::errc::result_out_of_range));
         };
 
+		void sweep_systems_() noexcept
+		{
+			shiva::ranges::for_each(systems_, [](auto &&vec_system)
+			{
+				vec_system.erase(eastl::remove_if(eastl::begin(vec_system), eastl::end(vec_system), [](auto &&sys)
+				{
+					return sys->is_marked();
+				}));
+			});
+		}
+
+
         system_registry systems_{{}};
         entt::dispatcher &dispatcher_;
         entt::entity_registry &ett_registry_;
+		bool need_to_sweep_systems_{false};
     };
 }

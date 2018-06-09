@@ -43,5 +43,10 @@ namespace shiva::ecs
 		{
 			return SystemDerived::class_name();
 		}
+
+		system_type get_system_type_RTTI() const noexcept final
+		{
+			return system::get_system_type();
+		}
 	};
 }
