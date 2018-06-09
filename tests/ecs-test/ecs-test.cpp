@@ -41,8 +41,8 @@ class test_system : public shiva::ecs::system<test_system, shiva::ecs::system_po
 {
 public:
     reflect_class(test_system);
-public:
-   test_system(shiva::entt::dispatcher &dispatcher, shiva::entt::entity_registry& registry) :
+
+	test_system(shiva::entt::dispatcher &dispatcher, shiva::entt::entity_registry& registry) :
    system(dispatcher, registry)
    {
 
@@ -67,8 +67,24 @@ public:
 
     void update() noexcept override
     {
-        std::cout << "YOY" << std::endl;
     }
+};
+
+
+class third_test_system : public shiva::ecs::system<third_test_system, shiva::ecs::system_logic_update>
+{
+public:
+	reflect_class(third_test_system);
+
+	third_test_system(shiva::entt::dispatcher &dispatcher, shiva::entt::entity_registry& registry) :
+		system(dispatcher, registry)
+	{
+
+	}
+
+	void update() noexcept override
+	{
+	}
 };
 
 TEST(ecs_testing, constructor)
@@ -90,6 +106,32 @@ TEST_F(fixture_system, add_simple_system)
     ASSERT_EQ(system_manager_.nb_systems(), 1u);
     ASSERT_TRUE(system_manager_.has_system<test_system>());
     system.update();
+}
+
+TEST_F(fixture_system, load_multiple_systems)
+{
+	[[maybe_unused]] auto[test_sys_nc, another_test_sys_nc] = system_manager_.load_systems<test_system, another_test_system>();
+	ASSERT_EQ(system_manager_.nb_systems(), 2u);
+	bool result = system_manager_.has_systems<test_system, another_test_system>();
+	ASSERT_TRUE(result);
+}
+
+TEST_F(fixture_system, has_system)
+{
+	auto system = system_manager_.create_system<test_system>();
+	ASSERT_TRUE(system_manager_.has_system<test_system>());
+	ASSERT_FALSE(system_manager_.has_system<another_test_system>());
+}
+
+TEST_F(fixture_system, has_systems)
+{
+	system_manager_.load_systems<test_system, another_test_system>();
+	ASSERT_TRUE(system_manager_.has_systems<test_system>());
+	ASSERT_FALSE(system_manager_.has_systems<third_test_system>());
+	bool result = system_manager_.has_systems<test_system, another_test_system>();
+	ASSERT_TRUE(result);
+	result = system_manager_.has_systems<test_system, another_test_system, third_test_system>();
+	ASSERT_FALSE(result);
 }
 
 TEST_F(fixture_system, get_simple_system)
