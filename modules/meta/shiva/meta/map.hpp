@@ -7,7 +7,7 @@
 #include <tuple>
 #include <shiva/meta/type_traits.hpp>
 
-namespace meta
+namespace shiva::meta
 {
     template <typename ...Ts>
     using Map = std::tuple<Ts...>;
@@ -26,7 +26,7 @@ namespace meta
             using T1 = std::decay_t<decltype(std::get<I>(map))>;
             using T2 = std::decay_t<decltype(needle)>;
 
-            if constexpr (meta::is_eq_comparable_with_v<T1, T2>) {
+            if constexpr (shiva::meta::is_eq_comparable_with_v<T1, T2>) {
                 if (std::get<I>(map) == needle) {
                     f(std::get<I>(map), std::get<I2>(map));
                     return true;
