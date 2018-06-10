@@ -32,7 +32,7 @@ install:
           cd C:\tools\vcpkg
           git --no-pager log --decorate=short --pretty=oneline -n10
           git pull
-          vcpkg install boost-filesystem:x64-Windows boost-stacktrace:x64-Windows gtest:x64-Windows entt:x64-Windows eastl:x64-Windows
+          vcpkg install boost-filesystem:x64-Windows boost-stacktrace:x64-Windows gtest:x64-Windows entt:x64-Windows eastl:x64-Windows boost-dll:x64-Windows
           cd $env:APPVEYOR_BUILD_FOLDER
         } else {
           pip install --user cpp-coveralls
@@ -42,7 +42,7 @@ install:
           (sudo apt-get update -y) -and (sudo apt-get install g++-7 -y) -and (sudo apt-get install make -y)
           sudo apt-get install lcov -y
           sh bootstrap-vcpkg.sh
-          ./vcpkg install gtest entt eastl boost-stacktrace boost-filesystem
+          ./vcpkg install gtest entt eastl boost-stacktrace boost-filesystem boost-dll
           cd /home/appveyor/projects/shiva
         }
 
