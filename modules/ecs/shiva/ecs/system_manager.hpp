@@ -256,7 +256,7 @@ namespace shiva::ecs
 
         void sweep_systems_() noexcept
         {
-            shiva::ranges::for_each(systems_, [](auto &&vec_system) {
+            shiva::ranges::for_each(systems_, [](auto &&vec_system) -> void {
                 vec_system.erase(eastl::remove_if(eastl::begin(vec_system), eastl::end(vec_system), [](auto &&sys) {
                     return sys->is_marked();
                 }));

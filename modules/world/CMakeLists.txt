@@ -1,4 +1,5 @@
 include(CMakeSources.cmake)
 set(MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 CREATE_MODULE(shiva::world "${MODULE_SOURCES}" ${MODULE_PATH})
-target_link_libraries(shiva-world INTERFACE shiva::ecs)
+target_link_libraries(world INTERFACE shiva::ecs)
+AUTO_TARGETS_MODULE_INSTALL(world)
