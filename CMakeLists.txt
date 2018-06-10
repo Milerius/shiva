@@ -49,6 +49,7 @@ target_link_libraries(shiva INTERFACE
         shiva::stacktrace
         shiva::entt
         shiva::filesystem
+        shiva::dll
         shiva::event
         shiva::range
         shiva::error
@@ -100,4 +101,5 @@ if (NOT USE_CLION_AS_IDE)
             "${PROJECT_BINARY_DIR}/shiva-config.cmake"
             "${PROJECT_BINARY_DIR}/shiva-version-config.cmake"
             DESTINATION lib/cmake/shiva)
+
 endif ()

@@ -16,6 +16,7 @@
 #include <shiva/ecs/system_type.hpp>
 #include <shiva/event/fatal_error_occured.hpp>
 #include <shiva/event/quit_game.hpp>
+#include <shiva/dll/plugin_registry.hpp>
 
 namespace shiva::ecs
 {
@@ -25,17 +26,27 @@ namespace shiva::ecs
         using system_ptr = eastl::unique_ptr<base_system>;
         using system_array = eastl::vector<system_ptr, eastl::allocator_malloc>;
         using system_registry = eastl::array<system_array, size>;
+        typedef system_ptr (pluginapi_create_t)(shiva::entt::dispatcher &, shiva::entt::entity_registry &);
 
         //! Callbacks
         void receive([[maybe_unused]] const shiva::event::quit_game &evt)
         {
         }
 
-        explicit system_manager(entt::dispatcher &dispatcher, entt::entity_registry &registry) noexcept :
+        explicit system_manager(entt::dispatcher &dispatcher,
+                                entt::entity_registry &registry,
+                                shiva::fs::path plugin_directory = fs::current_path() /= "systems") noexcept :
             dispatcher_(dispatcher),
-            ett_registry_(registry)
+            ett_registry_(registry),
+            plugins_registry_{eastl::move(plugin_directory)}
         {
             dispatcher_.sink<shiva::event::quit_game>().connect(this);
+
+            auto functor = [this](boost::function<pluginapi_create_t> &dlls) {
+                dlls(this->dispatcher_, this->ett_registry_);
+            };
+
+            plugins_registry_.apply_symbols(functor);
         }
 
         size_t update() noexcept
@@ -180,7 +191,7 @@ namespace shiva::ecs
                                                    eastl::forward<decltype(args)>(args)...);
             };
             system_ptr sys = creator(eastl::forward<SystemArgs>(args)...);
-            return static_cast<TSystem &>(add_system_<TSystem>(eastl::move(sys)));
+            return static_cast<TSystem &>(add_system_(eastl::move(sys), TSystem::get_system_type()));
         }
 
         template <typename ...TSystems>
@@ -204,10 +215,9 @@ namespace shiva::ecs
         }
 
     private:
-        template <typename TSystem>
-        base_system &add_system_(system_ptr &&system) noexcept
+        base_system &add_system_(system_ptr &&system, system_type sys_type) noexcept
         {
-            return *systems_[TSystem::get_system_type()].emplace_back(eastl::move(system));
+            return *systems_[sys_type].emplace_back(eastl::move(system));
         }
 
         template <typename TSystem>
@@ -266,6 +276,7 @@ namespace shiva::ecs
         system_registry systems_{{}};
         entt::dispatcher &dispatcher_;
         entt::entity_registry &ett_registry_;
+        shiva::helpers::plugins_registry<system_ptr, pluginapi_create_t> plugins_registry_;
         bool need_to_sweep_systems_{false};
     };
 }
