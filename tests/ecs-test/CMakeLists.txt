@@ -1,6 +1,7 @@
 macro(generate_local_plugin SOURCES EXECUTABLE)
     add_library(${EXECUTABLE} SHARED "${SOURCES}")
     target_link_libraries(${EXECUTABLE} shiva::world)
+    set_property(TARGET ${EXECUTABLE} PROPERTY POSITION_INDEPENDENT_CODE ON)
     set_target_properties(${EXECUTABLE}
             PROPERTIES
             ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/systems"
