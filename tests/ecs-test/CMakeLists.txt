@@ -1,3 +1,4 @@
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 macro(generate_local_plugin SOURCES EXECUTABLE)
     add_library(${EXECUTABLE} SHARED "${SOURCES}")
     target_link_libraries(${EXECUTABLE} shiva::world)
