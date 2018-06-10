@@ -1,6 +1,6 @@
 ### Sources for the pp module
 
-set(MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/shiva/pp)
+set(MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/shiva/pp)
 set(MODULE_PUBLIC_HEADERS
         ${MODULE_PATH}/pp_paste.hpp
         ${MODULE_PATH}/pp_stringify.hpp
