@@ -56,9 +56,20 @@ namespace shiva::ecs
 			return enabled_;
 		}
 
+		void im_a_plugin() noexcept
+		{
+			is_plugin = true;
+		}
+
+		bool is_a_plugin() const noexcept
+        {
+            return is_plugin;
+        }
+
 	private:
 		[[maybe_unused]] entt::dispatcher& dispatcher_;
 		[[maybe_unused]] entt::entity_registry& entity_registry_;
+		bool is_plugin{false};
 		bool marked_{false};
 		bool enabled_{true};
 	};
