@@ -38,7 +38,7 @@ protected:
     }
 };
 
-class test_system : public shiva::ecs::system<test_system, shiva::ecs::system_post_update>
+class test_system : public shiva::ecs::post_update_system<test_system>
 {
 public:
     reflect_class(test_system);
@@ -55,7 +55,7 @@ public:
     }
 };
 
-class another_test_system : public shiva::ecs::system<another_test_system, shiva::ecs::system_pre_update>
+class another_test_system : public shiva::ecs::pre_update_system<another_test_system>
 {
 public:
     reflect_class(another_test_system);
@@ -72,7 +72,7 @@ public:
 };
 
 
-class third_test_system : public shiva::ecs::system<third_test_system, shiva::ecs::system_logic_update>
+class third_test_system : public shiva::ecs::logic_update_system<third_test_system>
 {
 public:
 	reflect_class(third_test_system);
