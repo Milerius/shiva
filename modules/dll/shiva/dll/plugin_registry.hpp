@@ -74,7 +74,7 @@ namespace shiva::helpers
                         std::cerr << "plugins already register" << std::endl;
                     }
                 } else {
-                    std::cout << "no creator func : create_plugin()" << std::endl;
+                    std::cerr << "no creator func : create_plugin()" << std::endl;
                 }
             }
         }
