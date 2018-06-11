@@ -10,6 +10,7 @@
 #include <boost/function.hpp>
 #include <boost/dll.hpp>
 #include <shiva/filesystem/filesystem.hpp>
+#include <shiva/event/destroy_plugins.hpp>
 
 namespace shiva::helpers
 {
@@ -37,6 +38,7 @@ namespace shiva::helpers
         using symbols_container = std::vector<boost::function<CreatorSignature>>;
 
     private:
+        shiva::entt::dispatcher &dispatcher_;
         plugin_t plugins_{};
         symbols_container symbols;
         shiva::fs::path plugins_directory_;
@@ -80,10 +82,16 @@ namespace shiva::helpers
         }
 
     public:
-        explicit plugins_registry(shiva::fs::path &&plugins_directory) noexcept :
+        explicit plugins_registry(shiva::fs::path &&plugins_directory, shiva::entt::dispatcher &dispatcher) noexcept :
+            dispatcher_(dispatcher),
             plugins_directory_{plugins_directory}
         {
             load_all_plugins();
+        }
+
+        ~plugins_registry() noexcept
+        {
+            dispatcher_.trigger<shiva::event::destroy_plugins>();
         }
 
         size_t nb_plugins() const noexcept

@@ -17,6 +17,7 @@
 #include <shiva/event/fatal_error_occured.hpp>
 #include <shiva/event/quit_game.hpp>
 #include <shiva/dll/plugin_registry.hpp>
+#include <shiva/event/destroy_plugins.hpp>
 
 namespace shiva::ecs
 {
@@ -31,6 +32,22 @@ namespace shiva::ecs
         //! Callbacks
         void receive([[maybe_unused]] const shiva::event::quit_game &evt)
         {
+            shiva::ranges::for_each(systems_, [](auto &&vec) {
+                shiva::ranges::for_each(vec, [](auto &&sys) {
+                    sys->disable();
+                });
+            });
+        }
+
+        void receive([[maybe_unused]] const shiva::event::destroy_plugins &evt) noexcept
+        {
+            for (auto &&vec : systems_) {
+                if (!vec.empty()) {
+                    vec.erase(eastl::remove_if(eastl::begin(vec), eastl::end(vec), [](auto &&sys) {
+                        return sys->is_a_plugin();
+                    }));
+                }
+            }
         }
 
         explicit system_manager(entt::dispatcher &dispatcher,
@@ -38,12 +55,13 @@ namespace shiva::ecs
                                 shiva::fs::path plugin_directory = fs::current_path() /= "systems") noexcept :
             dispatcher_(dispatcher),
             ett_registry_(registry),
-            plugins_registry_{eastl::move(plugin_directory)}
+            plugins_registry_{eastl::move(plugin_directory), dispatcher}
         {
             dispatcher_.sink<shiva::event::quit_game>().connect(this);
-
+            dispatcher_.sink<shiva::event::destroy_plugins>().connect(this);
             auto functor = [this](boost::function<pluginapi_create_t> &dlls) {
-                dlls(this->dispatcher_, this->ett_registry_);
+                system_ptr ptr = dlls(this->dispatcher_, this->ett_registry_);
+                add_system_(std::move(ptr), ptr->get_system_type_RTTI()).im_a_plugin();
             };
 
             plugins_registry_.apply_symbols(functor);
