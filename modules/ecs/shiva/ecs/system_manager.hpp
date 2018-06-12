@@ -4,10 +4,10 @@
 
 #pragma once
 
+#include <memory>
 #include <EASTL/algorithm.h>
 #include <EASTL/allocator_malloc.h>
 #include <EASTL/vector.h>
-#include <EASTL/unique_ptr.h>
 #include <EASTL/array.h>
 #include <shiva/range/range.hpp>
 #include <shiva/error/expected.hpp>
@@ -24,11 +24,11 @@ namespace shiva::ecs
     class system_manager
     {
     public:
-        using system_ptr = eastl::unique_ptr<base_system>;
-        using system_array = eastl::vector<system_ptr, eastl::allocator_malloc>;
+        using system_ptr = std::unique_ptr<base_system>;
+        using system_array = std::vector<system_ptr>;
         using system_registry = eastl::array<system_array, size>;
         typedef system_ptr (pluginapi_create_t)(shiva::entt::dispatcher &, shiva::entt::entity_registry &);
-
+        using plugins_registry_t = shiva::helpers::plugins_registry<pluginapi_create_t>;
         //! Callbacks
         void receive([[maybe_unused]] const shiva::event::quit_game &evt)
         {
@@ -39,26 +39,14 @@ namespace shiva::ecs
             });
         }
 
-        void receive([[maybe_unused]] const shiva::event::destroy_plugins &evt) noexcept
-        {
-            for (auto &&vec : systems_) {
-                if (!vec.empty()) {
-                    vec.erase(eastl::remove_if(eastl::begin(vec), eastl::end(vec), [](auto &&sys) {
-                        return sys->is_a_plugin();
-                    }));
-                }
-            }
-        }
-
         explicit system_manager(entt::dispatcher &dispatcher,
                                 entt::entity_registry &registry,
-                                shiva::fs::path plugin_directory = fs::current_path() /= "systems") noexcept :
+                                fs::path plugin_path = fs::current_path() /= "systems") noexcept :
             dispatcher_(dispatcher),
             ett_registry_(registry),
-            plugins_registry_{eastl::move(plugin_directory), dispatcher}
+            plugins_registry_{std::move(plugin_path)}
         {
             dispatcher_.sink<shiva::event::quit_game>().connect(this);
-            dispatcher_.sink<shiva::event::destroy_plugins>().connect(this);
             auto functor = [this](boost::function<pluginapi_create_t> &dlls) {
                 system_ptr ptr = dlls(this->dispatcher_, this->ett_registry_);
                 add_system_(std::move(ptr), ptr->get_system_type_RTTI()).im_a_plugin();
@@ -205,11 +193,11 @@ namespace shiva::ecs
             static_assert(details::is_system_v<TSystem>,
                           "The system type given as template parameter doesn't seems to be valid");
             auto creator = [this](auto &&... args) {
-                return eastl::make_unique<TSystem>(this->dispatcher_, this->ett_registry_,
-                                                   eastl::forward<decltype(args)>(args)...);
+                return std::make_unique<TSystem>(this->dispatcher_, this->ett_registry_,
+                                                   std::forward<decltype(args)>(args)...);
             };
-            system_ptr sys = creator(eastl::forward<SystemArgs>(args)...);
-            return static_cast<TSystem &>(add_system_(eastl::move(sys), TSystem::get_system_type()));
+            system_ptr sys = creator(std::forward<SystemArgs>(args)...);
+            return static_cast<TSystem &>(add_system_(std::move(sys), TSystem::get_system_type()));
         }
 
         template <typename ...TSystems>
@@ -235,7 +223,7 @@ namespace shiva::ecs
     private:
         base_system &add_system_(system_ptr &&system, system_type sys_type) noexcept
         {
-            return *systems_[sys_type].emplace_back(eastl::move(system));
+            return *systems_[sys_type].emplace_back(std::move(system));
         }
 
         template <typename TSystem>
@@ -291,10 +279,10 @@ namespace shiva::ecs
             });
         }
 
-        system_registry systems_{{}};
         entt::dispatcher &dispatcher_;
         entt::entity_registry &ett_registry_;
-        shiva::helpers::plugins_registry<system_ptr, pluginapi_create_t> plugins_registry_;
+        shiva::helpers::plugins_registry<pluginapi_create_t> plugins_registry_;
+        system_registry systems_{{}};
         bool need_to_sweep_systems_{false};
     };
 }

@@ -23,7 +23,7 @@ namespace shiva::testing::plugins
             std::cout << shiva::bs::stacktrace();
         }
 
-        static eastl::unique_ptr<shiva::ecs::base_system> system_creator(entt::dispatcher &dispatcher,
+        static std::unique_ptr<shiva::ecs::base_system> system_creator(entt::dispatcher &dispatcher,
                                                                          entt::entity_registry &registry) noexcept;
         void update() noexcept final;
     };
