@@ -30,16 +30,13 @@ namespace shiva::helpers
 
     namespace dll = boost::dll;
 
-    template <typename TPlugin, typename CreatorSignature>
+    template <typename CreatorSignature>
     class plugins_registry
     {
     public:
-        using plugin_t = std::unordered_map<std::string, dll::shared_library>;
         using symbols_container = std::vector<boost::function<CreatorSignature>>;
 
     private:
-        shiva::entt::dispatcher &dispatcher_;
-        plugin_t plugins_{};
         symbols_container symbols;
         shiva::fs::path plugins_directory_;
 
@@ -55,43 +52,26 @@ namespace shiva::helpers
                 if (!is_shared_library((*it).path())) {
                     continue;
                 }
-
-                boost::system::error_code error;
-                dll::shared_library plugin(it->path(), error);
-                if (error) {
-                    std::cerr << error.message() << std::endl;
-                    continue;
+                try {
+                    symbols.emplace_back(
+                        boost::dll::import_alias<CreatorSignature>(
+                            it->path(),
+                            "create_plugin",
+                            dll::load_mode::append_decorations
+                        ));
+                    std::cout << "Successfully loaded: " << it->path().filename() << std::endl;
                 }
-                std::cout << "Loaded (" << plugin.native() << "):" << it->path() << std::endl;
-
-                if (plugin.has("create_plugin")) {
-                    auto plugin_name = plugin.get_alias<TPlugin()>("create_plugin")()->get_name();
-
-                    if (shiva::ranges::none_of(plugins_, [&plugin_name](auto &&pair) {
-                        return pair.first == plugin_name.c_str();
-                    })) {
-                        symbols.emplace_back(dll::import_alias<CreatorSignature>(plugin, "create_plugin"));
-                        plugins_.emplace(std::move(plugin_name), std::move(plugin));
-                    } else {
-                        std::cerr << "plugins already register" << std::endl;
-                    }
-                } else {
-                    std::cerr << "no creator func : create_plugin()" << std::endl;
+                catch (const boost::system::system_error &error) {
+                    std::cerr << error.what() << std::endl;
                 }
             }
         }
 
     public:
-        explicit plugins_registry(shiva::fs::path &&plugins_directory, shiva::entt::dispatcher &dispatcher) noexcept :
-            dispatcher_(dispatcher),
+        explicit plugins_registry(shiva::fs::path &&plugins_directory) noexcept :
             plugins_directory_{plugins_directory}
         {
             load_all_plugins();
-        }
-
-        ~plugins_registry() noexcept
-        {
-            dispatcher_.trigger<shiva::event::destroy_plugins>();
         }
 
         size_t nb_plugins() const noexcept

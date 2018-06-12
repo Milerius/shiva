@@ -12,11 +12,11 @@ namespace shiva::testing::plugins
 
     }
 
-    eastl::unique_ptr<shiva::ecs::base_system>
+    std::unique_ptr<shiva::ecs::base_system>
     bar_system::system_creator(shiva::entt::dispatcher &dispatcher,
                                shiva::entt::entity_registry &registry) noexcept
     {
-        return eastl::make_unique<bar_system>(dispatcher, registry);
+        return std::make_unique<bar_system>(dispatcher, registry);
     }
 }
 
