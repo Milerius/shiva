@@ -59,6 +59,7 @@ namespace shiva::helpers
                             "create_plugin",
                             dll::load_mode::append_decorations
                         ));
+                    std::cout << std::endl;
                     std::cout << "Successfully loaded: " << it->path().filename() << std::endl;
                 }
                 catch (const boost::system::system_error &error) {

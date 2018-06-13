@@ -20,7 +20,6 @@ namespace shiva::testing::plugins
         bar_system(entt::dispatcher &dispatcher,
                    entt::entity_registry &registry) noexcept : system(dispatcher, registry)
         {
-            std::cout << shiva::bs::stacktrace();
         }
 
         static std::unique_ptr<shiva::ecs::base_system> system_creator(entt::dispatcher &dispatcher,

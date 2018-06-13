@@ -12,14 +12,6 @@ namespace shiva
     class world
     {
     public:
-
-        //! Callbacks
-        void receive([[maybe_unused]] const shiva::event::quit_game& evt) noexcept
-        {
-            is_running = false;
-            game_return_value_ = evt.return_value_;
-        }
-
         world() noexcept
         {
             dispatcher_.sink<shiva::event::quit_game>().connect(this);
@@ -33,6 +25,14 @@ namespace shiva
             }
             return game_return_value_;
         }
+
+        //! Callbacks
+        void receive([[maybe_unused]] const shiva::event::quit_game &evt) noexcept
+        {
+            is_running = false;
+            game_return_value_ = evt.return_value_;
+        }
+
     protected:
         shiva::entt::dispatcher dispatcher_;
         shiva::entt::entity_registry entity_registry_;
