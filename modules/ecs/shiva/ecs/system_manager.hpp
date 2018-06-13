@@ -29,6 +29,7 @@ namespace shiva::ecs
         using system_registry = eastl::array<system_array, size>;
         typedef system_ptr (pluginapi_create_t)(shiva::entt::dispatcher &, shiva::entt::entity_registry &);
         using plugins_registry_t = shiva::helpers::plugins_registry<pluginapi_create_t>;
+
         //! Callbacks
         void receive([[maybe_unused]] const shiva::event::quit_game &evt)
         {
@@ -69,12 +70,14 @@ namespace shiva::ecs
             };
 
             shiva::ranges::for_each(systems_, [this, update_system_functor](auto &&vec) {
-                system_type current_system_type = vec.front()->get_system_type_RTTI();
-                shiva::ranges::for_each(this->systems_[current_system_type],
-                                        [current_system_type, update_system_functor](auto &&sys) {
-                                            if (current_system_type != system_type::logic_update)
-                                                update_system_functor(eastl::forward<decltype(sys)>(sys));
-                                        });
+                if (!vec.empty()) {
+                    system_type current_system_type = vec.front()->get_system_type_RTTI();
+                    shiva::ranges::for_each(this->systems_[current_system_type],
+                                            [current_system_type, update_system_functor](auto &&sys) {
+                                                if (current_system_type != system_type::logic_update)
+                                                    update_system_functor(std::forward<decltype(sys)>(sys));
+                                            });
+                };
             });
 
             if (need_to_sweep_systems_) {
@@ -194,9 +197,10 @@ namespace shiva::ecs
                           "The system type given as template parameter doesn't seems to be valid");
             auto creator = [this](auto &&... args) {
                 return std::make_unique<TSystem>(this->dispatcher_, this->ett_registry_,
-                                                   std::forward<decltype(args)>(args)...);
+                                                 std::forward<decltype(args)>(args)...);
             };
             system_ptr sys = creator(std::forward<SystemArgs>(args)...);
+
             return static_cast<TSystem &>(add_system_(std::move(sys), TSystem::get_system_type()));
         }
 
@@ -223,6 +227,7 @@ namespace shiva::ecs
     private:
         base_system &add_system_(system_ptr &&system, system_type sys_type) noexcept
         {
+
             return *systems_[sys_type].emplace_back(std::move(system));
         }
 

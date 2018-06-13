@@ -9,68 +9,71 @@
 
 namespace shiva::ecs
 {
-	class base_system
-	{
-	public:
-		//! Constructors / Destructor
-		explicit base_system(entt::dispatcher& dispatcher, entt::entity_registry& entity_registry) noexcept :
-			dispatcher_(dispatcher),
-			entity_registry_(entity_registry)
-		{
-		}
+    class base_system
+    {
+    public:
+        //! Constructors / Destructor
+        explicit base_system(entt::dispatcher &dispatcher, entt::entity_registry &entity_registry) noexcept :
+            dispatcher_(dispatcher),
+            entity_registry_(entity_registry)
+        {
+        }
 
-		virtual ~base_system() noexcept = default;
+        virtual ~base_system() noexcept = default;
 
-		//! Pure virtual functions
-		virtual void update() noexcept = 0;
-		virtual const std::string& get_name() const noexcept = 0;
-		virtual system_type get_system_type_RTTI() const noexcept = 0;
-		//! Public member functions
-		void mark() noexcept
-		{
-			marked_ = true;
-		}
+        //! Pure virtual functions
+        virtual void update() noexcept = 0;
+        virtual const std::string &get_name() const noexcept = 0;
+        virtual system_type get_system_type_RTTI() const noexcept = 0;
 
-		void unmark() noexcept
-		{
-			marked_ = false;
-		}
+        //! Public member functions
+        void mark() noexcept
+        {
+            marked_ = true;
+        }
 
-		bool is_marked() const noexcept
-		{
-			return marked_;
-		}
+        void unmark() noexcept
+        {
+            marked_ = false;
+        }
 
-		void enable() noexcept
-		{
-			enabled_ = true;
-		}
+        bool is_marked() const noexcept
+        {
+            return marked_;
+        }
 
-		void disable() noexcept
-		{
-			enabled_ = false;
-		}
+        void enable() noexcept
+        {
+            enabled_ = true;
+        }
 
-		bool is_enabled() const noexcept
-		{
-			return enabled_;
-		}
+        void disable() noexcept
+        {
+            enabled_ = false;
+        }
 
-		void im_a_plugin() noexcept
-		{
-			is_plugin = true;
-		}
+        bool is_enabled() const noexcept
+        {
+            return enabled_;
+        }
 
-		bool is_a_plugin() const noexcept
+        void im_a_plugin() noexcept
+        {
+            is_plugin = true;
+        }
+
+        bool is_a_plugin() const noexcept
         {
             return is_plugin;
         }
 
-	private:
-		[[maybe_unused]] entt::dispatcher& dispatcher_;
-		[[maybe_unused]] entt::entity_registry& entity_registry_;
-		bool is_plugin{false};
-		bool marked_{false};
-		bool enabled_{true};
-	};
+    protected:
+        [[maybe_unused]] entt::dispatcher &dispatcher_;
+        [[maybe_unused]] entt::entity_registry &entity_registry_;
+
+    private:
+        bool is_plugin{false};
+        bool marked_{false};
+        bool enabled_{true};
+    };
 }
