@@ -6,6 +6,7 @@
 
 #include <shiva/world/world.hpp>
 #include <systems/all_systems.hpp>
+#include <systems/example_pre_system.hpp>
 
 namespace shiva::examples
 {
@@ -14,7 +15,7 @@ namespace shiva::examples
     public:
         my_world()
         {
-            system_manager_.load_systems<shiva::examples::post_system>();
+            system_manager_.load_systems<shiva::examples::post_system, shiva::examples::pre_system>();
             std::cout << "nb_systems: " << system_manager_.nb_systems() << std::endl;
         }
     private:

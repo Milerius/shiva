@@ -10,7 +10,6 @@
 #include <boost/function.hpp>
 #include <boost/dll.hpp>
 #include <shiva/filesystem/filesystem.hpp>
-#include <shiva/event/destroy_plugins.hpp>
 
 namespace shiva::helpers
 {
