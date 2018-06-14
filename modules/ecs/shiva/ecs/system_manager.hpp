@@ -17,7 +17,6 @@
 #include <shiva/event/fatal_error_occured.hpp>
 #include <shiva/event/quit_game.hpp>
 #include <shiva/dll/plugin_registry.hpp>
-#include <shiva/event/destroy_plugins.hpp>
 
 namespace shiva::ecs
 {
@@ -25,7 +24,7 @@ namespace shiva::ecs
     {
     public:
         using system_ptr = std::unique_ptr<base_system>;
-        using system_array = std::vector<system_ptr>;
+        using system_array = eastl::vector<system_ptr, eastl::allocator_malloc>;
         using system_registry = eastl::array<system_array, size>;
         typedef system_ptr (pluginapi_create_t)(shiva::entt::dispatcher &, shiva::entt::entity_registry &);
         using plugins_registry_t = shiva::helpers::plugins_registry<pluginapi_create_t>;
@@ -200,7 +199,6 @@ namespace shiva::ecs
                                                  std::forward<decltype(args)>(args)...);
             };
             system_ptr sys = creator(std::forward<SystemArgs>(args)...);
-
             return static_cast<TSystem &>(add_system_(std::move(sys), TSystem::get_system_type()));
         }
 
@@ -227,7 +225,6 @@ namespace shiva::ecs
     private:
         base_system &add_system_(system_ptr &&system, system_type sys_type) noexcept
         {
-
             return *systems_[sys_type].emplace_back(std::move(system));
         }
 

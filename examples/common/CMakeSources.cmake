@@ -3,6 +3,7 @@ set(MODULE_PATH
 
 set(MODULE_PUBLIC_HEADERS
         "${MODULE_PATH}/systems/example_post_system.hpp"
+        "${MODULE_PATH}/systems/example_pre_system.hpp"
         "${MODULE_PATH}/systems/all_systems.hpp"
         )
 
