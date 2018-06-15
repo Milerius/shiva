@@ -22,4 +22,3 @@ add_source_group_now()
 
 target_link_libraries(ecs-test shiva::world)
 add_dependencies(ecs-test system-plugin-bar)
-target_compile_definitions(ecs-test PUBLIC "-DBOOST_STACKTRACE_USE_NOOP")
