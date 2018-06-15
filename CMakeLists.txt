@@ -17,6 +17,7 @@ enable_testing()
 ##! Project options
 option(SHIVA_BUILD_TESTS "Build tests of shiva C++ engine" ON)
 option(SHIVA_BUILD_EXAMPLES "Build examples of shiva C++ engine" OFF)
+option(SHIVA_USE_SFML_AS_RENDERER "Build shiva with SFML rendering" OFF)
 option(USE_CLION_AS_IDE "Workaround for install header only library option, put it to ON if u use CLION" OFF)
 
 
@@ -54,6 +55,7 @@ target_link_libraries(shiva INTERFACE
         shiva::range
         shiva::error
         shiva::ecs
+        shiva::enums
         shiva::world
         )
 
