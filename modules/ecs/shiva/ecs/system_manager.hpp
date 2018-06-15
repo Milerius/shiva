@@ -47,12 +47,6 @@ namespace shiva::ecs
             plugins_registry_{std::move(plugin_path)}
         {
             dispatcher_.sink<shiva::event::quit_game>().connect(this);
-            auto functor = [this](boost::function<pluginapi_create_t> &dlls) {
-                system_ptr ptr = dlls(this->dispatcher_, this->ett_registry_);
-                add_system_(std::move(ptr), ptr->get_system_type_RTTI()).im_a_plugin();
-            };
-
-            plugins_registry_.apply_symbols(functor);
         }
 
         size_t update() noexcept
@@ -222,6 +216,18 @@ namespace shiva::ecs
             return systems_[sys_type].size();
         }
 
+        bool load_plugins() noexcept
+        {
+            auto res = plugins_registry_.load_all_plugins();
+            auto functor = [this](boost::function<pluginapi_create_t> &dlls) {
+                system_ptr ptr = dlls(this->dispatcher_, this->ett_registry_);
+                add_system_(std::move(ptr), ptr->get_system_type_RTTI()).im_a_plugin();
+            };
+
+            plugins_registry_.apply_on_each_symbols(functor);
+            return res;
+        }
+
     private:
         base_system &add_system_(system_ptr &&system, system_type sys_type) noexcept
         {
@@ -277,7 +283,7 @@ namespace shiva::ecs
             shiva::ranges::for_each(systems_, [](auto &&vec_system) -> void {
                 vec_system.erase(eastl::remove_if(eastl::begin(vec_system), eastl::end(vec_system), [](auto &&sys) {
                     return sys->is_marked();
-                }));
+                }), eastl::end(vec_system));
             });
         }
 

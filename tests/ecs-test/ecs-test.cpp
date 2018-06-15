@@ -99,7 +99,7 @@ TEST(ecs_testing, type_traits)
 TEST_F(fixture_system, add_simple_system)
 {
     auto system = system_manager_.create_system<test_system>();
-    ASSERT_EQ(system_manager_.nb_systems(), 2u);
+    ASSERT_EQ(system_manager_.nb_systems(), 1u);
     ASSERT_TRUE(system_manager_.has_system<test_system>());
     system.update();
 }
@@ -107,7 +107,7 @@ TEST_F(fixture_system, add_simple_system)
 TEST_F(fixture_system, load_multiple_systems)
 {
     [[maybe_unused]] auto[test_sys_nc, another_test_sys_nc] = system_manager_.load_systems<test_system, another_test_system>();
-    ASSERT_EQ(system_manager_.nb_systems(), 3u);
+    ASSERT_EQ(system_manager_.nb_systems(), 2u);
     bool result = system_manager_.has_systems<test_system, another_test_system>();
     ASSERT_TRUE(result);
 }
@@ -187,4 +187,45 @@ TEST_F(fixture_system, disable_multiple_systems)
 
     bool res = system_manager_.disable_systems<test_system, another_test_system>();
     ASSERT_TRUE(res);
+}
+
+TEST_F(fixture_system, size)
+{
+    system_manager_.load_systems<test_system, another_test_system>();
+    ASSERT_EQ(system_manager_.nb_systems(), 2u);
+}
+
+TEST_F(fixture_system, size_per_system_type)
+{
+    system_manager_.load_systems<test_system>();
+    ASSERT_NE(1, system_manager_.nb_systems(shiva::ecs::pre_update));
+    ASSERT_EQ(1, system_manager_.nb_systems(shiva::ecs::post_update));
+}
+
+TEST_F(fixture_system, plugins)
+{
+    ASSERT_TRUE(system_manager_.load_plugins());
+    ASSERT_EQ(system_manager_.nb_systems(), 1u);
+}
+
+TEST_F(fixture_system, remove_system)
+{
+    system_manager_.load_systems<test_system, another_test_system>();
+    ASSERT_EQ(system_manager_.nb_systems(), 2u);
+    ASSERT_TRUE(system_manager_.mark_system<test_system>());
+    ASSERT_TRUE(system_manager_.get_system<test_system>().is_marked());
+    ASSERT_EQ(system_manager_.update(), 2u);
+    ASSERT_EQ(system_manager_.nb_systems(), 1u);
+    ASSERT_EQ(system_manager_.update(), 1u);
+}
+
+TEST_F(fixture_system, remove_multiple_systems)
+{
+    system_manager_.load_systems<test_system, another_test_system>();
+    ASSERT_EQ(system_manager_.nb_systems(), 2u);
+    bool res = system_manager_.mark_systems<test_system, another_test_system>();
+    ASSERT_TRUE(res);
+    ASSERT_EQ(system_manager_.update(), 2u);
+    ASSERT_EQ(system_manager_.nb_systems(), 0u);
+    ASSERT_EQ(system_manager_.update(), 0u);
 }

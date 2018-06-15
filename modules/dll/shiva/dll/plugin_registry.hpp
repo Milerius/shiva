@@ -13,6 +13,8 @@
 
 namespace shiva::helpers
 {
+    namespace dll = boost::dll;
+
     static inline bool is_shared_library(const fs::path &p)
     {
         const std::string &s = p.string();
@@ -27,8 +29,6 @@ namespace shiva::helpers
                && s.find(".a") == std::string::npos;
     }
 
-    namespace dll = boost::dll;
-
     template <typename CreatorSignature>
     class plugins_registry
     {
@@ -39,10 +39,17 @@ namespace shiva::helpers
         symbols_container symbols;
         shiva::fs::path plugins_directory_;
 
-        void load_all_plugins()
+    public:
+        explicit plugins_registry(shiva::fs::path &&plugins_directory) noexcept :
+            plugins_directory_{plugins_directory}
         {
+        }
+
+        bool load_all_plugins() noexcept
+        {
+            bool res{true};
             if (!fs::exists(plugins_directory_))
-                return;
+                return false;
             fs::recursive_directory_iterator endit;
             for (fs::recursive_directory_iterator it(plugins_directory_); it != endit; ++it) {
                 if (!fs::is_regular_file(*it)) {
@@ -63,15 +70,10 @@ namespace shiva::helpers
                 }
                 catch (const boost::system::system_error &error) {
                     std::cerr << error.what() << std::endl;
+                    res = false;
                 }
             }
-        }
-
-    public:
-        explicit plugins_registry(shiva::fs::path &&plugins_directory) noexcept :
-            plugins_directory_{plugins_directory}
-        {
-            load_all_plugins();
+            return res;
         }
 
         size_t nb_plugins() const noexcept
@@ -80,7 +82,7 @@ namespace shiva::helpers
         }
 
         template <typename Functor>
-        void apply_symbols(Functor &&functor)
+        void apply_on_each_symbols(Functor &&functor)
         {
             shiva::ranges::for_each(symbols, functor);
         }
