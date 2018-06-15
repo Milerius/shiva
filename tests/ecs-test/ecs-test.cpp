@@ -208,6 +208,14 @@ TEST_F(fixture_system, size_per_system_type)
     ASSERT_EQ(1, system_manager_.nb_systems(shiva::ecs::post_update));
 }
 
+TEST_F(fixture_system, load_plugins_from_non_existent_directory)
+{
+    shiva::fs::copy("systems", "save", shiva::fs::copy_options::recursive);
+    shiva::fs::remove_all("systems");
+    ASSERT_FALSE(system_manager_.load_plugins());
+    shiva::fs::copy("save", "systems", shiva::fs::copy_options::recursive);
+}
+
 TEST_F(fixture_system, fake_plugin)
 {
     std::ofstream outfile ("systems/test.so");
