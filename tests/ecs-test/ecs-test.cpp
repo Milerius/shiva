@@ -32,6 +32,7 @@ class fixture_system : public ::shiva::world, public ::testing::Test
 protected:
     void SetUp() override
     {
+        entity_registry_.create();
     }
 
     void TearDown() override
