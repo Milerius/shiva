@@ -4,9 +4,22 @@
 
 #pragma once
 
-#include <boost/filesystem.hpp>
-
+#if __has_include(<experimental/filesystem>)
+#include <experimental/filesystem>
 namespace shiva
 {
-    namespace fs = boost::filesystem;
+    namespace fs = std::experimental::filesystem;
 }
+#elif __has_include(<filesystem>)
+#include <filesystem>
+    namespace shiva
+    {
+      namespace fs = std::filesystem;
+    }
+#else
+    #include <boost/filesystem.hpp>
+    namespace shiva
+    {
+        namespace fs = boost::filesystem;
+    }
+#endif
