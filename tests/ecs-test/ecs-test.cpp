@@ -11,6 +11,7 @@
 #include <shiva/ecs/system_manager.hpp>
 #include <shiva/ecs/details/system_type_traits.hpp>
 #include <shiva/world/world.hpp>
+#include "plugins/system_plugged_bar.hpp"
 
 template <typename system_type>
 class FakeSystem
@@ -173,7 +174,9 @@ TEST_F(fixture_system, disable_single_system)
     auto &system = system_manager_.create_system<test_system>();
 
     ASSERT_TRUE(system.is_enabled());
+    ASSERT_EQ(system_manager_.update(), 1u);
     ASSERT_TRUE(system_manager_.disable_system<test_system>());
+    ASSERT_EQ(system_manager_.update(), 0u);
     ASSERT_FALSE(system.is_enabled());
 }
 
@@ -185,8 +188,11 @@ TEST_F(fixture_system, disable_multiple_systems)
         ASSERT_TRUE(sys.is_enabled());
     });
 
+    ASSERT_EQ(system_manager_.update(), 2u);
     bool res = system_manager_.disable_systems<test_system, another_test_system>();
     ASSERT_TRUE(res);
+    ASSERT_EQ(system_manager_.update(), 0u);
+
 }
 
 TEST_F(fixture_system, size)
@@ -228,4 +234,14 @@ TEST_F(fixture_system, remove_multiple_systems)
     ASSERT_EQ(system_manager_.update(), 2u);
     ASSERT_EQ(system_manager_.nb_systems(), 0u);
     ASSERT_EQ(system_manager_.update(), 0u);
+}
+
+TEST_F(fixture_system, remove_plugged_system)
+{
+    ASSERT_TRUE(system_manager_.load_plugins());
+    ASSERT_EQ(system_manager_.nb_systems(), 1u);
+    system_manager_.mark_system<shiva::testing::plugins::bar_system>();
+    ASSERT_EQ(system_manager_.update(), 1u);
+    ASSERT_EQ(system_manager_.update(), 0u);
+    ASSERT_EQ(system_manager_.nb_systems(), 0u);
 }
