@@ -15,7 +15,7 @@ macro(generate_local_plugin SOURCES EXECUTABLE)
 endmacro()
 
 set(SOURCES ecs-test.cpp)
-CREATE_UNIT_TEST(ecs-test RS: "${SOURCES}")
+CREATE_UNIT_TEST(ecs-test shiva: "${SOURCES}")
 
 generate_local_plugin("plugins/system_plugged_bar.hpp;plugins/system_plugged_bar.cpp" system-plugin-bar)
 add_source_group_now()
