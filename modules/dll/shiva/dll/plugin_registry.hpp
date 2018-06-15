@@ -69,7 +69,7 @@ namespace shiva::helpers
                     std::cout << "Successfully loaded: " << it->path().filename() << std::endl;
                 }
                 catch (const boost::system::system_error &error) {
-                    std::cerr << error.what() << std::endl;
+                    std::cerr << it->path().filename() << ": " << error.what() << std::endl;
                     res = false;
                 }
             }
