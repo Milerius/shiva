@@ -13,6 +13,8 @@
 
 namespace shiva::helpers
 {
+    namespace dll = boost::dll;
+
     static inline bool is_shared_library(const fs::path &p)
     {
         const std::string &s = p.string();
@@ -26,8 +28,6 @@ namespace shiva::helpers
                && s.find(".obj") == std::string::npos
                && s.find(".a") == std::string::npos;
     }
-
-    namespace dll = boost::dll;
 
     template <typename CreatorSignature>
     class plugins_registry
