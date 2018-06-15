@@ -209,37 +209,39 @@ TEST_F(fixture_system, size_per_system_type)
     ASSERT_EQ(1, system_manager_.nb_systems(shiva::ecs::post_update));
 }
 
-TEST_F(fixture_system, load_plugins_from_non_existent_directory)
-{
-    shiva::fs::copy("systems", "save", shiva::fs::copy_options::recursive);
-    shiva::fs::remove_all("systems");
-    ASSERT_FALSE(system_manager_.load_plugins());
-    shiva::fs::copy("save", "systems", shiva::fs::copy_options::recursive);
-    shiva::fs::remove_all("save");
-}
+#ifndef _WIN32
+    TEST_F(fixture_system, load_plugins_from_non_existent_directory)
+    {
+        shiva::fs::copy("systems", "save", shiva::fs::copy_options::recursive);
+        shiva::fs::remove_all("systems");
+        ASSERT_FALSE(system_manager_.load_plugins());
+        shiva::fs::copy("save", "systems", shiva::fs::copy_options::recursive);
+        shiva::fs::remove_all("save");
+    }
 
-TEST_F(fixture_system, fake_plugin)
-{
-    std::ofstream outfile ("systems/test.so");
-    ASSERT_FALSE(system_manager_.load_plugins());
-    shiva::fs::remove("systems/test.so");
-}
+    TEST_F(fixture_system, fake_plugin)
+    {
+        std::ofstream outfile ("systems/test.so");
+        ASSERT_FALSE(system_manager_.load_plugins());
+        shiva::fs::remove("systems/test.so");
+    }
 
-TEST_F(fixture_system, plugin_not_regular_file)
-{
-    std::ofstream outfile("systems/bidule.txt");
-    shiva::fs::create_symlink("systems/bidule.txt", "systems/symlink");
-    ASSERT_TRUE(system_manager_.load_plugins());
-    shiva::fs::remove("systems/bidule.txt");
-    shiva::fs::remove("systems/symlink");
-}
+    TEST_F(fixture_system, plugin_not_regular_file)
+    {
+        std::ofstream outfile("systems/bidule.txt");
+        shiva::fs::create_symlink("systems/bidule.txt", "systems/symlink");
+        ASSERT_TRUE(system_manager_.load_plugins());
+        shiva::fs::remove("systems/bidule.txt");
+        shiva::fs::remove("systems/symlink");
+    }
 
-TEST_F(fixture_system, plugin_regular_file)
-{
-    std::ofstream outfile("systems/regular_file.txt");
-    ASSERT_TRUE(system_manager_.load_plugins());
-    shiva::fs::remove("systems/regular_file.txt");
-}
+    TEST_F(fixture_system, plugin_regular_file)
+    {
+        std::ofstream outfile("systems/regular_file.txt");
+        ASSERT_TRUE(system_manager_.load_plugins());
+        shiva::fs::remove("systems/regular_file.txt");
+    }
+#endif
 
 TEST_F(fixture_system, plugins)
 {
