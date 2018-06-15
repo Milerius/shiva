@@ -61,7 +61,7 @@ namespace shiva::helpers
                 try {
                     symbols.emplace_back(
                         boost::dll::import_alias<CreatorSignature>(
-                            it->path(),
+                            boost::filesystem::path(it->path().string()),
                             "create_plugin",
                             dll::load_mode::append_decorations
                         ));
@@ -78,7 +78,7 @@ namespace shiva::helpers
 
         size_t nb_plugins() const noexcept
         {
-            return plugins_directory_.size();
+            return symbols.size();
         }
 
         template <typename Functor>
