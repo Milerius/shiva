@@ -43,7 +43,6 @@ namespace shiva::helpers
         explicit plugins_registry(shiva::fs::path &&plugins_directory) noexcept :
             plugins_directory_{plugins_directory}
         {
-            //load_all_plugins();
         }
 
         bool load_all_plugins() noexcept
