@@ -9,7 +9,7 @@ if (WIN32)
 endif ()
 
 ##! Project
-project(shiva VERSION 0.1)
+project(shiva VERSION 0.2)
 
 ##! Prerequisites CTEST
 enable_testing()
@@ -18,6 +18,7 @@ enable_testing()
 option(SHIVA_BUILD_TESTS "Build tests of shiva C++ engine" ON)
 option(SHIVA_BUILD_EXAMPLES "Build examples of shiva C++ engine" OFF)
 option(SHIVA_USE_SFML_AS_RENDERER "Build shiva with SFML rendering" OFF)
+option(DISABLE_INSTALL_SHIVA_CORE "Disable install main targets" OFF)
 option(USE_CLION_AS_IDE "Workaround for install header only library option, put it to ON if u use CLION" OFF)
 
 
@@ -60,48 +61,49 @@ target_link_libraries(shiva INTERFACE
         )
 
 ##! Install
-if (NOT USE_CLION_AS_IDE)
-    include(GNUInstallDirs)
+if (NOT DISABLE_INSTALL_SHIVA_CORE)
+    if (NOT USE_CLION_AS_IDE)
+        include(GNUInstallDirs)
 
-    include(CMakePackageConfigHelpers)
+        include(CMakePackageConfigHelpers)
 
-    write_basic_package_version_file(
-            "${PROJECT_BINARY_DIR}/shiva-version-config.cmake"
-            VERSION 0.1
-            COMPATIBILITY AnyNewerVersion
-    )
+        write_basic_package_version_file(
+                "${PROJECT_BINARY_DIR}/shiva-version-config.cmake"
+                VERSION 0.2
+                COMPATIBILITY AnyNewerVersion
+        )
 
-    install(TARGETS
-            shiva
-            EXPORT shiva-targets
-            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-            INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-            )
+        install(TARGETS
+                shiva
+                EXPORT shiva-targets
+                RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+                ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+                LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+                INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+                )
 
-    install(DIRECTORY
-            ${CMAKE_CURRENT_SOURCE_DIR}/modules
-            DESTINATION
-            ${CMAKE_INSTALL_INCLUDEDIR}/shiva
-            FILES_MATCHING PATTERN "*.h*"
-            )
+        install(DIRECTORY
+                ${CMAKE_CURRENT_SOURCE_DIR}/modules
+                DESTINATION
+                ${CMAKE_INSTALL_INCLUDEDIR}/shiva
+                FILES_MATCHING PATTERN "*.h*"
+                )
 
-    install(EXPORT shiva-targets
-            FILE shiva-targets.cmake
-            NAMESPACE shiva::
-            DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/shiva
-            )
+        install(EXPORT shiva-targets
+                FILE shiva-targets.cmake
+                NAMESPACE shiva::
+                DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/shiva
+                )
 
-    configure_package_config_file(
-            "${PROJECT_SOURCE_DIR}/cmake/shiva-config.cmake.in"
-            "${PROJECT_BINARY_DIR}/shiva-config.cmake"
-            INSTALL_DESTINATION lib/cmake/shiva
-    )
+        configure_package_config_file(
+                "${PROJECT_SOURCE_DIR}/cmake/shiva-config.cmake.in"
+                "${PROJECT_BINARY_DIR}/shiva-config.cmake"
+                INSTALL_DESTINATION lib/cmake/shiva
+        )
 
-    install(FILES
-            "${PROJECT_BINARY_DIR}/shiva-config.cmake"
-            "${PROJECT_BINARY_DIR}/shiva-version-config.cmake"
-            DESTINATION lib/cmake/shiva)
-
+        install(FILES
+                "${PROJECT_BINARY_DIR}/shiva-config.cmake"
+                "${PROJECT_BINARY_DIR}/shiva-version-config.cmake"
+                DESTINATION lib/cmake/shiva)
+    endif ()
 endif ()

@@ -1,0 +1,25 @@
+@PACKAGE_INIT@
+
+MESSAGE(STATUS ${CMAKE_CURRENT_LIST_DIR})
+find_package(shiva CONFIG REQUIRED)
+include("${CMAKE_CURRENT_LIST_DIR}/shiva-system-sfml-graphics-targets.cmake")
+
+macro(import_plugin plugin_name)
+    get_property(result TARGET ${plugin_name} PROPERTY IMPORTED_LOCATION_RELEASE)
+
+    file(COPY ${result}
+    DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+endmacro()
+
+##! directory output plugins
+set(SAVE_OUTPUT_DIRECTORY "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/systems)
+
+import_plugin(shiva::system-sfml-graphics)
+
+##! restore output plugins
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${SAVE_OUTPUT_DIRECTORY}")
+
+##! check components
+check_required_components("system-sfml-graphics")
+
