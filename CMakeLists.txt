@@ -104,7 +104,7 @@ if (NOT DISABLE_INSTALL_SHIVA_CORE)
         install(FILES
                 "${PROJECT_BINARY_DIR}/shiva-config.cmake"
                 "${PROJECT_BINARY_DIR}/shiva-version-config.cmake"
-                "${PROJECT_SOURCE_DIR}/cmake/x64-shiva-triplet.cmake"
+                "${PROJECT_SOURCE_DIR}/cmake/x64-windows-shiva.cmake"
                 DESTINATION lib/cmake/shiva)
     endif ()
 endif ()
