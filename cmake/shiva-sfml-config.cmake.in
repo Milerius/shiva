@@ -1,0 +1,8 @@
+@PACKAGE_INIT@
+
+MESSAGE(STATUS ${CMAKE_CURRENT_LIST_DIR})
+find_package(shiva CONFIG REQUIRED)
+include("${CMAKE_CURRENT_LIST_DIR}/shiva-system-sfml-graphics-targets.cmake")
+
+check_required_components("system-sfml-graphics")
+
