@@ -45,7 +45,7 @@ namespace shiva::helpers
         {
         }
 
-        bool load_all_plugins() noexcept
+        bool load_all_symbols() noexcept
         {
             bool res{true};
             if (!fs::exists(plugins_directory_))
