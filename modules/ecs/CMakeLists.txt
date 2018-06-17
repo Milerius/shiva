@@ -8,7 +8,6 @@ target_link_libraries(ecs INTERFACE
         shiva::reflection
         shiva::error
         shiva::event
-        shiva::stacktrace
         shiva::entt
         shiva::range
         shiva::dll)
