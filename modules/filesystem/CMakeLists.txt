@@ -10,7 +10,7 @@ if (LINUX)
 endif(LINUX)
 
 if(APPLE)
-    target_link_libraries(filesystem INTERFACE /usr/local/opt/llvm/lib/libc++experimental.a)
+    target_link_libraries(filesystem INTERFACE c++experimental)
 endif(APPLE)
 
 AUTO_TARGETS_MODULE_INSTALL(filesystem)
