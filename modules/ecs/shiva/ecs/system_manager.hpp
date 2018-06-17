@@ -219,7 +219,7 @@ namespace shiva::ecs
         bool load_plugins() noexcept
         {
             auto res = plugins_registry_.load_all_symbols();
-            auto functor = [this](boost::function<pluginapi_create_t> &dlls) {
+            auto functor = [this](auto &&dlls) {
                 system_ptr ptr = dlls(this->dispatcher_, this->ett_registry_);
                 add_system_(std::move(ptr), ptr->get_system_type_RTTI()).im_a_plugin();
             };
