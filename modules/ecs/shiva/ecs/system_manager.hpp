@@ -16,7 +16,7 @@
 #include <shiva/ecs/system_type.hpp>
 #include <shiva/event/fatal_error_occured.hpp>
 #include <shiva/event/quit_game.hpp>
-#include <shiva/dll/plugin_registry.hpp>
+#include <shiva/dll/plugins_registry.hpp>
 
 namespace shiva::ecs
 {

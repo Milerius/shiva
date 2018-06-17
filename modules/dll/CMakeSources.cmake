@@ -3,7 +3,7 @@ set(MODULE_PATH
 
 set(MODULE_PUBLIC_HEADERS
         "${MODULE_PATH}/dll.hpp"
-        "${MODULE_PATH}/plugin_registry.hpp"
+        "${MODULE_PATH}/plugins_registry.hpp"
         )
 
 set(MODULE_PRIVATE_HEADERS
