@@ -1,7 +1,7 @@
 include(CMakeSources.cmake)
 
 set(MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
-find_package(Boost COMPONENTS system filesystem REQUIRED)
+find_package(Boost COMPONENTS system REQUIRED)
 CREATE_MODULE(shiva::filesystem "${MODULE_SOURCES}" ${MODULE_PATH})
 target_link_libraries(filesystem INTERFACE Boost::boost)
 
