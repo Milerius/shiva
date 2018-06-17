@@ -141,6 +141,11 @@ TEST_F(fixture_system, get_simple_system)
     ASSERT_ANY_THROW(system_manager_.get_system<another_test_system>());
 }
 
+TEST_F(fixture_system, throw_const_get_simple_system)
+{
+    ASSERT_ANY_THROW(const_cast<const shiva::ecs::system_manager &>(system_manager_).get_system<third_test_system>());
+}
+
 TEST_F(fixture_system, get_multiple_systems)
 {
     system_manager_.create_system<test_system>();
@@ -269,6 +274,21 @@ TEST_F(fixture_system, remove_multiple_systems)
     ASSERT_EQ(system_manager_.update(), 2u);
     ASSERT_EQ(system_manager_.nb_systems(), 0u);
     ASSERT_EQ(system_manager_.update(), 0u);
+}
+
+TEST_F(fixture_system, remove_unexistent_system)
+{
+    ASSERT_FALSE(system_manager_.mark_system<third_test_system>());
+}
+
+TEST_F(fixture_system, enable_unexistent_system)
+{
+    ASSERT_FALSE(system_manager_.enable_system<third_test_system>());
+}
+
+TEST_F(fixture_system, disable_unexistent_system)
+{
+    ASSERT_FALSE(system_manager_.disable_system<third_test_system>());
 }
 
 TEST_F(fixture_system, remove_plugged_system)
