@@ -4,10 +4,10 @@
 
 #pragma once
 
+#include <functional>
 #include <EASTL/unordered_map.h>
 #include <EASTL/string.h>
 #include <EASTL/allocator_malloc.h>
-#include <boost/function.hpp>
 #include <boost/dll.hpp>
 #include <shiva/filesystem/filesystem.hpp>
 
@@ -33,7 +33,7 @@ namespace shiva::helpers
     class plugins_registry
     {
     public:
-        using symbols_container = std::vector<boost::function<CreatorSignature>>;
+        using symbols_container = std::vector<std::function<CreatorSignature>>;
 
     private:
         symbols_container symbols;

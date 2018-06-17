@@ -12,4 +12,3 @@ namespace shiva::entt
     using dispatcher = ::entt::Dispatcher;
     using entity_registry = ::entt::DefaultRegistry;
 }
-
