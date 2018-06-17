@@ -3,9 +3,23 @@
 //
 
 #include <gtest/gtest.h>
+#include <systems/all_systems.hpp>
 #include <shiva/world/world.hpp>
 
-TEST(world_testing, basic)
+class fixture_world : public ::shiva::world, public ::testing::Test
 {
-    ASSERT_EQ(1, 1);
+protected:
+    void SetUp() override
+    {
+        system_manager_.load_systems<shiva::examples::post_system, shiva::examples::pre_system>();
+    }
+
+    void TearDown() override
+    {
+    }
+};
+
+TEST_F(fixture_world, run)
+{
+    ASSERT_EQ(this->run(), 0);
 }
