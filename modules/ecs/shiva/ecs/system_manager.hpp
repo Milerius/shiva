@@ -94,7 +94,6 @@ namespace shiva::ecs
         {
             auto ret = get_system_<TSystem>().or_else([this](const std::error_code &ec) {
                 this->dispatcher_.trigger<shiva::event::fatal_error_occured>(ec);
-                return; // for Coverage.
             });
             return (*ret).get();
         }
