@@ -103,7 +103,7 @@ TEST(reflection, members)
     shiva::refl::getMember(i_like_refl::reflectedMembers(), "_s"sv, visitor);
     auto dPtrOpt = shiva::refl::getMember<double i_like_refl::*>(i_like_refl::reflectedMembers(), "_d"sv);
     auto emptyOpt = shiva::refl::getMember<char i_like_refl::*>(i_like_refl::reflectedMembers(), "_c"sv);
-    auto non_existent = shiva::refl::getMember<char i_like_refl::*>(i_like_refl::reflectedMembers(), "_e"sv);
+    auto non_existent = shiva::refl::getMember<long i_like_refl::*>(i_like_refl::reflectedMembers(), "_s"sv);
 
     ASSERT_FALSE(non_existent);
     ASSERT_EQ(i, 1);
