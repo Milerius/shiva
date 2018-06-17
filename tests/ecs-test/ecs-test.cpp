@@ -85,6 +85,22 @@ public:
     }
 };
 
+class fourth_test_system : public shiva::ecs::pre_update_system<fourth_test_system> 
+{
+
+public:
+    reflect_class(four_test_system);
+
+    fourth_test_system(shiva::entt::dispatcher &dispatcher, shiva::entt::entity_registry &registry) :
+    system(dispatcher, registry)
+    {
+    }
+
+    void update() noexcept override
+    {
+    }
+};
+
 TEST(ecs_testing, constructor)
 {
     entt::Dispatcher dispatcher{};
@@ -134,11 +150,23 @@ TEST_F(fixture_system, has_systems)
 
 TEST_F(fixture_system, get_simple_system)
 {
-    system_manager_.create_system<test_system>();
-    ASSERT_NO_THROW(system_manager_.get_system<test_system>());
-    [[maybe_unused]] const auto &sys = system_manager_.get_system<test_system>();
+    system_manager_.create_system<another_test_system>();
 
-    ASSERT_ANY_THROW(system_manager_.get_system<another_test_system>());
+    ASSERT_NO_THROW(system_manager_.get_system<another_test_system>());
+    [[maybe_unused]] const auto &sys = system_manager_.get_system<another_test_system>();
+
+    ASSERT_ANY_THROW(system_manager_.get_system<test_system>());
+    ASSERT_ANY_THROW(system_manager_.get_system<fourth_test_system>());
+}
+
+TEST_F(fixture_system, const_get_simple_system)
+{
+    system_manager_.load_systems<test_system, another_test_system>();
+    const shiva::ecs::system_manager& mgr = system_manager_;
+    ASSERT_NO_THROW(mgr.get_system<another_test_system>());
+    [[maybe_unused]] const auto& sys = mgr.get_system<another_test_system>();
+    ASSERT_ANY_THROW(mgr.get_system<third_test_system>());
+    ASSERT_ANY_THROW(mgr.get_system<fourth_test_system>());
 }
 
 TEST_F(fixture_system, get_multiple_systems)
@@ -269,6 +297,21 @@ TEST_F(fixture_system, remove_multiple_systems)
     ASSERT_EQ(system_manager_.update(), 2u);
     ASSERT_EQ(system_manager_.nb_systems(), 0u);
     ASSERT_EQ(system_manager_.update(), 0u);
+}
+
+TEST_F(fixture_system, remove_unexistent_system)
+{
+    ASSERT_FALSE(system_manager_.mark_system<third_test_system>());
+}
+
+TEST_F(fixture_system, enable_unexistent_system)
+{
+    ASSERT_FALSE(system_manager_.enable_system<third_test_system>());
+}
+
+TEST_F(fixture_system, disable_unexistent_system)
+{
+    ASSERT_FALSE(system_manager_.disable_system<third_test_system>());
 }
 
 TEST_F(fixture_system, remove_plugged_system)
