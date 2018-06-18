@@ -16,7 +16,9 @@
 #include <shiva/ecs/system_type.hpp>
 #include <shiva/event/fatal_error_occured.hpp>
 #include <shiva/event/quit_game.hpp>
+#include <shiva/event/start_game.hpp>
 #include <shiva/dll/plugins_registry.hpp>
+#include <shiva/timer/timestep.hpp>
 
 namespace shiva::ecs
 {
@@ -39,6 +41,11 @@ namespace shiva::ecs
             });
         }
 
+        void receive([[maybe_unused]] const shiva::event::start_game &evt)
+        {
+            timestep_.start();
+        }
+
         explicit system_manager(entt::dispatcher &dispatcher,
                                 entt::entity_registry &registry,
                                 fs::path plugin_path = fs::current_path() /= "systems") noexcept :
@@ -46,6 +53,7 @@ namespace shiva::ecs
             ett_registry_(registry),
             plugins_registry_{std::move(plugin_path)}
         {
+            dispatcher_.sink<shiva::event::start_game>().connect(this);
             dispatcher_.sink<shiva::event::quit_game>().connect(this);
         }
 
@@ -66,9 +74,16 @@ namespace shiva::ecs
                 if (!vec.empty()) {
                     system_type current_system_type = vec.front()->get_system_type_RTTI();
                     shiva::ranges::for_each(this->systems_[current_system_type],
-                                            [current_system_type, update_system_functor](auto &&sys) {
-                                                if (current_system_type != system_type::logic_update)
+                                            [this, current_system_type, update_system_functor](auto &&sys) {
+                                                if (current_system_type != system_type::logic_update) {
                                                     update_system_functor(std::forward<decltype(sys)>(sys));
+                                                } else {
+                                                    timestep_.start_frame();
+                                                    while (timestep_.is_update_required()) {
+                                                        update_system_functor(std::forward<decltype(sys)>(sys));
+                                                        timestep_.perform_update();
+                                                    }
+                                                }
                                             });
                 };
             });
@@ -189,7 +204,9 @@ namespace shiva::ecs
             static_assert(details::is_system_v<TSystem>,
                           "The system type given as template parameter doesn't seems to be valid");
             auto creator = [this](auto &&... args) {
-                return std::make_unique<TSystem>(this->dispatcher_, this->ett_registry_,
+                return std::make_unique<TSystem>(this->dispatcher_,
+                                                 this->ett_registry_,
+                                                 this->timestep_.get_fixed_delta_time(),
                                                  std::forward<decltype(args)>(args)...);
             };
             system_ptr sys = creator(std::forward<SystemArgs>(args)...);
@@ -287,6 +304,7 @@ namespace shiva::ecs
             });
         }
 
+        shiva::timer::time_step timestep_;
         entt::dispatcher &dispatcher_;
         entt::entity_registry &ett_registry_;
         shiva::helpers::plugins_registry<pluginapi_create_t> plugins_registry_;
