@@ -334,8 +334,10 @@ TEST_F(fixture_system, remove_plugged_system)
 
 TEST_F(fixture_system, logic_system)
 {
-    system_manager_.load_systems<test_system, another_test_system, third_test_system>();
+    system_manager_.load_systems<third_test_system>();
+    size_t accumulator = 0;
     for (size_t idx = 0; idx < 50000; ++idx) {
-        system_manager_.update();
+        accumulator += system_manager_.update();
     }
+    ASSERT_GE(1u, accumulator);
 }
