@@ -331,3 +331,11 @@ TEST_F(fixture_system, remove_plugged_system)
     ASSERT_EQ(system_manager_.update(), 0u);
     ASSERT_EQ(system_manager_.nb_systems(), 0u);
 }
+
+TEST_F(fixture_system, logic_system)
+{
+    system_manager_.load_systems<test_system, another_test_system, third_test_system>();
+    for (size_t idx = 0; idx < 50000; ++idx) {
+        system_manager_.update();
+    }
+}
