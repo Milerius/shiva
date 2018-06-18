@@ -13,9 +13,12 @@ namespace shiva::ecs
     {
     public:
         //! Constructors / Destructor
-        explicit base_system(entt::dispatcher &dispatcher, entt::entity_registry &entity_registry) noexcept :
+        explicit base_system(entt::dispatcher &dispatcher,
+                             entt::entity_registry &entity_registry,
+                             const float &fixed_delta_time) noexcept :
             dispatcher_(dispatcher),
-            entity_registry_(entity_registry)
+            entity_registry_(entity_registry),
+            fixed_delta_time_(fixed_delta_time)
         {
         }
 
@@ -70,6 +73,7 @@ namespace shiva::ecs
     protected:
         [[maybe_unused]] entt::dispatcher &dispatcher_;
         [[maybe_unused]] entt::entity_registry &entity_registry_;
+        [[maybe_unused]] const float &fixed_delta_time_;
 
     private:
         bool is_plugin{false};

@@ -14,9 +14,10 @@ namespace shiva::testing::plugins
 
     std::unique_ptr<shiva::ecs::base_system>
     bar_system::system_creator(shiva::entt::dispatcher &dispatcher,
-                               shiva::entt::entity_registry &registry) noexcept
+                               shiva::entt::entity_registry &registry,
+                               const float& fixed_delta_time) noexcept
     {
-        return std::make_unique<bar_system>(dispatcher, registry);
+        return std::make_unique<bar_system>(dispatcher, registry, fixed_delta_time);
     }
 }
 
