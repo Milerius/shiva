@@ -339,5 +339,5 @@ TEST_F(fixture_system, logic_system)
     for (size_t idx = 0; idx < 50000; ++idx) {
         accumulator += system_manager_.update();
     }
-    ASSERT_GE(1u, accumulator);
+    ASSERT_GE(accumulator, 1u);
 }
