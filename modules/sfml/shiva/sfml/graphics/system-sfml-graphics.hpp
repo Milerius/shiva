@@ -15,14 +15,15 @@ namespace shiva::plugins
         reflect_class(render_system)
 
     public:
-        render_system(shiva::entt::dispatcher& dispatcher, shiva::entt::entity_registry &registry) noexcept :
-        system(dispatcher, registry)
+        render_system(shiva::entt::dispatcher& dispatcher, shiva::entt::entity_registry &registry, const float& fixed_delta_time) noexcept :
+        system(dispatcher, registry, fixed_delta_time)
         {
 
         }
 
         static std::unique_ptr<shiva::ecs::base_system> system_creator(entt::dispatcher &dispatcher,
-                                                                       entt::entity_registry &registry) noexcept;
+                                                                       entt::entity_registry &registry,
+                                                                       const float& fixed_delta_time) noexcept;
         void update() noexcept final;
 
     private:

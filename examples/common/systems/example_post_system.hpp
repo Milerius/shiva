@@ -13,8 +13,9 @@ namespace shiva::examples
     public:
         reflect_class(post_system);
 
-        post_system(shiva::entt::dispatcher &dispatcher, shiva::entt::entity_registry &registry) :
-            system(dispatcher, registry)
+        post_system(shiva::entt::dispatcher &dispatcher, shiva::entt::entity_registry &registry,
+                    const float &fixed_delta_time) :
+            system(dispatcher, registry, fixed_delta_time)
         {
         }
 
@@ -23,7 +24,7 @@ namespace shiva::examples
             if (counter == 10) {
                 this->dispatcher_.trigger<shiva::event::quit_game>(0);
             }
-            std::cout << __FUNCTION__ << " name: "  << class_name() << std::endl;
+            std::cout << __FUNCTION__ << " name: " << class_name() << std::endl;
             counter++;
         }
 

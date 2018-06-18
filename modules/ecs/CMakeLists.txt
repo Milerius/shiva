@@ -10,6 +10,7 @@ target_link_libraries(ecs INTERFACE
         shiva::event
         shiva::entt
         shiva::range
-        shiva::dll)
+        shiva::dll
+        shiva::timer)
 
 AUTO_TARGETS_MODULE_INSTALL(ecs)

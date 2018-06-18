@@ -14,8 +14,8 @@ namespace shiva::examples
     public:
         reflect_class(pre_system);
 
-        pre_system(shiva::entt::dispatcher &dispatcher, shiva::entt::entity_registry &registry) :
-            system(dispatcher, registry)
+        pre_system(shiva::entt::dispatcher &dispatcher, shiva::entt::entity_registry &registry, const float& fixed_delta_time) :
+            system(dispatcher, registry, fixed_delta_time)
         {
         }
 

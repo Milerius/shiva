@@ -32,6 +32,7 @@ class fixture_system : public ::shiva::world, public ::testing::Test
 protected:
     void SetUp() override
     {
+        dispatcher_.trigger<shiva::event::start_game>();
         entity_registry_.create();
     }
 
@@ -45,8 +46,9 @@ class test_system : public shiva::ecs::post_update_system<test_system>
 public:
     reflect_class(test_system);
 
-    test_system(shiva::entt::dispatcher &dispatcher, shiva::entt::entity_registry &registry) :
-        system(dispatcher, registry)
+    test_system(shiva::entt::dispatcher &dispatcher, shiva::entt::entity_registry &registry,
+                const float &fixed_delta_time) noexcept :
+        system(dispatcher, registry, fixed_delta_time)
     {
     }
 
@@ -60,8 +62,9 @@ class another_test_system : public shiva::ecs::pre_update_system<another_test_sy
 public:
     reflect_class(another_test_system);
 
-    another_test_system(shiva::entt::dispatcher &dispatcher, shiva::entt::entity_registry &registry) :
-        system(dispatcher, registry)
+    another_test_system(shiva::entt::dispatcher &dispatcher, shiva::entt::entity_registry &registry,
+                        const float &fixed_delta_time) noexcept :
+        system(dispatcher, registry, fixed_delta_time)
     {
     }
 
@@ -75,8 +78,10 @@ class third_test_system : public shiva::ecs::logic_update_system<third_test_syst
 public:
     reflect_class(third_test_system);
 
-    third_test_system(shiva::entt::dispatcher &dispatcher, shiva::entt::entity_registry &registry) :
-        system(dispatcher, registry)
+    third_test_system(shiva::entt::dispatcher &dispatcher,
+                      shiva::entt::entity_registry &registry,
+                      const float &fixed_delta_time) noexcept:
+        system(dispatcher, registry, fixed_delta_time)
     {
     }
 
@@ -85,14 +90,16 @@ public:
     }
 };
 
-class fourth_test_system : public shiva::ecs::pre_update_system<fourth_test_system> 
+class fourth_test_system : public shiva::ecs::pre_update_system<fourth_test_system>
 {
 
 public:
     reflect_class(four_test_system);
 
-    fourth_test_system(shiva::entt::dispatcher &dispatcher, shiva::entt::entity_registry &registry) :
-    system(dispatcher, registry)
+    fourth_test_system(shiva::entt::dispatcher &dispatcher,
+                       shiva::entt::entity_registry &registry,
+                       const float &fixed_delta_time) :
+        system(dispatcher, registry, fixed_delta_time)
     {
     }
 
@@ -162,9 +169,9 @@ TEST_F(fixture_system, get_simple_system)
 TEST_F(fixture_system, const_get_simple_system)
 {
     system_manager_.load_systems<test_system, another_test_system>();
-    const shiva::ecs::system_manager& mgr = system_manager_;
+    const shiva::ecs::system_manager &mgr = system_manager_;
     ASSERT_NO_THROW(mgr.get_system<another_test_system>());
-    [[maybe_unused]] const auto& sys = mgr.get_system<another_test_system>();
+    [[maybe_unused]] const auto &sys = mgr.get_system<another_test_system>();
     ASSERT_ANY_THROW(mgr.get_system<third_test_system>());
     ASSERT_ANY_THROW(mgr.get_system<fourth_test_system>());
 }
@@ -221,7 +228,6 @@ TEST_F(fixture_system, disable_multiple_systems)
     bool res = system_manager_.disable_systems<test_system, another_test_system>();
     ASSERT_TRUE(res);
     ASSERT_EQ(system_manager_.update(), 0u);
-
 }
 
 TEST_F(fixture_system, size)
@@ -238,37 +244,39 @@ TEST_F(fixture_system, size_per_system_type)
 }
 
 #ifndef _WIN32
-    TEST_F(fixture_system, load_plugins_from_non_existent_directory)
-    {
-        shiva::fs::copy("systems", "save", shiva::fs::copy_options::recursive);
-        shiva::fs::remove_all("systems");
-        ASSERT_FALSE(system_manager_.load_plugins());
-        shiva::fs::copy("save", "systems", shiva::fs::copy_options::recursive);
-        shiva::fs::remove_all("save");
-    }
 
-    TEST_F(fixture_system, fake_plugin)
-    {
-        std::ofstream outfile ("systems/test.so");
-        ASSERT_FALSE(system_manager_.load_plugins());
-        shiva::fs::remove("systems/test.so");
-    }
+TEST_F(fixture_system, load_plugins_from_non_existent_directory)
+{
+    shiva::fs::copy("systems", "save", shiva::fs::copy_options::recursive);
+    shiva::fs::remove_all("systems");
+    ASSERT_FALSE(system_manager_.load_plugins());
+    shiva::fs::copy("save", "systems", shiva::fs::copy_options::recursive);
+    shiva::fs::remove_all("save");
+}
 
-    TEST_F(fixture_system, plugin_not_regular_file)
-    {
-        std::ofstream outfile("systems/bidule.txt");
-        shiva::fs::create_symlink("systems/bidule.txt", "systems/symlink");
-        ASSERT_TRUE(system_manager_.load_plugins());
-        shiva::fs::remove("systems/bidule.txt");
-        shiva::fs::remove("systems/symlink");
-    }
+TEST_F(fixture_system, fake_plugin)
+{
+    std::ofstream outfile("systems/test.so");
+    ASSERT_FALSE(system_manager_.load_plugins());
+    shiva::fs::remove("systems/test.so");
+}
 
-    TEST_F(fixture_system, plugin_regular_file)
-    {
-        std::ofstream outfile("systems/regular_file.txt");
-        ASSERT_TRUE(system_manager_.load_plugins());
-        shiva::fs::remove("systems/regular_file.txt");
-    }
+TEST_F(fixture_system, plugin_not_regular_file)
+{
+    std::ofstream outfile("systems/bidule.txt");
+    shiva::fs::create_symlink("systems/bidule.txt", "systems/symlink");
+    ASSERT_TRUE(system_manager_.load_plugins());
+    shiva::fs::remove("systems/bidule.txt");
+    shiva::fs::remove("systems/symlink");
+}
+
+TEST_F(fixture_system, plugin_regular_file)
+{
+    std::ofstream outfile("systems/regular_file.txt");
+    ASSERT_TRUE(system_manager_.load_plugins());
+    shiva::fs::remove("systems/regular_file.txt");
+}
+
 #endif
 
 TEST_F(fixture_system, plugins)
@@ -322,4 +330,14 @@ TEST_F(fixture_system, remove_plugged_system)
     ASSERT_EQ(system_manager_.update(), 1u);
     ASSERT_EQ(system_manager_.update(), 0u);
     ASSERT_EQ(system_manager_.nb_systems(), 0u);
+}
+
+TEST_F(fixture_system, logic_system)
+{
+    system_manager_.load_systems<third_test_system>();
+    size_t accumulator = 0;
+    for (size_t idx = 0; idx < 60000; ++idx) {
+        accumulator += system_manager_.update();
+    }
+    ASSERT_GE(accumulator, 1u);
 }
