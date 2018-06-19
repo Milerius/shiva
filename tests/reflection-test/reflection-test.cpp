@@ -26,7 +26,7 @@ namespace
         double _d;
 
     public:
-        static constexpr auto reflectedMembers() noexcept
+        static constexpr auto reflected_members() noexcept
         {
             return shiva::meta::makeMap(
                 reflect_member(&i_like_refl::_i),
@@ -48,7 +48,7 @@ namespace
             return i;
         }
 
-        static constexpr auto reflectedFunctions() noexcept
+        static constexpr auto reflected_functions() noexcept
         {
             return shiva::meta::makeMap(reflect_function(&i_have_refl_member_functions::func));
         }
@@ -91,7 +91,7 @@ TEST(reflection, members)
         d = ilr.*dPtr;
     });
 
-    shiva::meta::for_each(i_like_refl::reflectedMembers(), visitor);
+    shiva::meta::for_each(i_like_refl::reflected_members(), visitor);
     ASSERT_EQ(i, 1);
     ASSERT_EQ(s, "salut");
     ASSERT_EQ(d, 3.2);
@@ -99,11 +99,11 @@ TEST(reflection, members)
     i = -1;
     s.clear();
 
-    shiva::refl::getMember(i_like_refl::reflectedMembers(), "_i"sv, visitor);
-    shiva::refl::getMember(i_like_refl::reflectedMembers(), "_s"sv, visitor);
-    auto dPtrOpt = shiva::refl::getMember<double i_like_refl::*>(i_like_refl::reflectedMembers(), "_d"sv);
-    auto emptyOpt = shiva::refl::getMember<char i_like_refl::*>(i_like_refl::reflectedMembers(), "_c"sv);
-    auto non_existent = shiva::refl::getMember<long i_like_refl::*>(i_like_refl::reflectedMembers(), "_s"sv);
+    shiva::refl::getMember(i_like_refl::reflected_members(), "_i"sv, visitor);
+    shiva::refl::getMember(i_like_refl::reflected_members(), "_s"sv, visitor);
+    auto dPtrOpt = shiva::refl::getMember<double i_like_refl::*>(i_like_refl::reflected_members(), "_d"sv);
+    auto emptyOpt = shiva::refl::getMember<char i_like_refl::*>(i_like_refl::reflected_members(), "_c"sv);
+    auto non_existent = shiva::refl::getMember<long i_like_refl::*>(i_like_refl::reflected_members(), "_s"sv);
 
     ASSERT_FALSE(non_existent);
     ASSERT_EQ(i, 1);
@@ -120,20 +120,20 @@ TEST(reflection, member_functions)
 
     int i = 0;
 
-    shiva::refl::getFunction(i_have_refl_member_functions::reflectedFunctions(), "func"sv, ([&i](auto &&, auto &&v) {
+    shiva::refl::getFunction(i_have_refl_member_functions::reflected_functions(), "func"sv, ([&i](auto &&, auto &&v) {
         i_have_refl_member_functions iharmf;
         i = std::invoke(v, iharmf, 1);
     }));
     ASSERT_EQ(i, 1);
 
     i_have_refl_member_functions iharf2;
-    i = shiva::refl::callFunction<int(int)>(i_have_refl_member_functions::reflectedFunctions(), "func", &iharf2, 2);
+    i = shiva::refl::callFunction<int(int)>(i_have_refl_member_functions::reflected_functions(), "func", &iharf2, 2);
     ASSERT_EQ(i, 2);
 
-    i = shiva::refl::callFunction<int(int)>(i_have_refl_member_functions::reflectedFunctions(), "func", iharf2, 3);
+    i = shiva::refl::callFunction<int(int)>(i_have_refl_member_functions::reflected_functions(), "func", iharf2, 3);
     ASSERT_EQ(i, 3);
 
-    ASSERT_THROW(shiva::refl::callFunction<int()>(i_have_refl_member_functions::reflectedFunctions(), "lala", iharf2),
+    ASSERT_THROW(shiva::refl::callFunction<int()>(i_have_refl_member_functions::reflected_functions(), "lala", iharf2),
                  shiva::refl::MemberNotFound);
     shiva::refl::MemberNotFound mnf;
 

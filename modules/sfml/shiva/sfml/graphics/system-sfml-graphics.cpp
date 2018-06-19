@@ -17,7 +17,11 @@ namespace shiva::plugins
 
     void shiva::plugins::render_system::update() noexcept
     {
-        return;
+        win_.clear(sf::Color::Red);
+        sf::CircleShape shape(50);
+        shape.setFillColor(sf::Color(100, 250, 50));
+        win_.draw(shape);
+        win_.display();
     }
 }
 

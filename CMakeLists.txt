@@ -27,6 +27,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 include(library)
 
 
+add_subdirectory(${CMAKE_SOURCE_DIR}/vendor/spdlog)
+
 ##! Project modules
 add_subdirectory(modules)
 

@@ -10,6 +10,7 @@
 #include <EASTL/allocator_malloc.h>
 #include <boost/dll.hpp>
 #include <shiva/filesystem/filesystem.hpp>
+#include <shiva/spdlog/spdlog.hpp>
 
 namespace shiva::helpers
 {
@@ -38,11 +39,14 @@ namespace shiva::helpers
     private:
         symbols_container symbols;
         shiva::fs::path plugins_directory_;
+        shiva::logging::logger log_{shiva::log::stdout_color_mt("plugins_registry")};
 
     public:
         explicit plugins_registry(shiva::fs::path &&plugins_directory) noexcept :
             plugins_directory_{plugins_directory}
         {
+            log_->info("plugins_registry directory: {}", plugins_directory.string());
+            log_->info("plugins_registry successfully created.");
         }
 
         bool load_all_symbols() noexcept
@@ -65,11 +69,10 @@ namespace shiva::helpers
                             "create_plugin",
                             dll::load_mode::append_decorations
                         ));
-                    std::cout << std::endl;
-                    std::cout << "Successfully loaded: " << it->path().filename() << std::endl;
+                    log_->info("Successfully loaded: {}", it->path().filename().string());
                 }
                 catch (const boost::system::system_error &error) {
-                    std::cerr << it->path().filename() << ": " << error.what() << std::endl;
+                    log_->error("error loading: {0} -> {1}", it->path().filename().string(), error.what());
                     res = false;
                 }
             }

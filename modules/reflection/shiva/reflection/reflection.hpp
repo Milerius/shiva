@@ -16,10 +16,10 @@
 namespace shiva::refl
 {
     template <typename T>
-    using member_map_t = decltype(T::reflectedMembers());
+    using member_map_t = decltype(T::reflected_members());
 
     template <typename T>
-    using function_map_t = decltype(T::reflectedFunctions());
+    using function_map_t = decltype(T::reflected_functions());
 
     template <typename T>
     using class_name_t = decltype(T::class_name());

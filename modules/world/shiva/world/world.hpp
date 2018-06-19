@@ -12,6 +12,7 @@ namespace shiva
     class world
     {
     public:
+        virtual ~world() noexcept = default;
         world() noexcept
         {
             dispatcher_.sink<shiva::event::quit_game>().connect(this);
@@ -19,6 +20,7 @@ namespace shiva
 
         int run() noexcept
         {
+            dispatcher_.trigger<shiva::event::start_game>();
             is_running = true;
             while (is_running) {
                 system_manager_.update();
@@ -27,10 +29,11 @@ namespace shiva
         }
 
         //! Callbacks
-        void receive([[maybe_unused]] const shiva::event::quit_game &evt) noexcept
+        void receive(const shiva::event::quit_game &evt) noexcept
         {
             is_running = false;
             game_return_value_ = evt.return_value_;
+
         }
 
     protected:
