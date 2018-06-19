@@ -11,6 +11,11 @@ namespace shiva::examples::sfml
     class example_world : public shiva::world
     {
     public:
+        ~example_world() noexcept override
+        {
+
+        }
+
         example_world() noexcept
         {
             system_manager_.load_plugins();

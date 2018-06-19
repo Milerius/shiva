@@ -15,6 +15,7 @@ project(shiva VERSION 0.2)
 enable_testing()
 
 ##! Project options
+SET(SPDLOG_BUILD_TESTING OFF CACHE BOOL "Override option" FORCE)
 option(SHIVA_BUILD_TESTS "Build tests of shiva C++ engine" ON)
 option(SHIVA_BUILD_EXAMPLES "Build examples of shiva C++ engine" OFF)
 option(SHIVA_USE_SFML_AS_RENDERER "Build shiva with SFML rendering" OFF)
@@ -26,6 +27,8 @@ option(USE_CLION_AS_IDE "Workaround for install header only library option, put 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 include(library)
 
+
+add_subdirectory(${CMAKE_SOURCE_DIR}/vendor/spdlog)
 
 ##! Project modules
 add_subdirectory(modules)

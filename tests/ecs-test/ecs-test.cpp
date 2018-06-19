@@ -32,12 +32,14 @@ class fixture_system : public ::shiva::world, public ::testing::Test
 protected:
     void SetUp() override
     {
+        spdlog::set_pattern("[%n][%r][pid: %P][%^%l%$]: %v");
         dispatcher_.trigger<shiva::event::start_game>();
         entity_registry_.create();
     }
 
     void TearDown() override
     {
+        spdlog::drop_all();
     }
 };
 
@@ -113,6 +115,7 @@ TEST(ecs_testing, constructor)
     entt::Dispatcher dispatcher{};
     entt::DefaultRegistry registry{};
     shiva::ecs::system_manager manager(dispatcher, registry);
+    spdlog::drop_all();
     ASSERT_EQ(1, 1);
 }
 

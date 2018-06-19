@@ -9,6 +9,12 @@ configuration:
 platform:
   - x64
 
+clone_script:
+- ps: git clone -q $("--branch=" + $env:APPVEYOR_REPO_BRANCH) $("https://github.com/" + $env:APPVEYOR_REPO_NAME + ".git") $env:APPVEYOR_BUILD_FOLDER
+- ps: if (!$env:APPVEYOR_PULL_REQUEST_NUMBER) {$("git checkout -qf " + $env:APPVEYOR_REPO_COMMIT)}
+- ps: if ($env:APPVEYOR_PULL_REQUEST_NUMBER) {git fetch -q origin +refs/pull/$($env:APPVEYOR_PULL_REQUEST_NUMBER)/merge; git checkout -qf FETCH_HEAD}
+- ps: git submodule update -q --init --recursive
+
 environment:
   COVERALLS_REPO_TOKEN:
     secure: OeiEbVD/GyXcTszuevj0hbzNY+qPceIbh9EP/3Dk+13B5mQbGYx6mXrrlqYYOtZ/
@@ -32,7 +38,7 @@ install:
           cd C:\tools\vcpkg
           git --no-pager log --decorate=short --pretty=oneline -n10
           git pull
-          vcpkg install boost-filesystem:x64-Windows boost-stacktrace:x64-Windows sfml:x64-Windows-static gtest:x64-Windows entt:x64-Windows eastl:x64-Windows boost-dll:x64-Windows boost-function:x64-Windows
+          vcpkg install boost-filesystem:x64-Windows boost-stacktrace:x64-Windows gtest:x64-Windows entt:x64-Windows eastl:x64-Windows boost-dll:x64-Windows
           cd $env:APPVEYOR_BUILD_FOLDER
         } else {
           pip install --user cpp-coveralls
@@ -42,7 +48,7 @@ install:
           (sudo apt-get update -y) -and (sudo apt-get install g++-7 -y) -and (sudo apt-get install make -y)
           sudo apt-get install lcov -y
           sh bootstrap-vcpkg.sh
-          ./vcpkg install gtest entt eastl boost-stacktrace boost-filesystem boost-dll boost-function sfml
+          ./vcpkg install gtest entt eastl boost-stacktrace boost-filesystem boost-dll
           cd /home/appveyor/projects/shiva
         }
 
