@@ -19,10 +19,7 @@ namespace shiva::plugins
             this->dispatcher_.trigger<shiva::sfml::event::set_render_window>(win_);
         }
 
-        ~render_system() noexcept override
-        {
-            //dispatcher_.sink<shiva::event::after_load_systems_plugins>().disconnect(this);
-        }
+        ~render_system() noexcept override = default;
 
         render_system(shiva::entt::dispatcher& dispatcher, shiva::entt::entity_registry &registry, const float& fixed_delta_time) noexcept :
         system(dispatcher, registry, fixed_delta_time)

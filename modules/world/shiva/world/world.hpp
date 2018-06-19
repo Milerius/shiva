@@ -13,7 +13,9 @@ namespace shiva
     {
     public:
         virtual ~world() noexcept = default;
-        world() noexcept
+
+        world(fs::path plugin_path = fs::current_path() /= "systems") noexcept : plugins_registry_(
+            std::move(plugin_path))
         {
             dispatcher_.sink<shiva::event::quit_game>().connect(this);
         }
@@ -33,14 +35,15 @@ namespace shiva
         {
             is_running = false;
             game_return_value_ = evt.return_value_;
-
         }
 
     protected:
+        using plugins_registry_t = shiva::helpers::plugins_registry<shiva::ecs::system_manager::pluginapi_create_t>;
+        plugins_registry_t plugins_registry_;
         shiva::entt::dispatcher dispatcher_;
         shiva::entt::entity_registry entity_registry_;
         shiva::error::general_handler error_handler{dispatcher_, entity_registry_};
-        shiva::ecs::system_manager system_manager_{dispatcher_, entity_registry_};
+        shiva::ecs::system_manager system_manager_{dispatcher_, entity_registry_, plugins_registry_};
         bool is_running{false};
         int game_return_value_{0};
     };

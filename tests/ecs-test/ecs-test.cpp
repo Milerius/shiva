@@ -114,7 +114,8 @@ TEST(ecs_testing, constructor)
 {
     entt::Dispatcher dispatcher{};
     entt::DefaultRegistry registry{};
-    shiva::ecs::system_manager manager(dispatcher, registry);
+    shiva::helpers::plugins_registry<shiva::ecs::system_manager::pluginapi_create_t> plugins(shiva::fs::path("systems"));
+    shiva::ecs::system_manager manager(dispatcher, registry, plugins);
     spdlog::drop_all();
     ASSERT_EQ(1, 1);
 }
