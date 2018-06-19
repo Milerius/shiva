@@ -24,6 +24,7 @@ namespace shiva::error
             shiva::bs::safe_dump_to((shiva::fs::temp_directory_path() /= "backtrace.dump").string().c_str());
             ::raise(SIGABRT);
         }
+
         void receive(const shiva::event::fatal_error_occured &evt)
         {
             using namespace std::string_literals;
@@ -31,8 +32,10 @@ namespace shiva::error
                 this->entity_registry_.destroy(entity);
             });
             dispatcher_.trigger<shiva::event::quit_game>(evt.ec_.value());
-            std::cerr << shiva::bs::stacktrace() << std::endl;
-            shiva::bs::safe_dump_to(backtrace_path_.string().c_str());
+            if (auto &&bs = shiva::bs::stacktrace()) {
+                log_->critical("backtrace:\n {}", shiva::bs::detail::to_string(&bs.as_vector()[0], bs.size()));
+                shiva::bs::safe_dump_to(backtrace_path_.string().c_str());
+            }
             throw std::logic_error("fatal_error_occured: "s + evt.ec_.message());
         }
 
@@ -45,13 +48,17 @@ namespace shiva::error
             if (shiva::fs::exists(backtrace_path_)) {
                 std::ifstream ifs(backtrace_path_.string());
                 shiva::bs::stacktrace st = shiva::bs::stacktrace::from_dump(ifs);
-                std::cerr << "Previous run crashed:\n" << st << std::endl;
+                if (st) {
+                    log_->warn("previous run crashed:\n {}",
+                               shiva::bs::detail::to_string(&st.as_vector()[0], st.size()));
+                }
                 ifs.close();
                 shiva::fs::remove(backtrace_path_);
             }
         }
 
     private:
+        shiva::logging::logger log_{shiva::log::stdout_color_mt("general_error_handler")};
         entt::dispatcher &dispatcher_;
         entt::entity_registry &entity_registry_;
         shiva::fs::path backtrace_path_{shiva::fs::temp_directory_path() /= "backtrace.dump"};

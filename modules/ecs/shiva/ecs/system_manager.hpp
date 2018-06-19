@@ -52,10 +52,10 @@ namespace shiva::ecs
 
         explicit system_manager(entt::dispatcher &dispatcher,
                                 entt::entity_registry &registry,
-                                fs::path plugin_path = fs::current_path() /= "systems") noexcept :
+                                plugins_registry_t &plugins_registry) noexcept :
             dispatcher_(dispatcher),
             ett_registry_(registry),
-            plugins_registry_{std::move(plugin_path)}
+            plugins_registry_(plugins_registry)
         {
             dispatcher_.sink<shiva::event::start_game>().connect(this);
             dispatcher_.sink<shiva::event::quit_game>().connect(this);
@@ -313,7 +313,7 @@ namespace shiva::ecs
         shiva::timer::time_step timestep_;
         entt::dispatcher &dispatcher_;
         entt::entity_registry &ett_registry_;
-        shiva::helpers::plugins_registry<pluginapi_create_t> plugins_registry_;
+        plugins_registry_t &plugins_registry_;
         system_registry systems_{{}};
         bool need_to_sweep_systems_{false};
         std::shared_ptr<spdlog::logger> log_{shiva::log::stdout_color_mt("system_manager")};
