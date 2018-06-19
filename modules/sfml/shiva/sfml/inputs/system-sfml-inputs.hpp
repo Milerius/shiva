@@ -18,10 +18,7 @@ namespace shiva::plugins
             win_ = evt.win;
         }
 
-        ~input_system() noexcept override
-        {
-            dispatcher_.remove_wrapper<shiva::sfml::event::set_render_window>();
-        }
+        ~input_system() noexcept override = default;
 
         input_system(shiva::entt::dispatcher &dispatcher, shiva::entt::entity_registry &registry,
                      const float &fixed_delta_time) noexcept :
