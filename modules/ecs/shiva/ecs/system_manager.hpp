@@ -17,8 +17,10 @@
 #include <shiva/event/fatal_error_occured.hpp>
 #include <shiva/event/quit_game.hpp>
 #include <shiva/event/start_game.hpp>
+#include <shiva/event/after_load_systems_plugins.hpp>
 #include <shiva/dll/plugins_registry.hpp>
 #include <shiva/timer/timestep.hpp>
+#include <shiva/spdlog/spdlog.hpp>
 
 namespace shiva::ecs
 {
@@ -28,12 +30,14 @@ namespace shiva::ecs
         using system_ptr = std::unique_ptr<base_system>;
         using system_array = eastl::vector<system_ptr, eastl::allocator_malloc>;
         using system_registry = eastl::array<system_array, size>;
-        typedef system_ptr (pluginapi_create_t)(shiva::entt::dispatcher &, shiva::entt::entity_registry &);
+        typedef system_ptr (pluginapi_create_t)(shiva::entt::dispatcher &, shiva::entt::entity_registry &,
+                                                const float &fixed_delta_time);
         using plugins_registry_t = shiva::helpers::plugins_registry<pluginapi_create_t>;
 
         //! Callbacks
         void receive([[maybe_unused]] const shiva::event::quit_game &evt)
         {
+            log_->info("quit_game event received");
             shiva::ranges::for_each(systems_, [](auto &&vec) {
                 shiva::ranges::for_each(vec, [](auto &&sys) {
                     sys->disable();
@@ -55,6 +59,7 @@ namespace shiva::ecs
         {
             dispatcher_.sink<shiva::event::start_game>().connect(this);
             dispatcher_.sink<shiva::event::quit_game>().connect(this);
+            log_->info("system_manager successfully created");
         }
 
         size_t update() noexcept
@@ -237,11 +242,12 @@ namespace shiva::ecs
         {
             auto res = plugins_registry_.load_all_symbols();
             auto functor = [this](auto &&dlls) {
-                system_ptr ptr = dlls(this->dispatcher_, this->ett_registry_);
+                system_ptr ptr = dlls(this->dispatcher_, this->ett_registry_, this->timestep_.get_fixed_delta_time());
                 add_system_(std::move(ptr), ptr->get_system_type_RTTI()).im_a_plugin();
             };
 
             plugins_registry_.apply_on_each_symbols(functor);
+            dispatcher_.trigger<shiva::event::after_load_systems_plugins>();
             return res;
         }
 
@@ -310,5 +316,6 @@ namespace shiva::ecs
         shiva::helpers::plugins_registry<pluginapi_create_t> plugins_registry_;
         system_registry systems_{{}};
         bool need_to_sweep_systems_{false};
+        std::shared_ptr<spdlog::logger> log_{shiva::log::stdout_color_mt("system_manager")};
     };
 }

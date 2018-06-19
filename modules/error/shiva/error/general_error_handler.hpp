@@ -4,7 +4,8 @@
 
 #pragma once
 
-#include <string.h>
+#include <signal.h>
+#include <string>
 #include <iostream>
 #include <fstream>
 #include <shiva/filesystem/filesystem.hpp>
@@ -16,6 +17,13 @@ namespace shiva::error
     class general_handler
     {
     public:
+        static void handler(int signum)
+        {
+            std::cerr << "received: " << signum << std::endl;
+            std::cerr << shiva::bs::stacktrace() << std::endl;
+            shiva::bs::safe_dump_to((shiva::fs::temp_directory_path() /= "backtrace.dump").string().c_str());
+            ::raise(SIGABRT);
+        }
         void receive(const shiva::event::fatal_error_occured &evt)
         {
             using namespace std::string_literals;
@@ -33,6 +41,7 @@ namespace shiva::error
             entity_registry_(entity_registry)
         {
             this->dispatcher_.sink<shiva::event::fatal_error_occured>().connect(this);
+            signal(SIGSEGV, general_handler::handler);
             if (shiva::fs::exists(backtrace_path_)) {
                 std::ifstream ifs(backtrace_path_.string());
                 shiva::bs::stacktrace st = shiva::bs::stacktrace::from_dump(ifs);

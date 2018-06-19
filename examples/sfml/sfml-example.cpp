@@ -6,6 +6,14 @@
 
 int main()
 {
-    shiva::examples::sfml::example_world world;
-    return world.run();
+    int res = 0;
+    try {
+        spdlog::set_pattern("[%n][%r][pid: %P][%^%l%$]: %v");
+        shiva::examples::sfml::example_world world;
+        res = world.run();
+    }
+    catch (...) {
+
+    }
+    return res;
 }
