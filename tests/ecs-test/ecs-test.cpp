@@ -30,6 +30,10 @@ public:
 class fixture_system : public ::shiva::world, public ::testing::Test
 {
 protected:
+    fixture_system() : shiva::world(shiva::fs::path("systems_test"))
+    {
+
+    }
     void SetUp() override
     {
         spdlog::set_pattern("[%n][%r][pid: %P][%^%l%$]: %v");
@@ -251,34 +255,34 @@ TEST_F(fixture_system, size_per_system_type)
 
 TEST_F(fixture_system, load_plugins_from_non_existent_directory)
 {
-    shiva::fs::copy("systems", "save", shiva::fs::copy_options::recursive);
-    shiva::fs::remove_all("systems");
+    shiva::fs::copy("systems_test", "save", shiva::fs::copy_options::recursive);
+    shiva::fs::remove_all("systems_test");
     ASSERT_FALSE(system_manager_.load_plugins());
-    shiva::fs::copy("save", "systems", shiva::fs::copy_options::recursive);
+    shiva::fs::copy("save", "systems_test", shiva::fs::copy_options::recursive);
     shiva::fs::remove_all("save");
 }
 
 TEST_F(fixture_system, fake_plugin)
 {
-    std::ofstream outfile("systems/test.so");
+    std::ofstream outfile("systems_test/test.so");
     ASSERT_FALSE(system_manager_.load_plugins());
-    shiva::fs::remove("systems/test.so");
+    shiva::fs::remove("systems_test/test.so");
 }
 
 TEST_F(fixture_system, plugin_not_regular_file)
 {
-    std::ofstream outfile("systems/bidule.txt");
-    shiva::fs::create_symlink("systems/bidule.txt", "systems/symlink");
+    std::ofstream outfile("systems_test/bidule.txt");
+    shiva::fs::create_symlink("systems_test/bidule.txt", "systems_test/symlink");
     ASSERT_TRUE(system_manager_.load_plugins());
-    shiva::fs::remove("systems/bidule.txt");
-    shiva::fs::remove("systems/symlink");
+    shiva::fs::remove("systems_test/bidule.txt");
+    shiva::fs::remove("systems_test/symlink");
 }
 
 TEST_F(fixture_system, plugin_regular_file)
 {
-    std::ofstream outfile("systems/regular_file.txt");
+    std::ofstream outfile("systems_test/regular_file.txt");
     ASSERT_TRUE(system_manager_.load_plugins());
-    shiva::fs::remove("systems/regular_file.txt");
+    shiva::fs::remove("systems_test/regular_file.txt");
 }
 
 #endif
