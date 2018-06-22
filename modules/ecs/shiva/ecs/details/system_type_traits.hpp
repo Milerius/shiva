@@ -24,10 +24,10 @@ namespace shiva::ecs::details
             return false;
     }
 
-    using valid_systems_list = meta::TypeList<system_pre_update, system_logic_update, system_post_update>;
+    using valid_systems_list = meta::type_list<system_pre_update, system_logic_update, system_post_update>;
 
     template <typename ...Types>
-    static constexpr bool is_valid_system_v(meta::TypeList<Types...>) noexcept
+    static constexpr bool is_valid_system_v(meta::type_list<Types...>) noexcept
     {
         return std::disjunction_v<Types ...>;
     }

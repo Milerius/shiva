@@ -1,0 +1,7 @@
+include(CMakeSources.cmake)
+set(MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
+CREATE_MODULE(shiva::lua "${MODULE_SOURCES}" ${MODULE_PATH})
+find_package(Lua 5.3)
+target_link_libraries(lua INTERFACE shiva::ecs ${LUA_LIBRARIES})
+target_include_directories(lua INTERFACE ${LUA_INCLUDE_DIR})
+AUTO_TARGETS_MODULE_INSTALL(lua)

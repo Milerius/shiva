@@ -15,6 +15,7 @@ project(shiva VERSION 0.2)
 enable_testing()
 
 ##! Project options
+##TODO: Remove spdlog submodules and use vcpkg once it's will be updated
 SET(SPDLOG_BUILD_TESTING OFF CACHE BOOL "Override option" FORCE)
 option(SHIVA_BUILD_TESTS "Build tests of shiva C++ engine" ON)
 option(SHIVA_BUILD_EXAMPLES "Build examples of shiva C++ engine" OFF)
@@ -61,6 +62,7 @@ target_link_libraries(shiva INTERFACE
         shiva::ecs
         shiva::enums
         shiva::world
+        shiva::lua
         )
 
 ##! Install

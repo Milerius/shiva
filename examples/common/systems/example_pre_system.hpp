@@ -12,9 +12,8 @@ namespace shiva::examples
     class pre_system : public shiva::ecs::post_update_system<pre_system>
     {
     public:
-        reflect_class(pre_system);
-
-        pre_system(shiva::entt::dispatcher &dispatcher, shiva::entt::entity_registry &registry, const float& fixed_delta_time) :
+        pre_system(shiva::entt::dispatcher &dispatcher, shiva::entt::entity_registry &registry,
+                   const float &fixed_delta_time) :
             system(dispatcher, registry, fixed_delta_time)
         {
         }
@@ -24,8 +23,22 @@ namespace shiva::examples
             if (counter == 10) {
                 this->dispatcher_.trigger<shiva::event::quit_game>(0);
             }
-            std::cout << __FUNCTION__ << " name: "  << class_name() << std::endl;
+            std::cout << __FUNCTION__ << " name: " << class_name() << std::endl;
             counter++;
+        }
+
+    public:
+        //Reflection
+        reflect_class(pre_system);
+
+        static constexpr auto reflected_functions() noexcept
+        {
+            return meta::makeMap(reflect_function(&pre_system::update));
+        }
+
+        static constexpr auto reflected_members() noexcept
+        {
+            return meta::makeMap();
         }
 
     private:
