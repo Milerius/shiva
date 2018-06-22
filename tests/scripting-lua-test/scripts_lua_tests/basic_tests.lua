@@ -21,6 +21,7 @@ end
 function test_component()
     local entity_id = shiva.entity_registry:create()
     local component = shiva.entity_registry:add_layer_1_component(entity_id)
+    local same_component = shiva.entity_registry:get_layer_1_component(entity_id)
     assert(shiva.entity_registry:has_layer_1_component(entity_id) == true, "should be true")
     shiva.entity_registry:remove_layer_1_component(entity_id)
     assert(shiva.entity_registry:has_layer_1_component(entity_id) == false, "should be false")

@@ -27,6 +27,7 @@ protected:
         system_ptr->register_types_list(fixture_world::systems_list{});
         system_ptr->register_world();
         system_ptr->load_script("basic_tests.lua");
+        system_ptr->update();
     }
 
     void TearDown() override
