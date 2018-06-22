@@ -6,7 +6,7 @@
 #include <systems/all_systems.hpp>
 #include <shiva/world/world.hpp>
 
-class fixture_scripting : public ::shiva::world, public ::testing::Test
+class fixture_world : public ::shiva::world, public ::testing::Test
 {
 protected:
     void SetUp() override
