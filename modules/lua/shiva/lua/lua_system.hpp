@@ -8,6 +8,11 @@
 #include <shiva/ecs/system.hpp>
 #include <sol/state.hpp>
 
+namespace sol {
+    template <>
+    struct is_automagical<shiva::entt::entity_registry> : std::false_type {};
+}
+
 namespace shiva::scripting
 {
     class lua_system : public shiva::ecs::logic_update_system<lua_system>
