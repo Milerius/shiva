@@ -18,6 +18,7 @@
 #include <shiva/event/quit_game.hpp>
 #include <shiva/event/start_game.hpp>
 #include <shiva/event/after_load_systems_plugins.hpp>
+#include <shiva/event/add_base_system.hpp>
 #include <shiva/dll/plugins_registry.hpp>
 #include <shiva/timer/timestep.hpp>
 #include <shiva/spdlog/spdlog.hpp>
@@ -50,6 +51,11 @@ namespace shiva::ecs
             timestep_.start();
         }
 
+        void receive(const shiva::event::add_base_system &evt)
+        {
+            add_system_(std::move(const_cast<shiva::event::add_base_system &>(evt).system_ptr), evt.system_ptr->get_system_type_RTTI());
+        }
+
         explicit system_manager(entt::dispatcher &dispatcher,
                                 entt::entity_registry &registry,
                                 plugins_registry_t &plugins_registry) noexcept :
@@ -59,6 +65,7 @@ namespace shiva::ecs
         {
             dispatcher_.sink<shiva::event::start_game>().connect(this);
             dispatcher_.sink<shiva::event::quit_game>().connect(this);
+            dispatcher_.sink<shiva::event::add_base_system>().connect(this);
             log_->info("system_manager successfully created");
         }
 
@@ -254,6 +261,7 @@ namespace shiva::ecs
     private:
         base_system &add_system_(system_ptr &&system, system_type sys_type) noexcept
         {
+            log_->info("successfully added system: {}", system->get_name());
             return *systems_[sys_type].emplace_back(std::move(system));
         }
 

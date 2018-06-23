@@ -4,13 +4,18 @@
 
 #pragma once
 
+#include <sol/state.hpp>
 #include <shiva/filesystem/filesystem.hpp>
 #include <shiva/ecs/system.hpp>
-#include <sol/state.hpp>
+#include <shiva/event/add_base_system.hpp>
+#include "scripted_system.hpp"
 
-namespace sol {
+namespace sol
+{
     template <>
-    struct is_automagical<shiva::entt::entity_registry> : std::false_type {};
+    struct is_automagical<shiva::entt::entity_registry> : std::false_type
+    {
+    };
 }
 
 namespace shiva::scripting
@@ -60,6 +65,12 @@ namespace shiva::scripting
             script_directory_(std::move(scripts_directory))
         {
             state_.open_libraries();
+            state_.new_enum<shiva::ecs::system_type>("system_type",
+                                                     {
+                                                         {"pre_update",   shiva::ecs::system_type::pre_update},
+                                                         {"post_update",  shiva::ecs::system_type::post_update},
+                                                         {"logic_update", shiva::ecs::system_type::logic_update}
+                                                     });
             disable();
         }
 
@@ -92,7 +103,8 @@ namespace shiva::scripting
 
         void register_world() noexcept
         {
-            state_["shiva"] = state_.create_table_with("entity_registry", std::ref(entity_registry_));
+            state_["shiva"] = state_.create_table_with("entity_registry", std::ref(entity_registry_),
+                                                       "fixed_delta_time", fixed_delta_time_);
         }
 
         void load_script(const std::string &file_name) noexcept
@@ -120,6 +132,37 @@ namespace shiva::scripting
 
         void update() noexcept override
         {
+        }
+
+        void create_scripted_system(const shiva::fs::path &script_name)
+        {
+            load_script(script_name.string());
+            auto table_name = script_name.stem().string() + "_table";
+            log_->info("table: {}", table_name);
+            shiva::ecs::system_type sys_type = state_[table_name]["current_system_type"];
+            log_->info("system_type: {}", sys_type);
+            switch (sys_type) {
+                case shiva::ecs::post_update:
+                    dispatcher_.trigger<shiva::event::add_base_system>(
+                        std::make_unique<shiva::ecs::post_scripted_system>(dispatcher_, entity_registry_,
+                                                                           fixed_delta_time_, state_, table_name,
+                                                                           script_name.stem()));
+                    break;
+                case shiva::ecs::pre_update:
+                    dispatcher_.trigger<shiva::event::add_base_system>(
+                        std::make_unique<shiva::ecs::pre_scripted_system>(dispatcher_, entity_registry_,
+                                                                          fixed_delta_time_, state_, table_name,
+                                                                          script_name.stem()));
+                    break;
+                case shiva::ecs::logic_update:
+                    dispatcher_.trigger<shiva::event::add_base_system>(
+                        std::make_unique<shiva::ecs::logic_scripted_system>(dispatcher_, entity_registry_,
+                                                                            fixed_delta_time_, state_, table_name,
+                                                                            script_name.stem()));
+                    break;
+                default:
+                    break;
+            }
         }
 
     public:

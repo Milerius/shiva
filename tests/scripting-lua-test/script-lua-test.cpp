@@ -5,6 +5,7 @@
 #include <gtest/gtest.h>
 #include <shiva/world/world.hpp>
 #include <shiva/lua/lua_system.hpp>
+#include <shiva/lua/scripted_system.hpp>
 #include <shiva/ecs/components/all.hpp>
 #include <systems/all_systems.hpp>
 
@@ -28,6 +29,7 @@ protected:
         system_ptr->register_world();
         system_ptr->load_script("basic_tests.lua");
         system_ptr->update();
+        dispatcher_.trigger<shiva::event::start_game>();
     }
 
     void TearDown() override
@@ -58,4 +60,11 @@ TEST_F(fixture_scripting, components)
     sol::state &state = system_ptr->get_state();
     bool res = state["test_component"]();
     ASSERT_TRUE(res);
+}
+
+TEST_F(fixture_scripting, systems)
+{
+    system_ptr->create_scripted_system(shiva::fs::path("example_system.lua"));
+    int i = 0;
+    ASSERT_EQ(system_manager_.update(), 1u);
 }
