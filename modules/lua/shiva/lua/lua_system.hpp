@@ -60,9 +60,12 @@ namespace shiva::scripting
         lua_system(entt::dispatcher &dispatcher,
                    entt::entity_registry &entity_registry,
                    const float &fixed_delta_time,
-                   shiva::fs::path scripts_directory = shiva::fs::current_path() / "scripts") noexcept :
+                   shiva::fs::path scripts_directory = shiva::fs::current_path() / "scripts",
+                   shiva::fs::path systems_scripts_directory = shiva::fs::current_path() / fs::path("scripts") /
+                                                               "systems") noexcept :
             system(dispatcher, entity_registry, fixed_delta_time),
-            script_directory_(std::move(scripts_directory))
+            script_directory_(std::move(scripts_directory)),
+            systems_scripts_directory_(std::move(systems_scripts_directory))
         {
             state_.open_libraries();
             state_.new_enum<shiva::ecs::system_type>("system_type",
@@ -107,14 +110,21 @@ namespace shiva::scripting
                                                        "fixed_delta_time", fixed_delta_time_);
         }
 
-        void load_script(const std::string &file_name) noexcept
+        bool load_script(const std::string &file_name, const fs::path &script_directory) noexcept
         {
             try {
-                state_.script_file((script_directory_ / fs::path(file_name)).string());
+                state_.script_file((script_directory / fs::path(file_name)).string());
                 log_->debug("successfully register script: {}", file_name);
             } catch (const std::exception &e) {
                 log_->error("error when loading script {0}: {1}", file_name, e.what());
+                return false;
             }
+            return true;
+        }
+
+        bool load_script(const std::string &file_name) noexcept
+        {
+            return load_script(file_name, script_directory_);
         }
 
         template <typename ...Types>
@@ -134,10 +144,12 @@ namespace shiva::scripting
         {
         }
 
-        void create_scripted_system(const shiva::fs::path &script_name)
+        bool create_scripted_system(const shiva::fs::path &script_name)
         {
-            load_script(script_name.string());
-            auto table_name = script_name.stem().string() + "_table";
+            bool res = load_script(script_name.filename().string(), systems_scripts_directory_);
+            if (!res)
+                return false;
+            auto table_name = script_name.filename().stem().string() + "_table";
             log_->info("table: {}", table_name);
             shiva::ecs::system_type sys_type = state_[table_name]["current_system_type"];
             log_->info("system_type: {}", sys_type);
@@ -146,23 +158,38 @@ namespace shiva::scripting
                     dispatcher_.trigger<shiva::event::add_base_system>(
                         std::make_unique<shiva::ecs::post_scripted_system>(dispatcher_, entity_registry_,
                                                                            fixed_delta_time_, state_, table_name,
-                                                                           script_name.stem()));
+                                                                           script_name.filename().stem()));
                     break;
                 case shiva::ecs::pre_update:
                     dispatcher_.trigger<shiva::event::add_base_system>(
                         std::make_unique<shiva::ecs::pre_scripted_system>(dispatcher_, entity_registry_,
                                                                           fixed_delta_time_, state_, table_name,
-                                                                          script_name.stem()));
+                                                                          script_name.filename().stem()));
                     break;
                 case shiva::ecs::logic_update:
                     dispatcher_.trigger<shiva::event::add_base_system>(
                         std::make_unique<shiva::ecs::logic_scripted_system>(dispatcher_, entity_registry_,
                                                                             fixed_delta_time_, state_, table_name,
-                                                                            script_name.stem()));
+                                                                            script_name.filename().stem()));
                     break;
                 default:
                     break;
             }
+            return res;
+        }
+
+        bool load_all_scripted_systems() noexcept
+        {
+            bool res = true;
+            fs::recursive_directory_iterator endit;
+            for (fs::recursive_directory_iterator it(systems_scripts_directory_); it != endit; ++it) {
+                if (!fs::is_regular_file(*it)) {
+                    continue;
+                }
+                log_->info("path -> {}", it->path().string());
+                res &= create_scripted_system(it->path());
+            }
+            return true;
         }
 
     public:
@@ -188,6 +215,7 @@ namespace shiva::scripting
     private:
         sol::state state_;
         shiva::fs::path script_directory_;
+        shiva::fs::path systems_scripts_directory_;
         shiva::logging::logger log_{shiva::log::stdout_color_mt("lua_system")};
     };
 }

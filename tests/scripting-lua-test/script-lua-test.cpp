@@ -22,12 +22,13 @@ protected:
             shiva::fs::current_path().parent_path() / shiva::fs::path("tests/scripting-lua-test/scripts_lua_tests"),
             shiva::fs::current_path() / shiva::fs::path("scripts_lua_tests"),
             shiva::fs::copy_options::overwrite_existing | shiva::fs::copy_options::recursive);
-        system_ptr = std::addressof(system_manager_.create_system<shiva::scripting::lua_system>("scripts_lua_tests"));
+        system_ptr = std::addressof(system_manager_.create_system<shiva::scripting::lua_system>("scripts_lua_tests",
+            "scripts_lua_tests/systems"));
         system_ptr->register_entity_registry();
         system_ptr->register_components(shiva::ecs::common_components{});
         system_ptr->register_types_list(fixture_scripting::systems_list{});
         system_ptr->register_world();
-        system_ptr->load_script("basic_tests.lua");
+        ASSERT_TRUE(system_ptr->load_script("basic_tests.lua"));
         system_ptr->update();
         dispatcher_.trigger<shiva::event::start_game>();
     }
@@ -64,7 +65,6 @@ TEST_F(fixture_scripting, components)
 
 TEST_F(fixture_scripting, systems)
 {
-    system_ptr->create_scripted_system(shiva::fs::path("example_system.lua"));
-    int i = 0;
-    ASSERT_EQ(system_manager_.update(), 1u);
+    ASSERT_TRUE(system_ptr->load_all_scripted_systems());
+    ASSERT_EQ(system_manager_.update(), 2u);
 }
