@@ -17,11 +17,12 @@ if (SHIVA_USE_SFML_AS_RENDERER)
     if (LINUX)
         set(SFML_STATIC_LIBRARIES TRUE)
     endif()
-    find_package(SFML CONFIG REQUIRED system window graphics audio)
 
+    find_package(SFML CONFIG REQUIRED system window graphics audio)
 
     mini_module(graphics sfml-graphics)
     mini_module(inputs shiva::system-sfml-graphics)
+
 
     #set_target_properties(system-sfml-inputs PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 

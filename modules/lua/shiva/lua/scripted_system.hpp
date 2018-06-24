@@ -20,7 +20,7 @@ namespace shiva::ecs
         scripted_system(shiva::entt::dispatcher &dispatcher,
                         shiva::entt::entity_registry &entity_registry,
                         const float &fixed_delta_time,
-                        sol::state &state,
+                        std::shared_ptr<sol::state> state,
                         std::string table_name,
                         std::string class_name) noexcept :
             TSystem::system(dispatcher, entity_registry, fixed_delta_time),
@@ -28,11 +28,32 @@ namespace shiva::ecs
             table_name_(std::move(table_name))
         {
             class_name_ = std::move(class_name);
+            try {
+                (*state_)[table_name_]["on_construct"]();
+            }
+            catch (const std::exception &error) {
+                std::cerr << error.what() << std::endl;
+            }
+        }
+
+        ~scripted_system() noexcept override
+        {
+            try {
+                (*state_)[table_name_]["on_destruct"]();
+            }
+            catch (const std::exception &error) {
+                std::cerr << error.what() << std::endl;
+            }
         }
 
         void update() noexcept override
         {
-            state_[table_name_]["update"]();
+            try {
+                (*state_)[table_name_]["update"]();
+            }
+            catch (const std::exception &error) {
+                std::cerr << error.what() << std::endl;
+            }
         }
 
         static const std::string &class_name() noexcept
@@ -51,7 +72,7 @@ namespace shiva::ecs
         }
 
     private:
-        sol::state &state_;
+        std::shared_ptr<sol::state> state_;
         std::string table_name_;
         static inline std::string class_name_{""};
     };
