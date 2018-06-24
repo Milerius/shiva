@@ -29,6 +29,11 @@ namespace shiva::scripting
             using namespace std::string_literals;
             log_->info("register component: {}", Component::class_name());
 
+            (*state_)[entity_registry_.class_name()][Component::class_name() + "_id"] = [](
+                shiva::entt::entity_registry &self) {
+                return self.type<Component>();
+            };
+
             (*state_)[entity_registry_.class_name()]["for_each_entities_which_have_" + Component::class_name() +
                                                      "_component"] = [](
                 shiva::entt::entity_registry &self, sol::function functor) {
@@ -108,6 +113,19 @@ namespace shiva::scripting
         void register_entity_registry() noexcept
         {
             register_type<shiva::entt::entity_registry>();
+            using comp_type = shiva::entt::entity_registry::component_type;
+            (*state_)[entity_registry_.class_name()]["for_each_runtime"] = [](shiva::entt::entity_registry &self,
+                                                                              std::vector<comp_type> array,
+                                                                              sol::function functor) {
+                for (auto id : array) {
+                   functor(id);
+                }
+                //return self.view(entt::runtime_t{}).each(array.begin(), array.end(), functor);
+            };
+
+            (*state_)[entity_registry_.class_name()]["nb_entities"] = [](shiva::entt::entity_registry& self) {
+                return self.size();
+            };
         }
 
         void register_world() noexcept
