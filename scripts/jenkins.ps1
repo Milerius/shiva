@@ -17,3 +17,4 @@ mkdir ctest
 cd ..
 cp bin/*.xml test-result
 cp build/Testing/*/*.xml test-result/ctest
+echo "finish"
