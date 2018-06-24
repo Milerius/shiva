@@ -1,5 +1,3 @@
-
-
 if (SHIVA_USE_SFML_AS_RENDERER)
     add_executable(sfml-example sfml-example.cpp sfml-example.hpp)
     add_dependencies(sfml-example shiva::system-sfml-graphics shiva::system-sfml-inputs)

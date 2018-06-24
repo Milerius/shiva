@@ -11,8 +11,6 @@ namespace shiva::examples
     class post_system : public shiva::ecs::post_update_system<post_system>
     {
     public:
-        reflect_class(post_system);
-
         post_system(shiva::entt::dispatcher &dispatcher, shiva::entt::entity_registry &registry,
                     const float &fixed_delta_time) :
             system(dispatcher, registry, fixed_delta_time)
@@ -26,6 +24,19 @@ namespace shiva::examples
             }
             std::cout << __FUNCTION__ << " name: " << class_name() << std::endl;
             counter++;
+        }
+
+    public:
+        reflect_class(post_system);
+
+        static constexpr auto reflected_functions() noexcept
+        {
+            return meta::makeMap(reflect_function(&post_system::update));
+        }
+
+        static constexpr auto reflected_members() noexcept
+        {
+            return meta::makeMap();
         }
 
     private:

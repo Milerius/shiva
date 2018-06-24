@@ -10,7 +10,7 @@
 namespace shiva::meta
 {
     template <typename ...Types>
-    struct TypeList
+    struct type_list
     {
     };
 
@@ -22,40 +22,40 @@ namespace shiva::meta
             struct PushBack;
 
             template <typename ...ListTypes, typename ...ToAdd>
-            struct PushBack<TypeList<ListTypes...>, ToAdd...>
+            struct PushBack<type_list<ListTypes...>, ToAdd...>
             {
-                using type = TypeList<ListTypes..., ToAdd...>;
+                using type = type_list<ListTypes..., ToAdd...>;
             };
 
             template <typename List, typename ...ToAdd>
             struct PushFront;
 
             template <typename ...ListTypes, typename ...ToAdd>
-            struct PushFront<TypeList<ListTypes...>, ToAdd...>
+            struct PushFront<type_list<ListTypes...>, ToAdd...>
             {
-                using type = TypeList<ToAdd..., ListTypes...>;
+                using type = type_list<ToAdd..., ListTypes...>;
             };
 
             template <typename List, typename OtherList>
             struct Concat;
 
             template <typename ...ListTypes, typename ...OtherListTypes>
-            struct Concat<meta::TypeList<ListTypes...>, meta::TypeList<OtherListTypes...>>
+            struct Concat<meta::type_list<ListTypes...>, meta::type_list<OtherListTypes...>>
             {
-                using type = meta::TypeList<ListTypes..., OtherListTypes...>;
+                using type = meta::type_list<ListTypes..., OtherListTypes...>;
             };
 
             template <typename List, typename ToFind>
             struct Contains;
 
             template <typename T, typename ...ListTypes, typename ToFind>
-            struct Contains<TypeList<T, ListTypes...>, ToFind> :
-                std::bool_constant<std::is_same_v<T, ToFind> || Contains<TypeList<ListTypes...>, ToFind>()>
+            struct Contains<type_list<T, ListTypes...>, ToFind> :
+                std::bool_constant<std::is_same_v<T, ToFind> || Contains<type_list<ListTypes...>, ToFind>()>
             {
             };
 
             template <typename T, typename ToFind>
-            struct Contains<TypeList<T>, ToFind> : std::bool_constant<std::is_same_v<T, ToFind>>
+            struct Contains<type_list<T>, ToFind> : std::bool_constant<std::is_same_v<T, ToFind>>
             {
             };
 
@@ -63,14 +63,14 @@ namespace shiva::meta
             struct ContainsList;
 
             template <typename List, typename T>
-            struct ContainsList<List, meta::TypeList<T>> : std::bool_constant<Contains<List, T>::value>
+            struct ContainsList<List, meta::type_list<T>> : std::bool_constant<Contains<List, T>::value>
             {
             };
 
             template <typename List, typename T, typename ...OtherListTypes>
-            struct ContainsList<List, meta::TypeList<T, OtherListTypes...>> :
+            struct ContainsList<List, meta::type_list<T, OtherListTypes...>> :
                 std::bool_constant<Contains<List, T>::value
-                                   && ContainsList<List, meta::TypeList<OtherListTypes...>>::value>
+                                   && ContainsList<List, meta::type_list<OtherListTypes...>>::value>
             {
             };
 
@@ -78,7 +78,7 @@ namespace shiva::meta
             struct Length;
 
             template <typename ...ListTypes>
-            struct Length<TypeList<ListTypes...>> : std::integral_constant<size_t, sizeof ...(ListTypes)>
+            struct Length<type_list<ListTypes...>> : std::integral_constant<size_t, sizeof ...(ListTypes)>
             {
             };
 
@@ -86,13 +86,13 @@ namespace shiva::meta
             struct Position;
 
             template <typename T, typename ...ListTypes, typename ToFind>
-            struct Position<meta::TypeList<T, ListTypes...>, ToFind> :
-                std::integral_constant<size_t, 1 + Position<meta::TypeList<ListTypes...>, ToFind>()>
+            struct Position<meta::type_list<T, ListTypes...>, ToFind> :
+                std::integral_constant<size_t, 1 + Position<meta::type_list<ListTypes...>, ToFind>()>
             {
             };
 
             template <typename ...ListTypes, typename ToFind>
-            struct Position<meta::TypeList<ToFind, ListTypes...>, ToFind> : std::integral_constant<size_t, 0>
+            struct Position<meta::type_list<ToFind, ListTypes...>, ToFind> : std::integral_constant<size_t, 0>
             {
             };
 
@@ -100,13 +100,13 @@ namespace shiva::meta
             struct At;
 
             template <typename T, typename ...ListTypes, size_t pos>
-            struct At<meta::TypeList<T, ListTypes...>, pos>
+            struct At<meta::type_list<T, ListTypes...>, pos>
             {
-                using type = typename At<meta::TypeList<ListTypes...>, pos - 1>::type;
+                using type = typename At<meta::type_list<ListTypes...>, pos - 1>::type;
             };
 
             template <typename T, typename ...ListTypes>
-            struct At<meta::TypeList<T, ListTypes...>, 0>
+            struct At<meta::type_list<T, ListTypes...>, 0>
             {
                 using type = T;
             };
@@ -115,16 +115,16 @@ namespace shiva::meta
             struct Transform;
 
             template <typename ...ListTypes, template <typename> typename Apply>
-            struct Transform<meta::TypeList<ListTypes...>, Apply>
+            struct Transform<meta::type_list<ListTypes...>, Apply>
             {
-                using type = meta::TypeList<Apply<ListTypes>...>;
+                using type = meta::type_list<Apply<ListTypes>...>;
             };
 
             template <typename List, template <typename ...> typename To>
             struct Convert;
 
             template <typename ...ListTypes, template <typename ...> typename To>
-            struct Convert<meta::TypeList<ListTypes...>, To>
+            struct Convert<meta::type_list<ListTypes...>, To>
             {
                 using type = To<ListTypes...>;
             };
@@ -151,9 +151,9 @@ namespace shiva::meta
             struct Uniq;
 
             template <typename T, typename ...ListTypes>
-            struct Uniq<meta::TypeList<T, ListTypes...>>
+            struct Uniq<meta::type_list<T, ListTypes...>>
             {
-                using type = typename TypeListUniqAux<meta::TypeList<T>, ListTypes...>::type;
+                using type = typename TypeListUniqAux<meta::type_list<T>, ListTypes...>::type;
             };
 
             template <typename List, template <typename> typename Pred, typename ...Rest>
@@ -176,9 +176,9 @@ namespace shiva::meta
             struct Filter;
 
             template <typename ...ListTypes, template <typename> typename Pred>
-            struct Filter<meta::TypeList<ListTypes...>, Pred>
+            struct Filter<meta::type_list<ListTypes...>, Pred>
             {
-                using type = typename TypeListFilterAux<meta::TypeList<>, Pred, ListTypes...>::type;
+                using type = typename TypeListFilterAux<meta::type_list<>, Pred, ListTypes...>::type;
             };
         };
 
