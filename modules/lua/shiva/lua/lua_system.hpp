@@ -164,19 +164,19 @@ namespace shiva::scripting
                     dispatcher_.trigger<shiva::event::add_base_system>(
                         std::make_unique<shiva::ecs::post_scripted_system>(dispatcher_, entity_registry_,
                                                                            fixed_delta_time_, state_, table_name,
-                                                                           script_name.filename().stem()));
+                                                                           script_name.filename().stem().string()));
                     break;
                 case shiva::ecs::pre_update:
                     dispatcher_.trigger<shiva::event::add_base_system>(
                         std::make_unique<shiva::ecs::pre_scripted_system>(dispatcher_, entity_registry_,
                                                                           fixed_delta_time_, state_, table_name,
-                                                                          script_name.filename().stem()));
+                                                                          script_name.filename().stem().string()));
                     break;
                 case shiva::ecs::logic_update:
                     dispatcher_.trigger<shiva::event::add_base_system>(
                         std::make_unique<shiva::ecs::logic_scripted_system>(dispatcher_, entity_registry_,
                                                                             fixed_delta_time_, state_, table_name,
-                                                                            script_name.filename().stem()));
+                                                                            script_name.filename().stem().string()));
                     break;
                 default:
                     break;
