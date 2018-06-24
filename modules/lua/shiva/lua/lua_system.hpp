@@ -29,26 +29,32 @@ namespace shiva::scripting
             using namespace std::string_literals;
             log_->info("register component: {}", Component::class_name());
 
-            state_[entity_registry_.class_name()]["get_"s + Component::class_name() + "_component"s] = [](
+            (*state_)[entity_registry_.class_name()]["for_each_entities_which_have_" + Component::class_name() +
+                                                     "_component"] = [](
+                shiva::entt::entity_registry &self, sol::function functor) {
+                self.view<Component>().each(functor);
+            };
+
+            (*state_)[entity_registry_.class_name()]["get_"s + Component::class_name() + "_component"s] = [](
                 shiva::entt::entity_registry &self,
                 shiva::entt::entity_registry::entity_type entity) {
                 return std::ref(self.get<Component>(entity));
             };
 
-            state_[entity_registry_.class_name()]["has_"s + Component::class_name() + "_component"s] = [](
+            (*state_)[entity_registry_.class_name()]["has_"s + Component::class_name() + "_component"s] = [](
                 shiva::entt::entity_registry &self,
                 shiva::entt::entity_registry::entity_type entity) {
                 return self.has<Component>(entity);
             };
 
-            state_[entity_registry_.class_name()]["remove_"s + Component::class_name() + "_component"s] = [](
+            (*state_)[entity_registry_.class_name()]["remove_"s + Component::class_name() + "_component"s] = [](
                 shiva::entt::entity_registry &self,
                 shiva::entt::entity_registry::entity_type entity) {
                 self.remove<Component>(entity);
             };
 
             if constexpr (std::is_default_constructible_v<Component>) {
-                state_[entity_registry_.class_name()]["add_"s + Component::class_name() + "_component"s] = [](
+                (*state_)[entity_registry_.class_name()]["add_"s + Component::class_name() + "_component"s] = [](
                     shiva::entt::entity_registry &self,
                     shiva::entt::entity_registry::entity_type entity) {
                     return std::ref(self.assign<Component>(entity));
@@ -67,13 +73,13 @@ namespace shiva::scripting
             script_directory_(std::move(scripts_directory)),
             systems_scripts_directory_(std::move(systems_scripts_directory))
         {
-            state_.open_libraries();
-            state_.new_enum<shiva::ecs::system_type>("system_type",
-                                                     {
-                                                         {"pre_update",   shiva::ecs::system_type::pre_update},
-                                                         {"post_update",  shiva::ecs::system_type::post_update},
-                                                         {"logic_update", shiva::ecs::system_type::logic_update}
-                                                     });
+            state_->open_libraries();
+            state_->new_enum<shiva::ecs::system_type>("system_type",
+                                                      {
+                                                          {"pre_update",   shiva::ecs::system_type::pre_update},
+                                                          {"post_update",  shiva::ecs::system_type::post_update},
+                                                          {"logic_update", shiva::ecs::system_type::logic_update}
+                                                      });
             disable();
         }
 
@@ -88,7 +94,7 @@ namespace shiva::scripting
             try {
                 std::apply(
                     [this](auto &&...params) {
-                        this->state_.new_usertype<T>(std::forward<decltype(params)>(params)...);
+                        this->state_->new_usertype<T>(std::forward<decltype(params)>(params)...);
                     }, table);
             }
             catch (const std::exception &error) {
@@ -106,14 +112,14 @@ namespace shiva::scripting
 
         void register_world() noexcept
         {
-            state_["shiva"] = state_.create_table_with("entity_registry", std::ref(entity_registry_),
-                                                       "fixed_delta_time", fixed_delta_time_);
+            (*state_)["shiva"] = state_->create_table_with("entity_registry", std::ref(entity_registry_),
+                                                           "fixed_delta_time", fixed_delta_time_);
         }
 
         bool load_script(const std::string &file_name, const fs::path &script_directory) noexcept
         {
             try {
-                state_.script_file((script_directory / fs::path(file_name)).string());
+                state_->script_file((script_directory / fs::path(file_name)).string());
                 log_->debug("successfully register script: {}", file_name);
             } catch (const std::exception &e) {
                 log_->error("error when loading script {0}: {1}", file_name, e.what());
@@ -151,7 +157,7 @@ namespace shiva::scripting
                 return false;
             auto table_name = script_name.filename().stem().string() + "_table";
             log_->info("table: {}", table_name);
-            shiva::ecs::system_type sys_type = state_[table_name]["current_system_type"];
+            shiva::ecs::system_type sys_type = (*state_)[table_name]["current_system_type"];
             log_->info("system_type: {}", sys_type);
             switch (sys_type) {
                 case shiva::ecs::post_update:
@@ -195,7 +201,7 @@ namespace shiva::scripting
     public:
         sol::state &get_state() noexcept
         {
-            return state_;
+            return *state_;
         }
 
     public:
@@ -213,7 +219,7 @@ namespace shiva::scripting
         }
 
     private:
-        sol::state state_;
+        std::shared_ptr<sol::state> state_{std::make_shared<sol::state>()};
         shiva::fs::path script_directory_;
         shiva::fs::path systems_scripts_directory_;
         shiva::logging::logger log_{shiva::log::stdout_color_mt("lua_system")};

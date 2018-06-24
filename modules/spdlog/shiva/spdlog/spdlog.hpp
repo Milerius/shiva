@@ -11,6 +11,7 @@ namespace shiva
     namespace log = spdlog;
 }
 
-namespace shiva::logging {
+namespace shiva::logging
+{
     using logger = std::shared_ptr<shiva::log::logger>;
 }
