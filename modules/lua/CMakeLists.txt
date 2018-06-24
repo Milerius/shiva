@@ -5,6 +5,6 @@ find_package(Lua 5.3)
 find_package(sol2 CONFIG REQUIRED)
 target_link_libraries(lua INTERFACE shiva::ecs ${LUA_LIBRARIES} sol2)
 target_compile_options(lua INTERFACE $<$<AND:$<CONFIG:Release>,$<CXX_COMPILER_ID:MSVC>>:/bigobj>
-        INTERFACE $<$<AND:$<CONFIG:Release>,$<CXX_COMPILER_ID:MSVC>>:/bigobj>)
+        INTERFACE $<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:MSVC>>:/bigobj>)
 target_include_directories(lua INTERFACE ${LUA_INCLUDE_DIR})
 AUTO_TARGETS_MODULE_INSTALL(lua)
