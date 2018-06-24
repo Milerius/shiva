@@ -66,5 +66,5 @@ TEST_F(fixture_scripting, components)
 TEST_F(fixture_scripting, systems)
 {
     ASSERT_TRUE(system_ptr->load_all_scripted_systems());
-    ASSERT_EQ(system_manager_.update(), 2u);
+    ASSERT_GE(system_manager_.update(), 2u);
 }
