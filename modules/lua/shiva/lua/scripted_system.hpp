@@ -28,32 +28,17 @@ namespace shiva::ecs
             table_name_(std::move(table_name))
         {
             class_name_ = std::move(class_name);
-            try {
-                (*state_)[table_name_]["on_construct"]();
-            }
-            catch (const std::exception &error) {
-                std::cerr << error.what() << std::endl;
-            }
+            safe_function("on_construct");
         }
 
         ~scripted_system() noexcept override
         {
-            try {
-                (*state_)[table_name_]["on_destruct"]();
-            }
-            catch (const std::exception &error) {
-                std::cerr << error.what() << std::endl;
-            }
+            safe_function("on_destruct");
         }
 
         void update() noexcept override
         {
-            try {
-                (*state_)[table_name_]["update"]();
-            }
-            catch (const std::exception &error) {
-                std::cerr << error.what() << std::endl;
-            }
+            safe_function("update");
         }
 
         static const std::string &class_name() noexcept
@@ -72,6 +57,17 @@ namespace shiva::ecs
         }
 
     private:
+        template <typename ... Args>
+        void safe_function(const std::string &function, Args &&... args)
+        {
+            try {
+                (*state_)[table_name_][function](std::forward<Args>(args)...);
+            }
+            catch (const std::exception &error) {
+                std::cerr << error.what() << std::endl;
+            }
+        }
+
         std::shared_ptr<sol::state> state_;
         std::string table_name_;
         static inline std::string class_name_{""};
