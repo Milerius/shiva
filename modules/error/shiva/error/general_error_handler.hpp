@@ -25,7 +25,7 @@ namespace shiva::error
             ::raise(SIGABRT);
         }
 
-        void receive(const shiva::event::fatal_error_occured &evt)
+        [[noreturn]] void receive(const shiva::event::fatal_error_occured &evt)
         {
             using namespace std::string_literals;
             entity_registry_.each([this](const shiva::entt::entity_registry::entity_type entity) {
