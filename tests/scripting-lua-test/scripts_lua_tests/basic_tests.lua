@@ -22,9 +22,27 @@ function test_component()
     local entity_id = shiva.entity_registry:create()
     local component = shiva.entity_registry:add_layer_1_component(entity_id)
     local same_component = shiva.entity_registry:get_layer_1_component(entity_id)
+    assert(shiva.entity_registry:layer_1_id() == 0, "should be 0")
     assert(shiva.entity_registry:has_layer_1_component(entity_id) == true, "should be true")
     shiva.entity_registry:remove_layer_1_component(entity_id)
     assert(shiva.entity_registry:has_layer_1_component(entity_id) == false, "should be false")
+    return true
+end
+
+function simple_functor(entity_id)
+    shiva.entity_registry:destroy(entity_id)
+end
+
+function test_for_each()
+    for i = 1, 10
+    do
+        local id = shiva.entity_registry:create()
+        shiva.entity_registry:add_layer_1_component(id)
+    end
+
+    assert(shiva.entity_registry:nb_entities() == 10, "should be 10")
+    shiva.entity_registry:for_each_entities_which_have_layer_1_component(simple_functor)
+    assert(shiva.entity_registry:nb_entities() == 0, "should be 0")
     return true
 end
 

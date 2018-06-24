@@ -6,14 +6,19 @@
 -- To change this template use File | Settings | File Templates.
 --
 
+function fake_functor(id)
+    print("hello from functor id is: " .. id)
+end
+
 function __constructor__()
-    print("constructor pre_example_system")
+    local table_type = {shiva.entity_registry:layer_1_id(),
+                        shiva.entity_registry:layer_2_id() }
+    shiva.entity_registry:for_each_runtime(table_type, fake_functor)
     for i = 1, 10
     do
         local id = shiva.entity_registry:create()
         shiva.entity_registry:add_layer_1_component(id)
     end
-
 end
 
 function __destructor__()
