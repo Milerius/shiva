@@ -12,12 +12,12 @@
 namespace shiva::ecs
 {
     template <typename SystemType>
-    class scripted_system : public system<scripted_system<SystemType>, SystemType>
+    class lua_scripted_system : public system<lua_scripted_system<SystemType>, SystemType>
     {
     public:
-        using TSystem = system <scripted_system<SystemType>, SystemType>;
+        using TSystem = system<lua_scripted_system<SystemType>, SystemType>;
 
-        scripted_system(shiva::entt::dispatcher &dispatcher,
+        lua_scripted_system(shiva::entt::dispatcher &dispatcher,
                         shiva::entt::entity_registry &entity_registry,
                         const float &fixed_delta_time,
                         std::shared_ptr<sol::state> state,
@@ -31,7 +31,7 @@ namespace shiva::ecs
             safe_function("on_construct");
         }
 
-        ~scripted_system() noexcept override
+        ~lua_scripted_system() noexcept override
         {
             safe_function("on_destruct");
         }
@@ -73,7 +73,7 @@ namespace shiva::ecs
         static inline std::string class_name_{""};
     };
 
-    using post_scripted_system = scripted_system<shiva::ecs::system_post_update>;
-    using pre_scripted_system = scripted_system<shiva::ecs::system_pre_update>;
-    using logic_scripted_system = scripted_system<shiva::ecs::system_logic_update>;
+    using post_scripted_system = lua_scripted_system<shiva::ecs::system_post_update>;
+    using pre_scripted_system = lua_scripted_system<shiva::ecs::system_pre_update>;
+    using logic_scripted_system = lua_scripted_system<shiva::ecs::system_logic_update>;
 }
