@@ -8,7 +8,7 @@
 #include <shiva/filesystem/filesystem.hpp>
 #include <shiva/ecs/system.hpp>
 #include <shiva/event/add_base_system.hpp>
-#include "scripted_system.hpp"
+#include "lua_scripted_system.hpp"
 
 namespace sol
 {
@@ -118,12 +118,12 @@ namespace shiva::scripting
                                                                               std::vector<comp_type> array,
                                                                               sol::function functor) {
                 for (auto id : array) {
-                   functor(id);
+                    functor(id);
                 }
                 //return self.view(entt::runtime_t{}).each(array.begin(), array.end(), functor);
             };
 
-            (*state_)[entity_registry_.class_name()]["nb_entities"] = [](shiva::entt::entity_registry& self) {
+            (*state_)[entity_registry_.class_name()]["nb_entities"] = [](shiva::entt::entity_registry &self) {
                 return self.size();
             };
         }

@@ -4,7 +4,7 @@ set(MODULE_PATH
 set(MODULE_PUBLIC_HEADERS
         "${MODULE_PATH}/lua.hpp"
         "${MODULE_PATH}/lua_system.hpp"
-        "${MODULE_PATH}/scripted_system.hpp"
+        "${MODULE_PATH}/lua_scripted_system.hpp"
         )
 
 set(MODULE_PRIVATE_HEADERS
