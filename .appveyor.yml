@@ -15,7 +15,8 @@ clone_script:
 - ps: if ($env:APPVEYOR_PULL_REQUEST_NUMBER) {git fetch -q origin +refs/pull/$($env:APPVEYOR_PULL_REQUEST_NUMBER)/merge; git checkout -qf FETCH_HEAD}
 - ps: git submodule update -q --init --recursive
 
-cache: c:\tools\vcpkg\installed\
+cache:
+  c:\tools\vcpkg\
 
 environment:
   COVERALLS_REPO_TOKEN:

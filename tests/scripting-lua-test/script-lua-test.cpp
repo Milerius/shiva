@@ -5,7 +5,7 @@
 #include <gtest/gtest.h>
 #include <shiva/world/world.hpp>
 #include <shiva/lua/lua_system.hpp>
-#include <shiva/lua/scripted_system.hpp>
+#include <shiva/lua/lua_scripted_system.hpp>
 #include <shiva/ecs/components/all.hpp>
 #include <systems/all_systems.hpp>
 
