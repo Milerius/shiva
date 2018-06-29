@@ -28,5 +28,11 @@ done
 cd ..'''
       }
     }
+    stage('Coverage') {
+      steps {
+        sh '''coveralls --gcov gcov-7 --gcov-options \'\\-lp\' --root $PWD --build-root $PWD/build --extension cpp --extension hpp --include modules
+'''
+      }
+    }
   }
 }
