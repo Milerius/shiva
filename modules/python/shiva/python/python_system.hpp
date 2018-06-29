@@ -84,7 +84,7 @@ namespace shiva::scripting
         bool load_script(const std::string &file_name) noexcept
         {
             try {
-                import_module(fs::path(file_name).stem(), (script_directory_ /= fs::path(file_name)).string(),
+                import_module(fs::path(file_name).stem().string(), (script_directory_ /= fs::path(file_name)).string(),
                               globals_);
             }
             catch (const std::exception &error) {
