@@ -14,7 +14,9 @@ end
 
 function test_destroy_entity()
     local id = shiva.entity_registry:create()
+    assert(shiva.entity_registry:nb_entities() == 1)
     shiva.entity_registry:destroy(id)
+    assert(shiva.entity_registry:nb_entities() == 0)
     return true
 end
 

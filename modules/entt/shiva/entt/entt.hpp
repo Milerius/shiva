@@ -21,6 +21,8 @@ namespace shiva::entt
         //! Reflection
         reflect_class(entity_registry);
 
+        using base_class_t = ::entt::DefaultRegistry;
+
         static constexpr auto reflected_functions() noexcept
         {
             return meta::makeMap(reflect_function(&entity_registry::destroy),
