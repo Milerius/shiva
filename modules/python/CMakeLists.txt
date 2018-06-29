@@ -6,6 +6,8 @@ find_package(pybind11 CONFIG REQUIRED)
 if (WIN32)
     ## We need pyton dll
     file(GLOB PYTHON_DLL ${PYTHON_LIBRARIES}/../*.dll)
+    message("PYTHON LIBRARIES -> ${PYTHON_LIBRARIES}")
+    message(STATUS "DLL TO COPY -> ${PYTHON_DLL}")
     file(COPY ${PYTHON_DLL} DESTINATION ${CMAKE_SOURCE_DIR}/bin)
 endif ()
 
