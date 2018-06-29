@@ -40,9 +40,20 @@ done'''
       }
     }
     stage('Coverage') {
-      steps {
-        sh '''coveralls --gcov gcov-7 --gcov-options \'\\-lp\' --root $PWD --build-root $PWD/build --extension cpp --extension hpp --include modules
+      parallel {
+        stage('Coverage') {
+          steps {
+            sh '''coveralls --gcov gcov-7 --gcov-options \'\\-lp\' --root $PWD --build-root $PWD/build --extension cpp --extension hpp --include modules
 '''
+          }
+        }
+        stage('Copy Tests results') {
+          steps {
+            sh '''mkdir -p test-result/ctest
+cp bin/*.xml test-result/
+cp build/Testing/*/*.xml test-result/ctest/'''
+          }
+        }
       }
     }
   }
