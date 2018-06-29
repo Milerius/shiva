@@ -6,8 +6,7 @@ find_package(pybind11 CONFIG REQUIRED)
 if (WIN32)
     ## We need pyton dll
     file(GLOB PYTHON_DLL ${PYTHON_LIBRARIES}/../*.dll)
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
-    file(COPY ${PYTHON_DLL} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+    file(COPY ${PYTHON_DLL} DESTINATION ${CMAKE_SOURCE_DIR}/bin)
 endif ()
 
 CREATE_MODULE(shiva::pyscripting "${MODULE_SOURCES}" ${MODULE_PATH})
