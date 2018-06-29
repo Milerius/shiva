@@ -33,7 +33,8 @@ ctest --no-compress-output -T Test -D ExperimentalMemCheck || exit 1'''
           steps {
             sh '''cd bin
 for i in *-test; do
-	./$i --gtest_output="xml:${i}-${TYPE}-result.xml" || exit 1'''
+	./$i --gtest_output="xml:${i}-${TYPE}-result.xml" || exit 1
+done'''
           }
         }
       }
