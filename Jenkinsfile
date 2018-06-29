@@ -58,16 +58,22 @@ cp build/Testing/*/*.xml test-result/ctest/'''
     }
     stage('Publish Results') {
       steps {
-        post() {
-          always() {
-            step xunit(
-                              thresholds: [ skipped(failureThreshold: '0'), failed(failureThreshold: '0') ],
-                              tools: [ CTest(pattern: 'test-result/ctest/*.xml') ])
+                sh '''echo "lol"'''
             }
+            post {
+                always {
+                    step([$class: 'XUnitBuilder',
+                        thresholds: [
+                            [$class: 'SkippedThreshold', failureThreshold: '0'],
+                            // Allow for a significant number of failures
+                            // Keeping this threshold so that overwhelming failures are guaranteed
+                            //     to still fail the build
+                            [$class: 'FailedThreshold', failureThreshold: '10']],
+                        tools: [[$class: 'JUnitType', pattern: 'reports/**']]])
 
-          }
-
-        }
+                    saucePublisher()
+                }
+            }
       }
     }
     environment {
