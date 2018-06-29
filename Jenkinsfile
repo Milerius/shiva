@@ -57,6 +57,7 @@ cp build/Testing/*/*.xml test-result/ctest/'''
       }
     }
     stage('Publish Results') {
+	    steps {
       post {
         always{
             step(xunit(
@@ -65,6 +66,7 @@ cp build/Testing/*/*.xml test-result/ctest/'''
             )
         }
     }
+	    }
   }
   }
   environment {
