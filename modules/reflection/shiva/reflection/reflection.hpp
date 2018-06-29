@@ -25,6 +25,16 @@ namespace shiva::refl
     using class_name_t = decltype(T::class_name());
 
     template <typename T>
+    using base_class_t = decltype(std::declval<typename T::base_class_t>());
+
+
+    template<typename T>
+    using has_base_class = meta::is_detected<base_class_t, T>;
+
+    template <typename T>
+    inline constexpr bool has_base_class_v = has_base_class<T>::value;
+
+    template <typename T>
     using has_reflectible_members = meta::is_detected<member_map_t, T>;
 
     template <typename T>
