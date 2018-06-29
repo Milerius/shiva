@@ -18,7 +18,7 @@ make -j8'''
     }
     stage('Unit Tests') {
       steps {
-        sh '''ls && pwd
+        sh '''cd build
 ctest --no-compress-output -T Test -D ExperimentalMemCheck || exit 1
 
 cd ../bin
