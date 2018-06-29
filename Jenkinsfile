@@ -16,5 +16,16 @@ cmake -DCMAKE_TOOLCHAIN_FILE="/var/lib/jenkins/vcpkg/scripts/buildsystems/vcpkg.
 make -j8'''
       }
     }
+    stage('Unit Tests') {
+      steps {
+        sh '''ctest --no-compress-output -T Test -D ExperimentalMemCheck || exit 1
+
+cd ../bin
+for i in *-test; do
+	./$i --gtest_output="xml:${i}-${TYPE}-result.xml" || exit 1
+done
+cd ..'''
+      }
+    }
   }
 }
