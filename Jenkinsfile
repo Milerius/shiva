@@ -66,22 +66,6 @@ cp bin/*.memcheck test-result/'''
       }
     }
     stage('Publish Results') {
-	    steps {
-		    publishValgrind (
-          failBuildOnInvalidReports: false,
-          failBuildOnMissingReports: false,
-          failThresholdDefinitelyLost: '400',
-          failThresholdInvalidReadWrite: '400',
-          failThresholdTotal: '800',
-          pattern: 'test-result/*.memcheck',
-          publishResultsForAbortedBuilds: false,
-          publishResultsForFailedBuilds: false,
-          sourceSubstitutionPaths: '',
-          unstableThresholdDefinitelyLost: '200',
-          unstableThresholdInvalidReadWrite: '200',
-          unstableThresholdTotal: '400'
-        )
-	    }
       post {
         always {
           step([$class: 'XUnitBuilder',
@@ -106,7 +90,21 @@ cp bin/*.memcheck test-result/'''
 
             }
             steps {
-              sh 'echo "lol"'
+              sh 'echo "Publishing results"'
+		    publishValgrind (
+          failBuildOnInvalidReports: false,
+          failBuildOnMissingReports: false,
+          failThresholdDefinitelyLost: '400',
+          failThresholdInvalidReadWrite: '400',
+          failThresholdTotal: '800',
+          pattern: 'test-result/*.memcheck',
+          publishResultsForAbortedBuilds: false,
+          publishResultsForFailedBuilds: false,
+          sourceSubstitutionPaths: '',
+          unstableThresholdDefinitelyLost: '200',
+          unstableThresholdInvalidReadWrite: '200',
+          unstableThresholdTotal: '400'
+        )
             }
           }
         }
