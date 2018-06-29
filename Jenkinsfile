@@ -26,7 +26,7 @@ make -j8'''
         stage('CTest') {
           steps {
             sh '''cd build
-ctest --no-compress-output -T Test -D ExperimentalMemCheck || exit 1'''
+ctest --no-compress-output -T Test -D ExperimentalMemCheck -j 8 || exit 1'''
           }
         }
         stage('GoogleTest') {
