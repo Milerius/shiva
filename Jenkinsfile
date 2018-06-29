@@ -26,7 +26,7 @@ make -j8'''
         stage('CTest') {
           steps {
             sh '''cd build
-ctest --no-compress-output -T Test -D ExperimentalMemCheck -j 5 || exit 1'''
+ctest --no-compress-output -T Test -D ExperimentalMemCheck  || exit 1'''
           }
         }
         stage('GoogleTest') {
@@ -57,22 +57,24 @@ cp build/Testing/*/*.xml test-result/ctest/'''
       }
     }
     stage('Publish Results') {
-      steps {
-                sh '''echo "lol"'''
-            }
-            post {
-                always {
-                    step([$class: 'XUnitBuilder',
-                        thresholds: [
-                            [$class: 'SkippedThreshold', failureThreshold: '0'],
-                            // Allow for a significant number of failures
-                            // Keeping this threshold so that overwhelming failures are guaranteed
-                            //     to still fail the build
-                            [$class: 'FailedThreshold', failureThreshold: '10']],
-                        tools: [[$class: 'CTestType', pattern: 'test-result/ctest/*.xml'],
-				[$class: 'GoogleTestType', pattern: 'test-result/*.xml']]])
-                }
-            }
+      post {
+        always {
+          step([$class: 'XUnitBuilder',
+                                  thresholds: [
+                                        [$class: 'SkippedThreshold', failureThreshold: '0'],
+                                        // Allow for a significant number of failures
+                                        // Keeping this threshold so that overwhelming failures are guaranteed
+                                        //     to still fail the build
+                                        [$class: 'FailedThreshold', failureThreshold: '10']],
+                                    tools: [[$class: 'CTestType', pattern: 'test-result/ctest/*.xml'],
+            				[$class: 'GoogleTestType', pattern: 'test-result/*.xml']]])
+
+          }
+
+        }
+        steps {
+          sh 'echo "lol"'
+        }
       }
     }
     environment {
