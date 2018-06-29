@@ -91,6 +91,20 @@ cp bin/*.memcheck test-result/'''
             }
             steps {
               sh 'echo "Publishing results"'
+		    publishValgrind (
+          failBuildOnInvalidReports: false,
+          failBuildOnMissingReports: false,
+          failThresholdDefinitelyLost: '400',
+          failThresholdInvalidReadWrite: '400',
+          failThresholdTotal: '800',
+          pattern: 'test-result/*.memcheck',
+          publishResultsForAbortedBuilds: false,
+          publishResultsForFailedBuilds: false,
+          sourceSubstitutionPaths: '',
+          unstableThresholdDefinitelyLost: '200',
+          unstableThresholdInvalidReadWrite: '200',
+          unstableThresholdTotal: '400')
+		    
             }
           }
         }
