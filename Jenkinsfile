@@ -26,7 +26,7 @@ make -j8'''
         stage('CTest') {
           steps {
             sh '''cd build
-ctest --no-compress-output -T Test -D ExperimentalMemCheck  || exit 1'''
+ctest --no-compress-output -T Test || exit 1'''
           }
         }
         stage('GoogleTest') {
@@ -69,42 +69,28 @@ cp bin/*.memcheck test-result/'''
       post {
         always {
           step([$class: 'XUnitBuilder',
-                                            thresholds: [
-                                                    [$class: 'SkippedThreshold', failureThreshold: '0'],
-                                                    // Allow for a significant number of failures
-                                                    // Keeping this threshold so that overwhelming failures are guaranteed
-                                                    //     to still fail the build
-                                                    [$class: 'FailedThreshold', failureThreshold: '10']],
-                                                tools: [
-              					    [$class: 'CTestType', pattern: 'test-result/ctest/*.xml', skipNoTestFiles: false, failIfNotNew: true, deleteOutputFiles: true, stopProcessingIfError: true]]])
+                                                      thresholds: [
+                                                                [$class: 'SkippedThreshold', failureThreshold: '0'],
+                                                                // Allow for a significant number of failures
+                                                                // Keeping this threshold so that overwhelming failures are guaranteed
+                                                                //     to still fail the build
+                                                                [$class: 'FailedThreshold', failureThreshold: '10']],
+                                                            tools: [
+                            					    [$class: 'CTestType', pattern: 'test-result/ctest/*.xml', skipNoTestFiles: false, failIfNotNew: true, deleteOutputFiles: true, stopProcessingIfError: true]]])
               step([$class: 'XUnitBuilder',
-                                                thresholds: [
-                                                        [$class: 'SkippedThreshold', failureThreshold: '0'],
-                                                        // Allow for a significant number of failures
-                                                        // Keeping this threshold so that overwhelming failures are guaranteed
-                                                        //     to still fail the build
-                                                        [$class: 'FailedThreshold', failureThreshold: '10']],
-                                                    tools: [[$class: 'GoogleTestType', pattern: 'test-result/*.xml', skipNoTestFiles: false, failIfNotNew: true, deleteOutputFiles: true, stopProcessingIfError: true]]])
+                                                              thresholds: [
+                                                                        [$class: 'SkippedThreshold', failureThreshold: '0'],
+                                                                        // Allow for a significant number of failures
+                                                                        // Keeping this threshold so that overwhelming failures are guaranteed
+                                                                        //     to still fail the build
+                                                                        [$class: 'FailedThreshold', failureThreshold: '10']],
+                                                                    tools: [[$class: 'GoogleTestType', pattern: 'test-result/*.xml', skipNoTestFiles: false, failIfNotNew: true, deleteOutputFiles: true, stopProcessingIfError: true]]])
 
               }
 
             }
             steps {
               sh 'echo "Publishing results"'
-		    publishValgrind (
-          failBuildOnInvalidReports: false,
-          failBuildOnMissingReports: false,
-          failThresholdDefinitelyLost: '400',
-          failThresholdInvalidReadWrite: '400',
-          failThresholdTotal: '800',
-          pattern: 'test-result/*.memcheck',
-          publishResultsForAbortedBuilds: false,
-          publishResultsForFailedBuilds: false,
-          sourceSubstitutionPaths: '',
-          unstableThresholdDefinitelyLost: '200',
-          unstableThresholdInvalidReadWrite: '200',
-          unstableThresholdTotal: '400'
-        )
             }
           }
         }
