@@ -35,4 +35,8 @@ cd ..'''
       }
     }
   }
+  environment {
+    PATH = '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/var/lib/jenkins:/var/lib/jenkins/.local/bin'
+    COVERALLS_REPO_TOKEN = 'bVhcCed4om8PxhwUhYamyapXQQ8D4F7IX'
+  }
 }
