@@ -56,6 +56,12 @@ cp build/Testing/*/*.xml test-result/ctest/'''
         }
       }
     }
+    stage('Publish Results') {
+      steps {
+        junit 'test-result/*.xml'
+        junit 'test-result/ctest/*.xml'
+      }
+    }
   }
   environment {
     PATH = '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/var/lib/jenkins:/var/lib/jenkins/.local/bin'
