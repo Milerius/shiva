@@ -20,7 +20,7 @@ make -j8'''
       parallel {
         stage('Unit Tests') {
           steps {
-            sh 'Echo "Running Tests"'
+            sh 'echo "Running Tests"'
           }
         }
         stage('CTest') {
