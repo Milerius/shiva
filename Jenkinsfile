@@ -17,15 +17,25 @@ make -j8'''
       }
     }
     stage('Unit Tests') {
-      steps {
-        sh '''cd build
-ctest --no-compress-output -T Test -D ExperimentalMemCheck || exit 1
-
-cd ../bin
+      parallel {
+        stage('Unit Tests') {
+          steps {
+            sh 'Echo "Running Tests"'
+          }
+        }
+        stage('CTest') {
+          steps {
+            sh '''cd build
+ctest --no-compress-output -T Test -D ExperimentalMemCheck || exit 1'''
+          }
+        }
+        stage('GoogleTest') {
+          steps {
+            sh '''cd bin
 for i in *-test; do
-	./$i --gtest_output="xml:${i}-${TYPE}-result.xml" || exit 1
-done
-cd ..'''
+	./$i --gtest_output="xml:${i}-${TYPE}-result.xml" || exit 1'''
+          }
+        }
       }
     }
     stage('Coverage') {
