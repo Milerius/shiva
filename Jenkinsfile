@@ -37,6 +37,14 @@ for i in *-test; do
 done'''
           }
         }
+        stage('Valgrind GTest') {
+          steps {
+            sh '''cd bin
+for i in *-test; do
+	valgrind --xml=yes --xml-file=$i-result.memcheck ./$i  || exit 1
+done'''
+          }
+        }
       }
     }
     stage('Coverage') {
@@ -51,7 +59,8 @@ done'''
           steps {
             sh '''mkdir -p test-result/ctest
 cp bin/*.xml test-result/
-cp build/Testing/*/*.xml test-result/ctest/'''
+cp build/Testing/*/*.xml test-result/ctest/
+cp bin/*.memcheck test-result/'''
           }
         }
       }
@@ -60,33 +69,33 @@ cp build/Testing/*/*.xml test-result/ctest/'''
       post {
         always {
           step([$class: 'XUnitBuilder',
-                                  thresholds: [
-                                        [$class: 'SkippedThreshold', failureThreshold: '0'],
-                                        // Allow for a significant number of failures
-                                        // Keeping this threshold so that overwhelming failures are guaranteed
-                                        //     to still fail the build
-                                        [$class: 'FailedThreshold', failureThreshold: '10']],
-                                    tools: [
-					    [$class: 'CTestType', pattern: 'test-result/ctest/*.xml', skipNoTestFiles: false, failIfNotNew: true, deleteOutputFiles: true, stopProcessingIfError: true]]])
-	step([$class: 'XUnitBuilder',
-                                  thresholds: [
-                                        [$class: 'SkippedThreshold', failureThreshold: '0'],
-                                        // Allow for a significant number of failures
-                                        // Keeping this threshold so that overwhelming failures are guaranteed
-                                        //     to still fail the build
-                                        [$class: 'FailedThreshold', failureThreshold: '10']],
-                                    tools: [[$class: 'GoogleTestType', pattern: 'test-result/*.xml', skipNoTestFiles: false, failIfNotNew: true, deleteOutputFiles: true, stopProcessingIfError: true]]])
+                                            thresholds: [
+                                                    [$class: 'SkippedThreshold', failureThreshold: '0'],
+                                                    // Allow for a significant number of failures
+                                                    // Keeping this threshold so that overwhelming failures are guaranteed
+                                                    //     to still fail the build
+                                                    [$class: 'FailedThreshold', failureThreshold: '10']],
+                                                tools: [
+              					    [$class: 'CTestType', pattern: 'test-result/ctest/*.xml', skipNoTestFiles: false, failIfNotNew: true, deleteOutputFiles: true, stopProcessingIfError: true]]])
+              step([$class: 'XUnitBuilder',
+                                                thresholds: [
+                                                        [$class: 'SkippedThreshold', failureThreshold: '0'],
+                                                        // Allow for a significant number of failures
+                                                        // Keeping this threshold so that overwhelming failures are guaranteed
+                                                        //     to still fail the build
+                                                        [$class: 'FailedThreshold', failureThreshold: '10']],
+                                                    tools: [[$class: 'GoogleTestType', pattern: 'test-result/*.xml', skipNoTestFiles: false, failIfNotNew: true, deleteOutputFiles: true, stopProcessingIfError: true]]])
 
+              }
+
+            }
+            steps {
+              sh 'echo "lol"'
+            }
           }
-
         }
-        steps {
-          sh 'echo "lol"'
+        environment {
+          PATH = '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/var/lib/jenkins:/var/lib/jenkins/.local/bin'
+          COVERALLS_REPO_TOKEN = 'bVhcCed4om8PxhwUhYamyapXQQ8D4F7IX'
         }
       }
-    }
-    environment {
-      PATH = '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/var/lib/jenkins:/var/lib/jenkins/.local/bin'
-      COVERALLS_REPO_TOKEN = 'bVhcCed4om8PxhwUhYamyapXQQ8D4F7IX'
-    }
-  }
