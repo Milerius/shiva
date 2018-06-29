@@ -66,8 +66,10 @@ cp build/Testing/*/*.xml test-result/ctest/'''
                                         // Keeping this threshold so that overwhelming failures are guaranteed
                                         //     to still fail the build
                                         [$class: 'FailedThreshold', failureThreshold: '10']],
-                                    tools: [[$class: 'CTestType', pattern: 'test-result/ctest/*.xml'],
-            				[$class: 'GoogleTestType', pattern: 'test-result/*.xml']]])
+                                    tools: [
+					    [$class: 'CTestType', pattern: 'test-result/ctest/*.xml', skipNoTestFiles: false, failIfNotNew: true, deleteOutputFiles: true, stopProcessingIfError: true],
+            				    [$class: 'GoogleTestType', pattern: 'test-result/*.xml', skipNoTestFiles: false, failIfNotNew: true, deleteOutputFiles: true, stopProcessingIfError: true]
+				            ]])
 
           }
 
