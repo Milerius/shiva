@@ -17,12 +17,12 @@ namespace shiva::error
     class general_handler
     {
     public:
-        static void handler(int signum)
+        [[noreturn]] static void handler(int signum)
         {
             std::cerr << "received: " << signum << std::endl;
             std::cerr << shiva::bs::stacktrace() << std::endl;
             shiva::bs::safe_dump_to((shiva::fs::temp_directory_path() /= "backtrace.dump").string().c_str());
-            ::raise(SIGABRT);
+            std::terminate();
         }
 
         [[noreturn]] void receive(const shiva::event::fatal_error_occured &evt)

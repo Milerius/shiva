@@ -16,10 +16,16 @@ protected:
 
     void TearDown() override
     {
+        spdlog::drop_all();
     }
 };
 
 TEST_F(fixture_world, run)
 {
     ASSERT_EQ(this->run(), 0);
+}
+
+TEST_F(fixture_world, error_handler)
+{
+    ASSERT_DEATH(shiva::error::general_handler::handler(1), "");
 }
