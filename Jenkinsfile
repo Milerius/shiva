@@ -26,7 +26,7 @@ make -j8'''
         stage('CTest') {
           steps {
             sh '''cd build
-ctest --no-compress-output -T Test -D ExperimentalMemCheck -j 8 || exit 1'''
+ctest --no-compress-output -T Test -D ExperimentalMemCheck -j 5 || exit 1'''
           }
         }
         stage('GoogleTest') {
@@ -57,20 +57,21 @@ cp build/Testing/*/*.xml test-result/ctest/'''
       }
     }
     stage('Publish Results') {
-	    steps {
-      post {
-        always{
-            step(xunit(
-                thresholds: [ skipped(failureThreshold: '0'), failed(failureThreshold: '0') ],
-                tools: [ CTest(pattern: 'test-result/ctest/*.xml') ])
-            )
+      steps {
+        post() {
+          always() {
+            step xunit(
+                              thresholds: [ skipped(failureThreshold: '0'), failed(failureThreshold: '0') ],
+                              tools: [ CTest(pattern: 'test-result/ctest/*.xml') ])
+            }
+
+          }
+
         }
+      }
     }
-	    }
+    environment {
+      PATH = '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/var/lib/jenkins:/var/lib/jenkins/.local/bin'
+      COVERALLS_REPO_TOKEN = 'bVhcCed4om8PxhwUhYamyapXQQ8D4F7IX'
+    }
   }
-  }
-  environment {
-    PATH = '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/var/lib/jenkins:/var/lib/jenkins/.local/bin'
-    COVERALLS_REPO_TOKEN = 'bVhcCed4om8PxhwUhYamyapXQQ8D4F7IX'
-  }
-}
