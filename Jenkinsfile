@@ -67,7 +67,7 @@ cp build/Testing/*/*.xml test-result/ctest/'''
                                         //     to still fail the build
                                         [$class: 'FailedThreshold', failureThreshold: '10']],
                                     tools: [
-					    [$class: 'CTestType', pattern: 'test-result/ctest/*.xml', skipNoTestFiles: false, failIfNotNew: true, deleteOutputFiles: true, stopProcessingIfError: true]]]),
+					    [$class: 'CTestType', pattern: 'test-result/ctest/*.xml', skipNoTestFiles: false, failIfNotNew: true, deleteOutputFiles: true, stopProcessingIfError: true]]])
 	step([$class: 'XUnitBuilder',
                                   thresholds: [
                                         [$class: 'SkippedThreshold', failureThreshold: '0'],
