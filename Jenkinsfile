@@ -85,13 +85,7 @@ cp bin/*.memcheck test-result/'''
                                                                         //     to still fail the build
                                                                         [$class: 'FailedThreshold', failureThreshold: '10']],
                                                                     tools: [[$class: 'GoogleTestType', pattern: 'test-result/*.xml', skipNoTestFiles: false, failIfNotNew: true, deleteOutputFiles: true, stopProcessingIfError: true]]])
-
-              }
-
-            }
-            steps {
-              sh 'echo "Publishing results"'
-		    publishValgrind (
+		publishValgrind (
           failBuildOnInvalidReports: false,
           failBuildOnMissingReports: false,
           failThresholdDefinitelyLost: '400',
@@ -104,7 +98,13 @@ cp bin/*.memcheck test-result/'''
           unstableThresholdDefinitelyLost: '200',
           unstableThresholdInvalidReadWrite: '200',
           unstableThresholdTotal: '400')
-		    
+		
+
+              }
+
+            }
+            steps {
+              sh 'echo "Publishing results"'
             }
           }
         }
