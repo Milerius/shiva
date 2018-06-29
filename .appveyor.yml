@@ -16,7 +16,10 @@ clone_script:
 - ps: git submodule update -q --init --recursive
 
 cache:
-  c:\tools\vcpkg\
+  c:\tools\vcpkg\installed
+  c:\tools\vcpkg\downloads
+  c:\tools\vcpkg\packages
+  c:\tools\vcpkg\buildtrees
 
 environment:
   COVERALLS_REPO_TOKEN:
@@ -41,7 +44,7 @@ install:
           cd C:\tools\vcpkg
           git --no-pager log --decorate=short --pretty=oneline -n10
           git pull
-          vcpkg install boost-filesystem:x64-Windows boost-stacktrace:x64-Windows gtest:x64-Windows entt:x64-Windows eastl:x64-Windows boost-dll:x64-Windows lua:x64-Windows sol2:x64-Windows
+          vcpkg install boost-filesystem:x64-Windows boost-stacktrace:x64-Windows gtest:x64-Windows entt:x64-Windows eastl:x64-Windows boost-dll:x64-Windows lua:x64-Windows sol2:x64-Windows pybind11:x64-Windows
           cd $env:APPVEYOR_BUILD_FOLDER
         } else {
           pip install --user cpp-coveralls
