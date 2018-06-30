@@ -2,7 +2,7 @@ pipeline {
   agent {
     node {
       label 'master'
-      customWorkspace "bidule"
+      customWorkspace "workspace/shiva-${BRANCH_NAME}"
     }
 
   }
