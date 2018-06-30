@@ -15,6 +15,7 @@ namespace shiva::event
 
         }
 
+        reflect_class(fatal_error_occured)
         std::error_code ec_;
     };
 }

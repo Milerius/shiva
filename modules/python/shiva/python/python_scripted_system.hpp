@@ -7,7 +7,7 @@
 #include <shiva/ecs/system.hpp>
 #include <shiva/filesystem/filesystem.hpp>
 #include <pybind11/pybind11.h>
-#include <shiva/event/destruct_callback_scripted_systems.hpp>
+#include <shiva/event/all.hpp>
 
 namespace shiva::ecs
 {
@@ -28,11 +28,32 @@ namespace shiva::ecs
             table_name_(std::move(table_name))
         {
             this->dispatcher_.template sink<shiva::event::destruct_callback_scripted_systems>().connect(this);
+            register_common_events(shiva::event::common_events_list{});
             class_name_ = std::move(class_name);
             safe_function("on_construct");
         }
 
         ~python_scripted_system() noexcept override = default;
+
+        template <typename EventType>
+        void register_common_event()
+        {
+            this->dispatcher_.template sink<EventType>().connect(this);
+        }
+
+        template <typename ... Types>
+        void register_common_events(meta::type_list<Types...>) noexcept
+        {
+            (register_common_event<Types>(), ...);
+        }
+
+        template <typename EventType>
+        void receive([[maybe_unused]] const EventType &evt) noexcept
+        {
+            using namespace std::string_literals;
+            std::cout << EventType::class_name() << std::endl;
+            safe_function("on_"s + EventType::class_name());
+        }
 
         void receive([[maybe_unused]] const shiva::event::destruct_callback_scripted_systems &evt)
         {
@@ -64,7 +85,14 @@ namespace shiva::ecs
         void safe_function(const std::string &function, Args &&... args)
         {
             try {
-                module_.attr(table_name_.c_str()).attr(function.c_str())(std::forward<Args>(args)...);
+                const char *c_function_name = function.c_str();
+                auto current = module_.attr(table_name_.c_str());
+                if (pybind11::hasattr(current, c_function_name)) {
+                    pybind11::object obj = current.attr(c_function_name);
+                    if (!obj.is_none()) {
+                        obj(std::forward<Args>(args)...);
+                    }
+                }
             }
             catch (const std::exception &error) {
                 std::cerr << error.what() << std::endl;

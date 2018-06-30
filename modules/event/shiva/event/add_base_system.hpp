@@ -16,6 +16,8 @@ namespace shiva::event
 
         }
 
+        reflect_class(add_base_system)
+
         std::unique_ptr<shiva::ecs::base_system> system_ptr;
     };
 }

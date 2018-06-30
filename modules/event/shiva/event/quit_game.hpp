@@ -12,6 +12,8 @@ namespace shiva::event
         {
         }
 
+        reflect_class(quit_game)
+
         int return_value_;
     };
 }

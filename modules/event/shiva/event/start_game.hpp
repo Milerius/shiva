@@ -8,5 +8,6 @@ namespace shiva::event
 {
     struct start_game
     {
+        reflect_class(start_game)
     };
 }
