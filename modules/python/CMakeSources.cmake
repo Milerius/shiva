@@ -4,6 +4,7 @@ set(MODULE_PATH
 set(MODULE_PUBLIC_HEADERS
         "${MODULE_PATH}/python.hpp"
         "${MODULE_PATH}/python_system.hpp"
+        "${MODULE_PATH}/python_scripted_system.hpp"
         )
 
 set(MODULE_PRIVATE_HEADERS

@@ -7,6 +7,7 @@ set(MODULE_PUBLIC_HEADERS
         "${MODULE_PATH}/quit_game.hpp"
         "${MODULE_PATH}/start_game.hpp"
         "${MODULE_PATH}/after_load_systems_plugins.hpp"
+        "${MODULE_PATH}/destruct_callback_scripted_systems.hpp"
         )
 
 set(MODULE_PRIVATE_HEADERS
