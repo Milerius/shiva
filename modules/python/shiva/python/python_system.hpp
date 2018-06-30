@@ -8,6 +8,8 @@
 #include <pybind11/embed.h>
 #include <shiva/filesystem/filesystem.hpp>
 #include <shiva/ecs/system.hpp>
+#include <shiva/python/python_scripted_system.hpp>
+#include <shiva/event/add_base_system.hpp>
 
 namespace py = pybind11;
 
@@ -81,10 +83,17 @@ namespace shiva::scripting
             disable();
         }
 
-        bool load_script(const std::string &file_name) noexcept
+        ~python_system() noexcept override
         {
+            dispatcher_.trigger<shiva::event::destruct_callback_scripted_systems>();
+        }
+
+        bool load_script(const std::string &file_name, const fs::path &script_directory) noexcept
+        {
+            if (fs::path(file_name).extension().string() != ".py")
+                return false;
             try {
-                import_module(fs::path(file_name).stem().string(), (script_directory_ /= fs::path(file_name)).string(),
+                import_module(fs::path(file_name).stem().string(), (script_directory / fs::path(file_name)).string(),
                               globals_);
             }
             catch (const std::exception &error) {
@@ -92,6 +101,11 @@ namespace shiva::scripting
                 return false;
             }
             return true;
+        }
+
+        bool load_script(const std::string &file_name) noexcept
+        {
+            return load_script(file_name, script_directory_);
         }
 
         pybind11::module &get_module() noexcept
@@ -102,6 +116,58 @@ namespace shiva::scripting
         const pybind11::module &get_module() const noexcept
         {
             return module_;
+        }
+
+        bool create_scripted_system(const shiva::fs::path &script_name)
+        {
+            auto real_name = script_name.filename().string();
+            auto stem_name = script_name.filename().stem().string();
+            bool res = load_script(real_name, systems_scripts_directory_);
+            if (res) {
+                shiva::ecs::system_type sys_type = module_.attr(script_name.filename().stem().string().c_str()).attr(
+                    "current_system_type").cast<shiva::ecs::system_type>();
+                log_->info("attr {0}, type {1}", script_name.filename().stem().string().c_str(), sys_type);
+                switch (sys_type) {
+                    case shiva::ecs::post_update:
+                        dispatcher_.trigger<shiva::event::add_base_system>(
+                            std::make_unique<shiva::ecs::python_post_scripted_system>(dispatcher_, entity_registry_,
+                                                                                      fixed_delta_time_, module_,
+                                                                                      stem_name,
+                                                                                      stem_name));
+                        break;
+                    case shiva::ecs::pre_update:
+                        dispatcher_.trigger<shiva::event::add_base_system>(
+                            std::make_unique<shiva::ecs::python_pre_scripted_system>(dispatcher_, entity_registry_,
+                                                                                     fixed_delta_time_, module_,
+                                                                                     stem_name,
+                                                                                     stem_name));
+                        break;
+                    case shiva::ecs::logic_update:
+                        dispatcher_.trigger<shiva::event::add_base_system>(
+                            std::make_unique<shiva::ecs::python_logic_scripted_system>(dispatcher_, entity_registry_,
+                                                                                       fixed_delta_time_, module_,
+                                                                                       stem_name,
+                                                                                       stem_name));
+                        break;
+                    default:
+                        break;
+                }
+            }
+            return res;
+        }
+
+        bool load_all_scripted_systems() noexcept
+        {
+            bool res = true;
+            fs::recursive_directory_iterator endit;
+            for (fs::recursive_directory_iterator it(systems_scripts_directory_); it != endit; ++it) {
+                if (!fs::is_regular_file(*it)) {
+                    continue;
+                }
+                log_->info("path -> {}", it->path().string());
+                res &= create_scripted_system(it->path());
+            }
+            return true;
         }
 
         template <typename T>

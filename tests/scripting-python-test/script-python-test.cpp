@@ -78,3 +78,8 @@ TEST_F(fixture_scripting, for_each)
     obj();
 }
 
+TEST_F(fixture_scripting, systems)
+{
+    ASSERT_TRUE(system_ptr->load_all_scripted_systems());
+    ASSERT_GE(system_manager_.update(), 2u);
+}
