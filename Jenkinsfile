@@ -69,36 +69,23 @@ cp bin/*.memcheck test-result/'''
       post {
         always {
           step([$class: 'XUnitBuilder',
-                                                      thresholds: [
-                                                                [$class: 'SkippedThreshold', failureThreshold: '0'],
-                                                                // Allow for a significant number of failures
-                                                                // Keeping this threshold so that overwhelming failures are guaranteed
-                                                                //     to still fail the build
-                                                                [$class: 'FailedThreshold', failureThreshold: '10']],
-                                                            tools: [
-                            					    [$class: 'CTestType', pattern: 'test-result/ctest/*.xml', skipNoTestFiles: false, failIfNotNew: true, deleteOutputFiles: true, stopProcessingIfError: true]]])
+                                                                thresholds: [
+                                                                            [$class: 'SkippedThreshold', failureThreshold: '0'],
+                                                                            // Allow for a significant number of failures
+                                                                            // Keeping this threshold so that overwhelming failures are guaranteed
+                                                                            //     to still fail the build
+                                                                            [$class: 'FailedThreshold', failureThreshold: '10']],
+                                                                        tools: [
+                                          					    [$class: 'CTestType', pattern: 'test-result/ctest/*.xml', skipNoTestFiles: false, failIfNotNew: true, deleteOutputFiles: true, stopProcessingIfError: true]]])
               step([$class: 'XUnitBuilder',
-                                                              thresholds: [
-                                                                        [$class: 'SkippedThreshold', failureThreshold: '0'],
-                                                                        // Allow for a significant number of failures
-                                                                        // Keeping this threshold so that overwhelming failures are guaranteed
-                                                                        //     to still fail the build
-                                                                        [$class: 'FailedThreshold', failureThreshold: '10']],
-                                                                    tools: [[$class: 'GoogleTestType', pattern: 'test-result/*.xml', skipNoTestFiles: false, failIfNotNew: true, deleteOutputFiles: true, stopProcessingIfError: true]]])
-		publishValgrind (
-          failBuildOnInvalidReports: false,
-          failBuildOnMissingReports: false,
-          failThresholdDefinitelyLost: '400',
-          failThresholdInvalidReadWrite: '400',
-          failThresholdTotal: '800',
-          pattern: 'test-result/*.memcheck',
-          publishResultsForAbortedBuilds: false,
-          publishResultsForFailedBuilds: false,
-          sourceSubstitutionPaths: '',
-          unstableThresholdDefinitelyLost: '200',
-          unstableThresholdInvalidReadWrite: '200',
-          unstableThresholdTotal: '400')
-		
+                                                                            thresholds: [
+                                                                                        [$class: 'SkippedThreshold', failureThreshold: '0'],
+                                                                                        // Allow for a significant number of failures
+                                                                                        // Keeping this threshold so that overwhelming failures are guaranteed
+                                                                                        //     to still fail the build
+                                                                                        [$class: 'FailedThreshold', failureThreshold: '10']],
+                                                                                    tools: [[$class: 'GoogleTestType', pattern: 'test-result/*.xml', skipNoTestFiles: false, failIfNotNew: true, deleteOutputFiles: true, stopProcessingIfError: true]]])
+                publishValgrind(failBuildOnInvalidReports: false, failBuildOnMissingReports: false, failThresholdDefinitelyLost: '400', failThresholdInvalidReadWrite: '400', failThresholdTotal: '800', pattern: 'test-result/*.memcheck', publishResultsForAbortedBuilds: false, publishResultsForFailedBuilds: false, sourceSubstitutionPaths: '', unstableThresholdDefinitelyLost: '200', unstableThresholdInvalidReadWrite: '200', unstableThresholdTotal: '400')
 
               }
 
@@ -110,6 +97,6 @@ cp bin/*.memcheck test-result/'''
         }
         environment {
           PATH = '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/var/lib/jenkins:/var/lib/jenkins/.local/bin'
-          COVERALLS_REPO_TOKEN = 'bVhcCed4om8PxhwUhYamyapXQQ8D4F7IX'
+          COVERALLS_REPO_TOKEN = 'BwnhmLKQEfAs6o3xqjmLOp8JC19HP2QNK'
         }
       }
