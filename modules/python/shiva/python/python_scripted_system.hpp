@@ -86,6 +86,7 @@ namespace shiva::ecs
         void safe_function(const std::string &function, Args &&... args)
         {
             try {
+                this->log_->info("calling function {0}, from file {1}", function, table_name_ + ".py");
                 const char *c_function_name = function.c_str();
                 auto current = module_.attr(table_name_.c_str());
                 if (pybind11::hasattr(current, c_function_name)) {
