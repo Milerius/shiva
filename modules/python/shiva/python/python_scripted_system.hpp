@@ -20,20 +20,24 @@ namespace shiva::ecs
         python_scripted_system(shiva::entt::dispatcher &dispatcher,
                                shiva::entt::entity_registry &entity_registry,
                                const float &fixed_delta_time,
-                               pybind11::module &module,
+							   std::shared_ptr<pybind11::scoped_interpreter> guard,
+                               std::shared_ptr<pybind11::module> module,
                                std::string table_name,
                                std::string class_name) noexcept :
             TSystem::system(dispatcher, entity_registry, fixed_delta_time, class_name),
+			guard_(guard),
             module_(module),
             table_name_(std::move(table_name))
         {
-            this->dispatcher_.template sink<shiva::event::destruct_callback_scripted_systems>().connect(this);
             register_common_events(shiva::event::common_events_list{});
             class_name_ = std::move(class_name);
             safe_function("on_construct");
         }
 
-        ~python_scripted_system() noexcept override = default;
+        ~python_scripted_system() noexcept override
+        {
+			safe_function("on_destruct");
+        };
 
         template <typename EventType>
         void register_common_event()
@@ -54,11 +58,6 @@ namespace shiva::ecs
             using namespace std::string_literals;
             this->log_->info("event_type received: {}", EventType::class_name());
             safe_function("on_"s + EventType::class_name());
-        }
-
-        void receive([[maybe_unused]] const shiva::event::destruct_callback_scripted_systems &evt)
-        {
-            safe_function("on_destruct");
         }
 
         void update() noexcept override
@@ -87,7 +86,7 @@ namespace shiva::ecs
         {
             try {
                 const char *c_function_name = function.c_str();
-                auto current = module_.attr(class_name_.c_str());
+                auto current = module_->attr(class_name_.c_str());
                 if (pybind11::hasattr(current, c_function_name)) {
                     pybind11::object obj = current.attr(c_function_name);
                     if (!obj.is_none()) {
@@ -100,7 +99,8 @@ namespace shiva::ecs
             }
         }
 
-        pybind11::module &module_;
+		std::shared_ptr<pybind11::scoped_interpreter> guard_;
+        std::shared_ptr<pybind11::module> module_;
         std::string table_name_;
         static inline std::string class_name_{""};
     };
