@@ -39,3 +39,20 @@ def test_for_each():
     assert shiva.ett_registry.nb_entities() == 10, "should be 10"
     shiva.ett_registry.for_each_entities_which_have_layer_1_component(functor)
     assert shiva.ett_registry.nb_entities() == 0, "should be 0"
+    return True
+
+
+def test_for_each_runtime():
+    for i in range(1, 11):
+        id = shiva.ett_registry.create()
+        if i == 4:
+            shiva.ett_registry.add_layer_3_component(id)
+        else:
+            shiva.ett_registry.add_layer_1_component(id)
+            shiva.ett_registry.add_layer_2_component(id)
+    table = [shiva.ett_registry.layer_1_id(), shiva.ett_registry.layer_2_id()]
+    print("nb entities {}", shiva.ett_registry.nb_entities())
+    assert shiva.ett_registry.nb_entities() == 10, "should be 10"
+    shiva.ett_registry.for_each_runtime(table, functor)
+    assert shiva.ett_registry.nb_entities() == 1, "should be 1"
+    return True

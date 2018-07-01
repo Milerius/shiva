@@ -18,11 +18,13 @@ protected:
     void SetUp() override
     {
         shiva::fs::copy(
-            shiva::fs::current_path().parent_path() / shiva::fs::path("tests/scripting-python-test/scripts_python_tests"),
+            shiva::fs::current_path().parent_path() /
+            shiva::fs::path("tests/scripting-python-test/scripts_python_tests"),
             shiva::fs::current_path() / shiva::fs::path("scripts_python_tests"),
             shiva::fs::copy_options::overwrite_existing | shiva::fs::copy_options::recursive);
-        system_ptr = std::addressof(system_manager_.create_system<shiva::scripting::python_system>("scripts_python_tests",
-                                                                                                "scripts_python_tests/systems"));
+        system_ptr = std::addressof(
+            system_manager_.create_system<shiva::scripting::python_system>("scripts_python_tests",
+                                                                           "scripts_python_tests/systems"));
 
         system_ptr->register_entity_registry();
         system_ptr->register_components(shiva::ecs::common_components{});
@@ -49,7 +51,7 @@ TEST(scripting_python, basic)
 
 TEST_F(fixture_scripting, create_entity)
 {
-    pybind11::module& module = this->system_ptr->get_module();
+    pybind11::module &module = this->system_ptr->get_module();
     py::object obj = module.attr("basic_tests").attr("test_create_entity");
     auto result = obj().cast<unsigned int>();
     ASSERT_EQ(result, 0u);
@@ -57,7 +59,7 @@ TEST_F(fixture_scripting, create_entity)
 
 TEST_F(fixture_scripting, destroy_entity)
 {
-    pybind11::module& module = this->system_ptr->get_module();
+    pybind11::module &module = this->system_ptr->get_module();
     py::object obj = module.attr("basic_tests").attr("test_destroy_entity");
     auto result = obj().cast<bool>();
     ASSERT_TRUE(result);
@@ -65,7 +67,7 @@ TEST_F(fixture_scripting, destroy_entity)
 
 TEST_F(fixture_scripting, components)
 {
-    pybind11::module& module = this->system_ptr->get_module();
+    pybind11::module &module = this->system_ptr->get_module();
     py::object obj = module.attr("basic_tests").attr("test_component");
     auto result = obj().cast<bool>();
     ASSERT_TRUE(result);
@@ -73,9 +75,18 @@ TEST_F(fixture_scripting, components)
 
 TEST_F(fixture_scripting, for_each)
 {
-    pybind11::module& module = this->system_ptr->get_module();
+    pybind11::module &module = this->system_ptr->get_module();
     py::object obj = module.attr("basic_tests").attr("test_for_each");
-    obj();
+    auto result = obj().cast<bool>();
+    ASSERT_TRUE(result);
+}
+
+TEST_F(fixture_scripting, for_each_runtime)
+{
+    pybind11::module &module = this->system_ptr->get_module();
+    py::object obj = module.attr("basic_tests").attr("test_for_each_runtime");
+    auto result = obj().cast<bool>();
+    ASSERT_TRUE(result);
 }
 
 TEST_F(fixture_scripting, systems)
