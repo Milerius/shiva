@@ -49,7 +49,7 @@ namespace shiva::ecs
         }
 
         template <typename EventType>
-        void receive(const EventType &evt) noexcept
+        void receive([[maybe_unused]] const EventType &evt) noexcept
         {
             using namespace std::string_literals;
             this->log_->info("event_type received: {}", EventType::class_name());
@@ -58,10 +58,7 @@ namespace shiva::ecs
 
         void receive([[maybe_unused]] const shiva::event::destruct_callback_scripted_systems &evt)
         {
-            //TODO: fix this shit
-#ifdef __APPLE__
             safe_function("on_destruct");
-#endif
         }
 
         void update() noexcept override
@@ -89,9 +86,8 @@ namespace shiva::ecs
         void safe_function(const std::string &function, Args &&... args)
         {
             try {
-                this->log_->info("calling function {0}, from file {1}", function, table_name_ + ".py");
                 const char *c_function_name = function.c_str();
-                auto current = module_.attr(table_name_.c_str());
+                auto current = module_.attr(class_name_.c_str());
                 if (pybind11::hasattr(current, c_function_name)) {
                     pybind11::object obj = current.attr(c_function_name);
                     if (!obj.is_none()) {
