@@ -30,7 +30,7 @@ namespace shiva::ecs
             this->dispatcher_.template sink<shiva::event::destruct_callback_scripted_systems>().connect(this);
             register_common_events(shiva::event::common_events_list{});
             class_name_ = std::move(class_name);
-            //safe_function("on_construct");
+            safe_function("on_construct");
         }
 
         ~python_scripted_system() noexcept override = default;
