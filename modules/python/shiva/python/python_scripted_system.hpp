@@ -28,7 +28,7 @@ namespace shiva::ecs
             table_name_(std::move(table_name))
         {
             this->dispatcher_.template sink<shiva::event::destruct_callback_scripted_systems>().connect(this);
-            //register_common_events(shiva::event::common_events_list{});
+            register_common_events(shiva::event::common_events_list{});
             class_name_ = std::move(class_name);
             safe_function("on_construct");
         }
@@ -87,14 +87,15 @@ namespace shiva::ecs
         {
             try {
                 this->log_->info("calling function {0}, from file {1}", function, table_name_ + ".py");
-                const char *c_function_name = function.c_str();
+                module_.attr(table_name_.c_str()).attr(function.c_str())(std::forward<Args>(args)...);
+                /*const char *c_function_name = function.c_str();
                 auto current = module_.attr(table_name_.c_str());
                 if (pybind11::hasattr(current, c_function_name)) {
                     pybind11::object obj = current.attr(c_function_name);
                     if (!obj.is_none()) {
                         obj(std::forward<Args>(args)...);
                     }
-                }
+                }*/
             }
             catch (const std::exception &error) {
                 this->log_->error("python error: {}", error.what());
