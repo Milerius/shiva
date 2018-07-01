@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <shiva/reflection/reflection.hpp>
+
 namespace shiva::event
 {
     struct quit_game
@@ -11,6 +13,8 @@ namespace shiva::event
         quit_game(int return_value) noexcept : return_value_(return_value) //NOLINT
         {
         }
+
+        reflect_class(quit_game)
 
         int return_value_;
     };

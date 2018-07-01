@@ -18,12 +18,12 @@ namespace shiva::ecs
         using TSystem = system<lua_scripted_system<SystemType>, SystemType>;
 
         lua_scripted_system(shiva::entt::dispatcher &dispatcher,
-                        shiva::entt::entity_registry &entity_registry,
-                        const float &fixed_delta_time,
-                        std::shared_ptr<sol::state> state,
-                        std::string table_name,
-                        std::string class_name) noexcept :
-            TSystem::system(dispatcher, entity_registry, fixed_delta_time),
+                            shiva::entt::entity_registry &entity_registry,
+                            const float &fixed_delta_time,
+                            std::shared_ptr<sol::state> state,
+                            std::string table_name,
+                            std::string class_name) noexcept :
+            TSystem::system(dispatcher, entity_registry, fixed_delta_time, class_name),
             state_(state),
             table_name_(std::move(table_name))
         {
@@ -64,7 +64,7 @@ namespace shiva::ecs
                 (*state_)[table_name_][function](std::forward<Args>(args)...);
             }
             catch (const std::exception &error) {
-                std::cerr << error.what() << std::endl;
+                this->log_->error("lua error: {}", error.what());
             }
         }
 
@@ -73,7 +73,7 @@ namespace shiva::ecs
         static inline std::string class_name_{""};
     };
 
-    using post_scripted_system = lua_scripted_system<shiva::ecs::system_post_update>;
-    using pre_scripted_system = lua_scripted_system<shiva::ecs::system_pre_update>;
-    using logic_scripted_system = lua_scripted_system<shiva::ecs::system_logic_update>;
+    using lua_post_scripted_system = lua_scripted_system<shiva::ecs::system_post_update>;
+    using lua_pre_scripted_system = lua_scripted_system<shiva::ecs::system_pre_update>;
+    using lua_logic_scripted_system = lua_scripted_system<shiva::ecs::system_logic_update>;
 }

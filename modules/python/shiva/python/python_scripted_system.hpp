@@ -7,7 +7,7 @@
 #include <shiva/ecs/system.hpp>
 #include <shiva/filesystem/filesystem.hpp>
 #include <pybind11/pybind11.h>
-#include <shiva/event/destruct_callback_scripted_systems.hpp>
+#include <shiva/event/all.hpp>
 
 namespace shiva::ecs
 {
@@ -23,20 +23,45 @@ namespace shiva::ecs
                                pybind11::module &module,
                                std::string table_name,
                                std::string class_name) noexcept :
-            TSystem::system(dispatcher, entity_registry, fixed_delta_time),
+            TSystem::system(dispatcher, entity_registry, fixed_delta_time, class_name),
             module_(module),
             table_name_(std::move(table_name))
         {
             this->dispatcher_.template sink<shiva::event::destruct_callback_scripted_systems>().connect(this);
+            register_common_events(shiva::event::common_events_list{});
             class_name_ = std::move(class_name);
             safe_function("on_construct");
         }
 
         ~python_scripted_system() noexcept override = default;
 
+        template <typename EventType>
+        void register_common_event()
+        {
+            this->dispatcher_.template sink<EventType>().connect(this);
+            this->log_->info("connect to event_type: {}", EventType::class_name());
+        }
+
+        template <typename ... Types>
+        void register_common_events(meta::type_list<Types...>) noexcept
+        {
+            (register_common_event<Types>(), ...);
+        }
+
+        template <typename EventType>
+        void receive(const EventType &evt) noexcept
+        {
+            using namespace std::string_literals;
+            this->log_->info("event_type received: {}", EventType::class_name());
+            safe_function("on_"s + EventType::class_name());
+        }
+
         void receive([[maybe_unused]] const shiva::event::destruct_callback_scripted_systems &evt)
         {
+            //TODO: fix this shit
+#ifdef __APPLE__
             safe_function("on_destruct");
+#endif
         }
 
         void update() noexcept override
@@ -64,10 +89,18 @@ namespace shiva::ecs
         void safe_function(const std::string &function, Args &&... args)
         {
             try {
-                module_.attr(table_name_.c_str()).attr(function.c_str())(std::forward<Args>(args)...);
+                this->log_->info("calling function {0}, from file {1}", function, table_name_ + ".py");
+                const char *c_function_name = function.c_str();
+                auto current = module_.attr(table_name_.c_str());
+                if (pybind11::hasattr(current, c_function_name)) {
+                    pybind11::object obj = current.attr(c_function_name);
+                    if (!obj.is_none()) {
+                        obj(std::forward<Args>(args)...);
+                    }
+                }
             }
             catch (const std::exception &error) {
-                std::cerr << error.what() << std::endl;
+                this->log_->error("python error: {}", error.what());
             }
         }
 

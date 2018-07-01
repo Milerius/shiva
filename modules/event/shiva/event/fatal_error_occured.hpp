@@ -5,6 +5,7 @@
 #pragma once
 
 #include <system_error>
+#include <shiva/reflection/reflection.hpp>
 
 namespace shiva::event
 {
@@ -15,6 +16,7 @@ namespace shiva::event
 
         }
 
+        reflect_class(fatal_error_occured)
         std::error_code ec_;
     };
 }
