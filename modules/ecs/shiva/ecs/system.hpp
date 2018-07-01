@@ -30,7 +30,11 @@ namespace shiva::ecs
         {
         }
 
-        ~system() noexcept override = default;
+        ~system() noexcept override
+        {
+            log_->info("dropping {} logger\n", log_->name());
+            spdlog::drop(log_->name());
+        };
 
         static constexpr system_type get_system_type() noexcept
         {
