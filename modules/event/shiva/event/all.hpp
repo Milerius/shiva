@@ -6,7 +6,6 @@
 
 #include <shiva/event/add_base_system.hpp>
 #include <shiva/event/after_load_systems_plugins.hpp>
-#include <shiva/event/destruct_callback_scripted_systems.hpp>
 #include <shiva/event/fatal_error_occured.hpp>
 #include <shiva/event/quit_game.hpp>
 #include <shiva/event/start_game.hpp>

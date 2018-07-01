@@ -20,12 +20,12 @@ namespace shiva::ecs
         python_scripted_system(shiva::entt::dispatcher &dispatcher,
                                shiva::entt::entity_registry &entity_registry,
                                const float &fixed_delta_time,
-							   std::shared_ptr<pybind11::scoped_interpreter> guard,
+                               std::shared_ptr<pybind11::scoped_interpreter> guard,
                                std::shared_ptr<pybind11::module> module,
                                std::string table_name,
                                std::string class_name) noexcept :
             TSystem::system(dispatcher, entity_registry, fixed_delta_time, class_name),
-			guard_(guard),
+            guard_(guard),
             module_(module),
             table_name_(std::move(table_name))
         {
@@ -36,7 +36,7 @@ namespace shiva::ecs
 
         ~python_scripted_system() noexcept override
         {
-			safe_function("on_destruct");
+            safe_function("on_destruct");
         };
 
         template <typename EventType>
@@ -99,7 +99,7 @@ namespace shiva::ecs
             }
         }
 
-		std::shared_ptr<pybind11::scoped_interpreter> guard_;
+        std::shared_ptr<pybind11::scoped_interpreter> guard_;
         std::shared_ptr<pybind11::module> module_;
         std::string table_name_;
         static inline std::string class_name_{""};
