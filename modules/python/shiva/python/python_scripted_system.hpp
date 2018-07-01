@@ -58,7 +58,10 @@ namespace shiva::ecs
 
         void receive([[maybe_unused]] const shiva::event::destruct_callback_scripted_systems &evt)
         {
+            //TODO: fix this shit
+#ifdef __APPLE__
             safe_function("on_destruct");
+#endif
         }
 
         void update() noexcept override
@@ -87,15 +90,14 @@ namespace shiva::ecs
         {
             try {
                 this->log_->info("calling function {0}, from file {1}", function, table_name_ + ".py");
-                module_.attr(table_name_.c_str()).attr(function.c_str())(std::forward<Args>(args)...);
-                /*const char *c_function_name = function.c_str();
+                const char *c_function_name = function.c_str();
                 auto current = module_.attr(table_name_.c_str());
                 if (pybind11::hasattr(current, c_function_name)) {
                     pybind11::object obj = current.attr(c_function_name);
                     if (!obj.is_none()) {
                         obj(std::forward<Args>(args)...);
                     }
-                }*/
+                }
             }
             catch (const std::exception &error) {
                 this->log_->error("python error: {}", error.what());
