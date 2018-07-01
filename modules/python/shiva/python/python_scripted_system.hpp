@@ -86,7 +86,6 @@ namespace shiva::ecs
         void safe_function(const std::string &function, Args &&... args)
         {
             try {
-                //this->log_->info("calling function {0}, from file {1}", function, class_name_ + ".py");
                 const char *c_function_name = function.c_str();
                 auto current = module_.attr(class_name_.c_str());
                 if (pybind11::hasattr(current, c_function_name)) {
@@ -97,7 +96,7 @@ namespace shiva::ecs
                 }
             }
             catch (const std::exception &error) {
-                //this->log_->error("python error: {}", error.what());
+                this->log_->error("python error: {}", error.what());
             }
         }
 
