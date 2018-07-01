@@ -58,7 +58,7 @@ namespace shiva::ecs
 
         void receive([[maybe_unused]] const shiva::event::destruct_callback_scripted_systems &evt)
         {
-            safe_function("on_destruct");
+            //safe_function("on_destruct");
         }
 
         void update() noexcept override
