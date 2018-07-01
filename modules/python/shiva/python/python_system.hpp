@@ -90,8 +90,10 @@ namespace shiva::scripting
 
         bool load_script(const std::string &file_name, const fs::path &script_directory) noexcept
         {
-            if (fs::path(file_name).extension().string() != ".py")
+            if (fs::path(file_name).extension().string() != ".py") {
+                log_->warn("file_name: {} have a bad extension, ignoring.", file_name);
                 return false;
+            }
             try {
                 import_module(fs::path(file_name).stem().string(), (script_directory / fs::path(file_name)).string(),
                               globals_);
