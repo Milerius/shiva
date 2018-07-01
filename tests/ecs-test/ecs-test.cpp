@@ -36,7 +36,6 @@ protected:
 
     void SetUp() override
     {
-        spdlog::drop_all();
         spdlog::set_pattern("[%n][%r][pid: %P][%^%l%$]: %v");
         dispatcher_.trigger<shiva::event::start_game>();
         entity_registry_.create();
@@ -119,7 +118,6 @@ TEST(ecs_testing, constructor)
 {
     entt::Dispatcher dispatcher{};
     shiva::entt::entity_registry registry{};
-    //entt::DefaultRegistry registry{};
     shiva::helpers::plugins_registry<shiva::ecs::system_manager::pluginapi_create_t> plugins(
         shiva::fs::path("systems"));
     shiva::ecs::system_manager manager(dispatcher, registry, plugins);
@@ -258,42 +256,34 @@ TEST_F(fixture_system, size_per_system_type)
 
 TEST_F(fixture_system, load_plugins_from_non_existent_directory)
 {
-    spdlog::drop("bar_system");
     shiva::fs::copy("systems_test", "save", shiva::fs::copy_options::recursive);
     shiva::fs::remove_all("systems_test");
     ASSERT_FALSE(system_manager_.load_plugins());
     shiva::fs::copy("save", "systems_test", shiva::fs::copy_options::recursive);
     shiva::fs::remove_all("save");
-    spdlog::drop("bar_system");
 }
 
 TEST_F(fixture_system, fake_plugin)
 {
-    spdlog::drop("bar_system");
     std::ofstream outfile("systems_test/test.so");
     ASSERT_FALSE(system_manager_.load_plugins());
     shiva::fs::remove("systems_test/test.so");
-    spdlog::drop("bar_system");
 }
 
 TEST_F(fixture_system, plugin_not_regular_file)
 {
-    spdlog::drop("bar_system");
     std::ofstream outfile("systems_test/bidule.txt");
     shiva::fs::create_symlink("systems_test/bidule.txt", "systems_test/symlink");
     ASSERT_TRUE(system_manager_.load_plugins());
     shiva::fs::remove("systems_test/bidule.txt");
     shiva::fs::remove("systems_test/symlink");
-    spdlog::drop("bar_system");
 }
 
 TEST_F(fixture_system, plugin_regular_file)
 {
-    spdlog::drop("bar_system");
     std::ofstream outfile("systems_test/regular_file.txt");
     ASSERT_TRUE(system_manager_.load_plugins());
     shiva::fs::remove("systems_test/regular_file.txt");
-    spdlog::drop("bar_system");
 }
 
 #endif
