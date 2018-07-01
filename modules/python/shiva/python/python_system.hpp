@@ -261,6 +261,5 @@ namespace shiva::scripting
         py::module module_{py::module::import("shiva")};
         shiva::fs::path script_directory_;
         shiva::fs::path systems_scripts_directory_;
-        shiva::logging::logger log_{shiva::log::stdout_color_mt("python_system")};
     };
 }

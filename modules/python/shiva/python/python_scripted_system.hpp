@@ -23,7 +23,7 @@ namespace shiva::ecs
                                pybind11::module &module,
                                std::string table_name,
                                std::string class_name) noexcept :
-            TSystem::system(dispatcher, entity_registry, fixed_delta_time),
+            TSystem::system(dispatcher, entity_registry, fixed_delta_time, class_name),
             module_(module),
             table_name_(std::move(table_name))
         {
@@ -39,6 +39,7 @@ namespace shiva::ecs
         void register_common_event()
         {
             this->dispatcher_.template sink<EventType>().connect(this);
+            this->log_->info("connect to event_type: {}", EventType::class_name());
         }
 
         template <typename ... Types>
@@ -51,7 +52,7 @@ namespace shiva::ecs
         void receive([[maybe_unused]] const EventType &evt) noexcept
         {
             using namespace std::string_literals;
-            std::cout << EventType::class_name() << std::endl;
+            this->log_->info("event_type received: {}", EventType::class_name());
             safe_function("on_"s + EventType::class_name());
         }
 
@@ -95,7 +96,7 @@ namespace shiva::ecs
                 }
             }
             catch (const std::exception &error) {
-                std::cerr << error.what() << std::endl;
+                this->log_->error("python error: {}", error.what());
             }
         }
 

@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <shiva/reflection/reflection.hpp>
 #include <shiva/ecs/base_system.hpp>
 
 namespace shiva::event

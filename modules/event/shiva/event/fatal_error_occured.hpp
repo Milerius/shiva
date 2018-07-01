@@ -5,6 +5,7 @@
 #pragma once
 
 #include <system_error>
+#include <shiva/reflection/reflection.hpp>
 
 namespace shiva::event
 {

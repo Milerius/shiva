@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <shiva/reflection/reflection.hpp>
+
 namespace shiva::event
 {
     struct after_load_systems_plugins

@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <shiva/spdlog/spdlog.hpp>
 #include <shiva/ecs/base_system.hpp>
 #include <shiva/ecs/details/system_type_traits.hpp>
 
@@ -16,7 +17,16 @@ namespace shiva::ecs
         using is_kind_system = std::is_same<TSystemType, T>;
     public:
         template <typename ...Args>
-        explicit system(Args &&...args) noexcept : base_system(std::forward<Args>(args)...)
+        explicit system(Args &&...args) noexcept : base_system(std::forward<Args>(args)...),
+                                                   log_{shiva::log::stdout_color_mt(SystemDerived::class_name())}
+        {
+        }
+
+        system(shiva::entt::dispatcher &dispatcher,
+               shiva::entt::entity_registry &entity_registry,
+               const float &fixed_delta_time,
+               std::string class_name) noexcept : base_system(dispatcher, entity_registry, fixed_delta_time),
+                                                  log_{shiva::log::stdout_color_mt(std::move(class_name))}
         {
         }
 
@@ -48,6 +58,9 @@ namespace shiva::ecs
         {
             return system::get_system_type();
         }
+
+    protected:
+        shiva::logging::logger log_;
     };
 
     template <typename TSystemDerived>

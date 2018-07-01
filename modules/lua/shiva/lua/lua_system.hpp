@@ -180,21 +180,21 @@ namespace shiva::scripting
             switch (sys_type) {
                 case shiva::ecs::post_update:
                     dispatcher_.trigger<shiva::event::add_base_system>(
-                        std::make_unique<shiva::ecs::post_scripted_system>(dispatcher_, entity_registry_,
-                                                                           fixed_delta_time_, state_, table_name,
-                                                                           script_name.filename().stem().string()));
+                        std::make_unique<shiva::ecs::lua_post_scripted_system>(dispatcher_, entity_registry_,
+                                                                               fixed_delta_time_, state_, table_name,
+                                                                               script_name.filename().stem().string()));
                     break;
                 case shiva::ecs::pre_update:
                     dispatcher_.trigger<shiva::event::add_base_system>(
-                        std::make_unique<shiva::ecs::pre_scripted_system>(dispatcher_, entity_registry_,
-                                                                          fixed_delta_time_, state_, table_name,
-                                                                          script_name.filename().stem().string()));
+                        std::make_unique<shiva::ecs::lua_pre_scripted_system>(dispatcher_, entity_registry_,
+                                                                              fixed_delta_time_, state_, table_name,
+                                                                              script_name.filename().stem().string()));
                     break;
                 case shiva::ecs::logic_update:
                     dispatcher_.trigger<shiva::event::add_base_system>(
-                        std::make_unique<shiva::ecs::logic_scripted_system>(dispatcher_, entity_registry_,
-                                                                            fixed_delta_time_, state_, table_name,
-                                                                            script_name.filename().stem().string()));
+                        std::make_unique<shiva::ecs::lua_logic_scripted_system>(dispatcher_, entity_registry_,
+                                                                                fixed_delta_time_, state_, table_name,
+                                                                                script_name.filename().stem().string()));
                     break;
                 default:
                     break;
@@ -240,6 +240,5 @@ namespace shiva::scripting
         std::shared_ptr<sol::state> state_{std::make_shared<sol::state>()};
         shiva::fs::path script_directory_;
         shiva::fs::path systems_scripts_directory_;
-        shiva::logging::logger log_{shiva::log::stdout_color_mt("lua_system")};
     };
 }
