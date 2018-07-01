@@ -28,7 +28,7 @@ namespace shiva::ecs
             table_name_(std::move(table_name))
         {
             this->dispatcher_.template sink<shiva::event::destruct_callback_scripted_systems>().connect(this);
-            register_common_events(shiva::event::common_events_list{});
+            //register_common_events(shiva::event::common_events_list{});
             class_name_ = std::move(class_name);
             safe_function("on_construct");
         }
@@ -49,7 +49,7 @@ namespace shiva::ecs
         }
 
         template <typename EventType>
-        void receive([[maybe_unused]] const EventType &evt) noexcept
+        void receive(const EventType &evt) noexcept
         {
             using namespace std::string_literals;
             this->log_->info("event_type received: {}", EventType::class_name());
@@ -58,7 +58,7 @@ namespace shiva::ecs
 
         void receive([[maybe_unused]] const shiva::event::destruct_callback_scripted_systems &evt)
         {
-            //safe_function("on_destruct");
+            safe_function("on_destruct");
         }
 
         void update() noexcept override
