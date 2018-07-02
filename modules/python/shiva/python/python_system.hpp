@@ -5,6 +5,7 @@
 #pragma once
 
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 #include <pybind11/embed.h>
 #include <shiva/filesystem/filesystem.hpp>
 #include <shiva/ecs/system.hpp>
@@ -192,6 +193,14 @@ namespace shiva::scripting
             type.def("nb_entities", [](shiva::entt::entity_registry &self) {
                 return self.size();
             });
+            using comp_type = shiva::entt::entity_registry::component_type;
+            type.def("for_each_runtime",
+                     [](shiva::entt::entity_registry &self, std::vector<comp_type> array, py::object functor) {
+                         return self.view(std::cbegin(array), std::cend(array)).each(
+                             [func = std::move(functor)](auto entity) {
+                                 func(entity);
+                             });
+                     });
             module_->attr("ett_registry") = &entity_registry_;
         }
 

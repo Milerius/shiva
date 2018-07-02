@@ -13,8 +13,6 @@ namespace shiva::entt
 {
     using dispatcher = ::entt::Dispatcher;
 
-    //using entity_registry = ::entt::DefaultRegistry;
-
     class entity_registry : public ::entt::DefaultRegistry
     {
     public:
@@ -25,8 +23,14 @@ namespace shiva::entt
 
         static constexpr auto reflected_functions() noexcept
         {
-            return meta::makeMap(reflect_function(&entity_registry::destroy),
+            using namespace std::string_view_literals;
+            return meta::makeMap("destroy"sv, &entity_registry::destroy_entity,
                                  reflect_function(&entity_registry::create));
+        }
+
+        void destroy_entity(const base_class_t::entity_type entity)
+        {
+            return base_class_t::destroy(entity);
         }
 
         static constexpr auto reflected_members() noexcept

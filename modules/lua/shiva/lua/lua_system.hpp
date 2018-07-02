@@ -117,10 +117,9 @@ namespace shiva::scripting
             (*state_)[entity_registry_.class_name()]["for_each_runtime"] = [](shiva::entt::entity_registry &self,
                                                                               std::vector<comp_type> array,
                                                                               sol::function functor) {
-                for (auto id : array) {
-                    functor(id);
-                }
-                //return self.view(entt::runtime_t{}).each(array.begin(), array.end(), functor);
+                return self.view(std::cbegin(array), std::cend(array)).each([func = std::move(functor)](auto entity) {
+                    func(entity);
+                });
             };
 
             (*state_)[entity_registry_.class_name()]["nb_entities"] = [](shiva::entt::entity_registry &self) {

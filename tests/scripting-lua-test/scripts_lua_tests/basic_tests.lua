@@ -48,3 +48,26 @@ function test_for_each()
     return true
 end
 
+function test_for_each_runtime()
+    for i = 1, 10
+    do
+        local id = shiva.entity_registry:create()
+        if i == 4 then
+            shiva.entity_registry:add_layer_3_component(id)
+        else
+            shiva.entity_registry:add_layer_1_component(id)
+            shiva.entity_registry:add_layer_2_component(id)
+        end
+    end
+
+    assert(shiva.entity_registry:nb_entities() == 10, "should be 10")
+
+    local table_type = {
+        shiva.entity_registry:layer_1_id(),
+        shiva.entity_registry:layer_2_id()
+    }
+    shiva.entity_registry:for_each_runtime(table_type, simple_functor)
+    assert(shiva.entity_registry:nb_entities() == 1, "should be 1")
+    return true
+end
+

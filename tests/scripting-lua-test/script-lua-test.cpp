@@ -70,6 +70,13 @@ TEST_F(fixture_scripting, for_each)
     ASSERT_TRUE(res);
 }
 
+TEST_F(fixture_scripting, for_each_runtime)
+{
+    sol::state &state = system_ptr->get_state();
+    bool res = state["test_for_each_runtime"]();
+    ASSERT_TRUE(res);
+}
+
 TEST_F(fixture_scripting, systems)
 {
     ASSERT_TRUE(system_ptr->load_all_scripted_systems());
