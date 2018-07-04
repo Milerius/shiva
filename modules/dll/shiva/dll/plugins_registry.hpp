@@ -5,9 +5,6 @@
 #pragma once
 
 #include <functional>
-#include <EASTL/unordered_map.h>
-#include <EASTL/string.h>
-#include <EASTL/allocator_malloc.h>
 #include <boost/dll.hpp>
 #include <shiva/filesystem/filesystem.hpp>
 #include <shiva/spdlog/spdlog.hpp>
