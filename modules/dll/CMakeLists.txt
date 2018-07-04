@@ -5,10 +5,6 @@ CREATE_MODULE(shiva::dll "${MODULE_SOURCES}" ${MODULE_PATH})
 
 find_package(Boost COMPONENTS system filesystem REQUIRED)
 
-##! EASTL
-find_library(EASTL_LIBRARY EASTL)
-message(STATUS "${EASTL_LIBRARY}")
-
-target_link_libraries(dll INTERFACE Boost::boost ${CMAKE_DL_LIBS} ${EASTL_LIBRARY} shiva::filesystem Boost::filesystem)
+target_link_libraries(dll INTERFACE Boost::boost ${CMAKE_DL_LIBS} shiva::filesystem Boost::filesystem)
 
 AUTO_TARGETS_MODULE_INSTALL(dll)

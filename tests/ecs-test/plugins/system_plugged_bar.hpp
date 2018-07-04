@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include <EASTL/unique_ptr.h>
 #include <shiva/stacktrace/stacktrace.hpp>
 #include <shiva/entt/entt.hpp>
 #include <shiva/ecs/system.hpp>

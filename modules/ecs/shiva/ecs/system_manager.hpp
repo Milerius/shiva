@@ -5,10 +5,6 @@
 #pragma once
 
 #include <memory>
-#include <EASTL/algorithm.h>
-#include <EASTL/allocator_malloc.h>
-#include <EASTL/vector.h>
-#include <EASTL/array.h>
 #include <shiva/range/range.hpp>
 #include <shiva/error/expected.hpp>
 #include <shiva/ecs/using_alias_library.hpp>
@@ -29,8 +25,8 @@ namespace shiva::ecs
     {
     public:
         using system_ptr = std::unique_ptr<base_system>;
-        using system_array = eastl::vector<system_ptr, eastl::allocator_malloc>;
-        using system_registry = eastl::array<system_array, size>;
+        using system_array = std::vector<system_ptr>;
+        using system_registry = std::array<system_array, size>;
         typedef system_ptr (pluginapi_create_t)(shiva::entt::dispatcher &, shiva::entt::entity_registry &,
                                                 const float &fixed_delta_time);
         using plugins_registry_t = shiva::helpers::plugins_registry<pluginapi_create_t>;
@@ -53,7 +49,8 @@ namespace shiva::ecs
 
         void receive(const shiva::event::add_base_system &evt)
         {
-            add_system_(std::move(const_cast<shiva::event::add_base_system &>(evt).system_ptr), evt.system_ptr->get_system_type_RTTI());
+            add_system_(std::move(const_cast<shiva::event::add_base_system &>(evt).system_ptr),
+                        evt.system_ptr->get_system_type_RTTI());
         }
 
         explicit system_manager(entt::dispatcher &dispatcher,
@@ -234,7 +231,7 @@ namespace shiva::ecs
 
         size_t nb_systems() const noexcept
         {
-            return std::accumulate(eastl::begin(systems_), eastl::end(systems_), static_cast<size_t>(0u),
+            return std::accumulate(std::begin(systems_), std::end(systems_), static_cast<size_t>(0u),
                                    [](size_t accumulator, auto &&vec) {
                                        return accumulator + vec.size();
                                    });
@@ -312,9 +309,9 @@ namespace shiva::ecs
         void sweep_systems_() noexcept
         {
             shiva::ranges::for_each(systems_, [](auto &&vec_system) -> void {
-                vec_system.erase(eastl::remove_if(eastl::begin(vec_system), eastl::end(vec_system), [](auto &&sys) {
+                vec_system.erase(std::remove_if(std::begin(vec_system), std::end(vec_system), [](auto &&sys) {
                     return sys->is_marked();
-                }), eastl::end(vec_system));
+                }), std::end(vec_system));
             });
         }
 
