@@ -17,15 +17,7 @@ public:
 protected:
     void SetUp() override
     {
-        shiva::fs::copy(
-            shiva::fs::current_path().parent_path() /
-            shiva::fs::path("tests/scripting-python-test/scripts_python_tests"),
-            shiva::fs::current_path() / shiva::fs::path("scripts_python_tests"),
-            shiva::fs::copy_options::overwrite_existing | shiva::fs::copy_options::recursive);
-        system_ptr = std::addressof(
-            system_manager_.create_system<shiva::scripting::python_system>("scripts_python_tests",
-                                                                           "scripts_python_tests/systems"));
-
+        system_ptr = std::addressof(system_manager_.create_system<shiva::scripting::python_system>());
         system_ptr->register_entity_registry();
         system_ptr->register_components(shiva::ecs::common_components{});
         //system_ptr->register_types_list(fixture_scripting::systems_list{});

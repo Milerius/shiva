@@ -18,12 +18,7 @@ public:
 protected:
     void SetUp() override
     {
-        shiva::fs::copy(
-            shiva::fs::current_path().parent_path() / shiva::fs::path("tests/scripting-lua-test/scripts_lua_tests"),
-            shiva::fs::current_path() / shiva::fs::path("scripts_lua_tests"),
-            shiva::fs::copy_options::overwrite_existing | shiva::fs::copy_options::recursive);
-        system_ptr = std::addressof(system_manager_.create_system<shiva::scripting::lua_system>("scripts_lua_tests",
-            "scripts_lua_tests/systems"));
+        system_ptr = std::addressof(system_manager_.create_system<shiva::scripting::lua_system>());
         system_ptr->register_entity_registry();
         system_ptr->register_components(shiva::ecs::common_components{});
         system_ptr->register_types_list(fixture_scripting::systems_list{});

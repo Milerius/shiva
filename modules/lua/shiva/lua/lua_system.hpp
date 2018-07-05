@@ -71,9 +71,9 @@ namespace shiva::scripting
         lua_system(entt::dispatcher &dispatcher,
                    entt::entity_registry &entity_registry,
                    const float &fixed_delta_time,
-                   shiva::fs::path scripts_directory = shiva::fs::current_path() / "scripts",
-                   shiva::fs::path systems_scripts_directory = shiva::fs::current_path() / fs::path("scripts") /
-                                                               "systems") noexcept :
+                   shiva::fs::path scripts_directory = shiva::fs::current_path() / "assets/scripts/lua",
+                   shiva::fs::path systems_scripts_directory = shiva::fs::current_path() /
+                                                               "assets/scripts/systems/lua") noexcept :
             system(dispatcher, entity_registry, fixed_delta_time),
             script_directory_(std::move(scripts_directory)),
             systems_scripts_directory_(std::move(systems_scripts_directory))
@@ -139,7 +139,8 @@ namespace shiva::scripting
                 state_->script_file((script_directory / fs::path(file_name)).string());
                 log_->debug("successfully register script: {}", file_name);
             } catch (const std::exception &e) {
-                log_->error("error when loading script {0}: {1}", file_name, e.what());
+                log_->error("error when loading script {0}: {1}\n script_directory {2}", file_name,
+                            e.what(), script_directory.string());
                 return false;
             }
             return true;

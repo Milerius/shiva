@@ -1,10 +1,22 @@
 include(CMakeSources.cmake)
 set(MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 CREATE_MODULE(shiva::lua "${MODULE_SOURCES}" ${MODULE_PATH})
-find_package(Lua 5.3)
+
+if (EMSCRIPTEN)
+    find_package(lua-emscripten CONFIG REQUIRED)
+    set(LUA_LIBRARIES lua::lua-emscripten)
+    get_target_property(sources lua::lua-emscripten INTERFACE_INCLUDE_DIRECTORIES)
+    message("LOL -> ${sources}")
+else()
+    find_package(Lua 5.3)
+endif()
+
 find_package(sol2 CONFIG REQUIRED)
+
 target_link_libraries(lua INTERFACE shiva::ecs ${LUA_LIBRARIES} sol2)
 target_compile_options(lua INTERFACE $<$<AND:$<CONFIG:Release>,$<CXX_COMPILER_ID:MSVC>>:/bigobj>
         INTERFACE $<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:MSVC>>:/bigobj>)
-target_include_directories(lua INTERFACE ${LUA_INCLUDE_DIR})
+if (NOT EMSCRIPTEN)
+    target_include_directories(lua INTERFACE ${LUA_INCLUDE_DIR})
+endif()
 AUTO_TARGETS_MODULE_INSTALL(lua)

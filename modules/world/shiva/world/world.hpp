@@ -4,6 +4,11 @@
 
 #pragma once
 
+
+#if defined(__EMSCRIPTEN__)
+    #include <emscripten/emscripten.h>
+#endif
+
 #include <shiva/ecs/system_manager.hpp>
 #include <shiva/error/general_error_handler.hpp>
 
@@ -17,6 +22,11 @@ namespace shiva
         world(fs::path plugin_path = fs::current_path() /= "systems") noexcept : plugins_registry_(
             std::move(plugin_path))
         {
+    #ifdef __EMSCRIPTEN__
+                EM_ASM({
+                FS.chdir(process.cwd());
+            });
+    #endif
             dispatcher_.sink<shiva::event::quit_game>().connect(this);
         }
 
