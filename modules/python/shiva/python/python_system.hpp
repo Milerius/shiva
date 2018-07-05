@@ -68,9 +68,9 @@ namespace shiva::scripting
         python_system(entt::dispatcher &dispatcher,
                       entt::entity_registry &entity_registry,
                       const float &fixed_delta_time,
-                      shiva::fs::path scripts_directory = shiva::fs::current_path() / "python_scripts",
+                      shiva::fs::path scripts_directory = shiva::fs::current_path() / "assets/scripts/python",
                       shiva::fs::path systems_scripts_directory = shiva::fs::current_path() /
-                                                                  fs::path("python_scripts")) noexcept :
+                                                                  "assets/scripts/systems/python") noexcept :
             system(dispatcher, entity_registry, fixed_delta_time),
             script_directory_(std::move(scripts_directory)),
             systems_scripts_directory_(std::move(systems_scripts_directory))
