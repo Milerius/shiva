@@ -254,14 +254,16 @@ TEST_F(fixture_system, size_per_system_type)
 
 #ifndef _WIN32
 
-TEST_F(fixture_system, load_plugins_from_non_existent_directory)
-{
-    shiva::fs::copy("systems_test", "save", shiva::fs::copy_options::recursive);
-    shiva::fs::remove_all("systems_test");
-    ASSERT_FALSE(system_manager_.load_plugins());
-    shiva::fs::copy("save", "systems_test", shiva::fs::copy_options::recursive);
-    shiva::fs::remove_all("save");
-}
+#if !defined(__EMSCRIPTEN__)
+    TEST_F(fixture_system, load_plugins_from_non_existent_directory)
+    {
+        shiva::fs::copy("systems_test", "save", shiva::fs::copy_options::recursive);
+        shiva::fs::remove_all("systems_test");
+        ASSERT_FALSE(system_manager_.load_plugins());
+        shiva::fs::copy("save", "systems_test", shiva::fs::copy_options::recursive);
+        shiva::fs::remove_all("save");
+    }
+#endif
 
 TEST_F(fixture_system, fake_plugin)
 {

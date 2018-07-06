@@ -20,8 +20,10 @@ namespace shiva::error
         [[noreturn]] static void handler(int signum)
         {
             std::cerr << "received: " << signum << std::endl;
+#if !defined(__EMSCRIPTEN__)
             std::cerr << shiva::bs::stacktrace() << std::endl;
             shiva::bs::safe_dump_to((shiva::fs::temp_directory_path() /= "backtrace.dump").string().c_str());
+#endif
             std::terminate();
         }
 
@@ -32,10 +34,12 @@ namespace shiva::error
                 this->entity_registry_.destroy(entity);
             });
             dispatcher_.trigger<shiva::event::quit_game>(evt.ec_.value());
+#if !defined(__EMSCRIPTEN__)
             if (auto &&bs = shiva::bs::stacktrace()) {
                 log_->critical("backtrace:\n {}", shiva::bs::detail::to_string(&bs.as_vector()[0], bs.size()));
                 shiva::bs::safe_dump_to(backtrace_path_.string().c_str());
             }
+#endif
             throw std::logic_error("fatal_error_occured: "s + evt.ec_.message());
         }
 
@@ -45,6 +49,7 @@ namespace shiva::error
         {
             this->dispatcher_.sink<shiva::event::fatal_error_occured>().connect(this);
             signal(SIGSEGV, general_handler::handler);
+#if !defined(__EMSCRIPTEN__)
             if (shiva::fs::exists(backtrace_path_)) {
                 std::ifstream ifs(backtrace_path_.string());
                 shiva::bs::stacktrace st = shiva::bs::stacktrace::from_dump(ifs);
@@ -55,6 +60,7 @@ namespace shiva::error
                 ifs.close();
                 shiva::fs::remove(backtrace_path_);
             }
+#endif
         }
 
     private:
