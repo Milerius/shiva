@@ -23,7 +23,6 @@ option(SHIVA_USE_SFML_AS_RENDERER "Build shiva with SFML rendering" OFF)
 option(DISABLE_INSTALL_SHIVA_CORE "Disable install main targets" OFF)
 option(USE_PROJECT_IN_AN_IDE "Workaround for install header only library option, put it to ON if u use CLION" OFF)
 
-
 ##! CMake Path
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 include(library)
