@@ -1,6 +1,6 @@
 mkdir build
 cd build
-cmake -DCMAKE_BUILD_TYPE=Debug -DSHIVA_BUILD_TESTS=ON -DSHIVA_BUILD_EXAMPLES=ON -G "Visual Studio 15 2017 Win64" -DCMAKE_TOOLCHAIN_FILE=C:/Users/milerius/vcpkg/scripts/buildsystems/vcpkg.cmake ..
+cmake -DCMAKE_BUILD_TYPE=Debug -DSHIVA_BUILD_TESTS=ON -DSHIVA_BUILD_EXAMPLES=ON -G "Visual Studio 15 2017 Win64" -DCMAKE_TOOLCHAIN_FILE="$($env:VCPKG_ROOT)/scripts/buildsystems/vcpkg.cmake" ..
 cmake --build . --config Debug -- /verbosity:minimal /maxcpucount:3
 ctest --no-compress-output -T Test -C Debug
 cd ../bin
