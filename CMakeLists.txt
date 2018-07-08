@@ -62,6 +62,7 @@ target_link_libraries(shiva INTERFACE
         shiva::enums
         shiva::world
         shiva::lua
+        shiva::pyscripting
         )
 
 ##! Install

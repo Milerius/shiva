@@ -32,7 +32,7 @@ namespace shiva::ecs
 
         ~system() noexcept override
         {
-            log_->info("dropping {} logger\n", log_->name());
+            log_->info("dropping {} logger", log_->name());
             spdlog::drop(log_->name());
         };
 
@@ -76,3 +76,17 @@ namespace shiva::ecs
     template <typename TSystemDerived>
     using post_update_system = system<TSystemDerived, system_post_update>;
 }
+
+#define SYSTEM_BASIC_REFLECTION(name)                                                       \
+    public:                                                                                 \
+        reflect_class(name);                                                                \
+        static constexpr auto reflected_functions() noexcept                                \
+        {                                                                                   \
+            return shiva::meta::makeMap(reflect_function(&name::update));                   \
+        }                                                                                   \
+                                                                                            \
+        static constexpr auto reflected_members() noexcept                                  \
+        {                                                                                   \
+            return shiva::meta::makeMap();                                                  \
+        }                                                                                   \
+private:                                                                                    \
