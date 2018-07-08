@@ -22,6 +22,9 @@ namespace shiva
 
         int run() noexcept
         {
+            if (!system_manager_.nb_systems()) {
+                return game_return_value_;
+            }
             dispatcher_.trigger<shiva::event::start_game>();
             is_running = true;
             while (is_running) {
