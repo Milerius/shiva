@@ -16,6 +16,7 @@
         return #value;                                                      \
 
 #define __STRINGIFY_ELEM(v)       pp_stringviewify(v),
+#define __PAIRIFY_ELEM(v)         {pp_stringviewify(v), v},
 
 # define __ENUM_MAKE(name, decl_kw, super_expr, ...)                        \
     class name                                                              \
@@ -47,6 +48,13 @@
         {                                                                   \
             return {{__VA_ARGS__}};                                         \
         }                                                                   \
+                                                                            \
+        static constexpr const std::initializer_list<std::pair<std::string_view, EnumType>> init_list() noexcept\
+        {                                                                   \
+          return {pp_for_each(__PAIRIFY_ELEM, __VA_ARGS__)};                \
+                                                                            \
+        };                                                                  \
+                                                                            \
                                                                             \
         static constexpr size_t size() noexcept                             \
         {                                                                   \

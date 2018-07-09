@@ -19,6 +19,8 @@ include("${CMAKE_CURRENT_LIST_DIR}/shiva-error-targets.cmake")
 
 include("${CMAKE_CURRENT_LIST_DIR}/shiva-range-targets.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/shiva-ecs-targets.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/shiva-input-targets.cmake")
+
 
 find_package(sol2 CONFIG REQUIRED)
 include("${CMAKE_CURRENT_LIST_DIR}/shiva-lua-targets.cmake")
@@ -40,6 +42,7 @@ check_required_components("event")
 check_required_components("error")
 check_required_components("range")
 check_required_components("ecs")
+check_required_components("input")
 check_required_components("lua")
 check_required_components("pyscripting")
 check_required_components("world")
