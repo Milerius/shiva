@@ -49,10 +49,9 @@
             return {{__VA_ARGS__}};                                         \
         }                                                                   \
                                                                             \
-        static constexpr const std::initializer_list<std::pair<std::string_view, EnumType>> init_list() noexcept\
+        static inline constexpr const std::initializer_list<std::pair<std::string_view, EnumType>> init_list() noexcept\
         {                                                                   \
           return {pp_for_each(__PAIRIFY_ELEM, __VA_ARGS__)};                \
-                                                                            \
         };                                                                  \
                                                                             \
                                                                             \
