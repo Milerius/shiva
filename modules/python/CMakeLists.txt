@@ -19,6 +19,6 @@ endif ()
 
 CREATE_MODULE(shiva::pyscripting "${MODULE_SOURCES}" ${MODULE_PATH})
 
-target_link_libraries(pyscripting INTERFACE shiva::ecs pybind11::embed pybind11::module)
+target_link_libraries(pyscripting INTERFACE shiva::ecs shiva::input pybind11::embed pybind11::module)
 
 AUTO_TARGETS_MODULE_INSTALL(pyscripting)

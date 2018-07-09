@@ -9,6 +9,7 @@
 #include <pybind11/embed.h>
 #include <shiva/filesystem/filesystem.hpp>
 #include <shiva/ecs/system.hpp>
+#include <shiva/input/input.hpp>
 #include <shiva/python/python_scripted_system.hpp>
 #include <shiva/event/add_base_system.hpp>
 
@@ -81,6 +82,11 @@ namespace shiva::scripting
                 .value("logic_update", shiva::ecs::system_type::logic_update)
                 .value("post_update", shiva::ecs::system_type::post_update)
                 .export_values();
+            auto pyenum = py::enum_<shiva::input::keyboard::TKey>(*module_, "Keyboard");
+            for (auto &&cur : shiva::input::keyboard::Key::values()) {
+                pyenum.value(cur.toString().c_str(), cur);
+            }
+            pyenum.export_values();
             disable();
         }
 

@@ -90,3 +90,5 @@ namespace shiva::ecs
             return shiva::meta::makeMap();                                                  \
         }                                                                                   \
 private:                                                                                    \
+
+//#define SYSTEM_COMPLETE_REFLECTION(name, ...)

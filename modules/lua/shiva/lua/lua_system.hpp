@@ -8,6 +8,7 @@
 #include <shiva/filesystem/filesystem.hpp>
 #include <shiva/ecs/system.hpp>
 #include <shiva/event/add_base_system.hpp>
+#include <shiva/input/input.hpp>
 #include "lua_scripted_system.hpp"
 
 namespace sol
@@ -85,6 +86,7 @@ namespace shiva::scripting
                                                           {"post_update",  shiva::ecs::system_type::post_update},
                                                           {"logic_update", shiva::ecs::system_type::logic_update}
                                                       });
+            state_->new_enum<shiva::input::keyboard::TKey>("Keyboard", KEYBOARD_INIT_LIST);
             disable();
         }
 

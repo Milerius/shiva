@@ -48,6 +48,7 @@
             return {{__VA_ARGS__}};                                         \
         }                                                                   \
                                                                             \
+                                                                            \
         static constexpr size_t size() noexcept                             \
         {                                                                   \
             return pp_count_args(__VA_ARGS__);                              \

@@ -63,6 +63,7 @@ target_link_libraries(shiva INTERFACE
         shiva::world
         shiva::lua
         shiva::pyscripting
+        shiva::input
         )
 
 ##! Install
