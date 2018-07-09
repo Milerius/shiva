@@ -83,7 +83,6 @@ namespace shiva::scripting
                 .value("post_update", shiva::ecs::system_type::post_update)
                 .export_values();
             auto pyenum = py::enum_<shiva::input::keyboard::TKey>(*module_, "Keyboard");
-            //const auto init_list = shiva::input::keyboard::Key::init_list();
             for (auto &&cur : shiva::input::keyboard::Key::values()) {
                 pyenum.value(cur.toString().c_str(), cur);
             }

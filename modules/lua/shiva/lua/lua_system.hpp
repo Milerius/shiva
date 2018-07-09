@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include <string_view>
 #include <sol/state.hpp>
 #include <shiva/filesystem/filesystem.hpp>
 #include <shiva/ecs/system.hpp>
