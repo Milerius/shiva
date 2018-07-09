@@ -87,7 +87,8 @@ namespace shiva::scripting
                                                           {"post_update",  shiva::ecs::system_type::post_update},
                                                           {"logic_update", shiva::ecs::system_type::logic_update}
                                                       });
-            state_->new_enum<shiva::input::keyboard::TKey>("Keyboard", shiva::input::keyboard::Key::init_list());
+
+            //state_->new_enum<shiva::input::keyboard::TKey>("Keyboard", shiva::input::keyboard::Key::init_list());
             disable();
         }
 
