@@ -15,10 +15,11 @@ namespace shiva::ecs
         //! Constructors / Destructor
         explicit base_system(entt::dispatcher &dispatcher,
                              entt::entity_registry &entity_registry,
-                             const float &fixed_delta_time) noexcept :
+                             const float &fixed_delta_time, bool im_plugin = false) noexcept :
             dispatcher_(dispatcher),
             entity_registry_(entity_registry),
-            fixed_delta_time_(fixed_delta_time)
+            fixed_delta_time_(fixed_delta_time),
+            is_plugin{im_plugin}
         {
         }
 

@@ -9,7 +9,7 @@
 
 namespace shiva::event
 {
-    struct PP_API_EXPORT fatal_error_occured
+    struct fatal_error_occured
     {
         fatal_error_occured(std::error_code ec) noexcept : ec_{std::move(ec)} // NOLINT
         {
