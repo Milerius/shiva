@@ -5,6 +5,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <shiva/entt_shared/entt_shared.hpp>
 #include <shiva/ecs/system.hpp>
 #include <shiva/sfml/event/set_render_window.hpp>
 
@@ -13,9 +14,10 @@ namespace shiva::plugins
     class input_system : public shiva::ecs::pre_update_system<input_system>
     {
     public:
-        void receive(const shiva::sfml::event::set_render_window &evt)
+        virtual void on_set_user_data() noexcept final
         {
-            win_ = evt.win;
+            log_->info("SALUT SALUT");
+            win_ = reinterpret_cast<sf::RenderWindow *>(user_data_);
         }
 
         ~input_system() noexcept override = default;
@@ -24,7 +26,7 @@ namespace shiva::plugins
                      const float &fixed_delta_time) noexcept :
             system(dispatcher, registry, fixed_delta_time)
         {
-            dispatcher_.sink<shiva::sfml::event::set_render_window>().connect(this);
+            shiva::entt_shared::init_library(entity_registry_, dispatcher_);
         }
 
         static std::unique_ptr<shiva::ecs::base_system> system_creator(entt::dispatcher &dispatcher,

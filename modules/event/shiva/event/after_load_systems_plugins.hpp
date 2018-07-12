@@ -8,7 +8,7 @@
 
 namespace shiva::event
 {
-    struct after_load_systems_plugins
+    struct PP_API_EXPORT after_load_systems_plugins
     {
         reflect_class(after_load_systems_plugins)
     };
