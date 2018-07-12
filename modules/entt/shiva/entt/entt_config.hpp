@@ -4,26 +4,39 @@
 
 #pragma once
 
-#include <shiva/pp/pp_export.hpp>
-#include <entt/core/family.hpp>
-#include <entt/config/config.h>
-#include <entt/signal/dispatcher.hpp>
-#include <entt/entity/registry.hpp>
+#include <type_traits>
+#include <shiva/entt/entt.hpp>
+#include <shiva/event/all.hpp>
+#include <shiva/meta/list.hpp>
 
-namespace entt
+namespace shiva::entt
 {
-    template
-    class PP_API_EXPORT Family<struct InternalDispatcherEventFamily>;
+    template <typename Component>
+    void init_component() noexcept
+    {
+    }
 
-    template
-    class PP_API_EXPORT Family<struct InternalEmitterHandlerFamily>;
+    template <typename Event>
+    void init_event(shiva::entt::dispatcher &dispatcher) noexcept
+    {
+        static_assert(std::is_default_constructible_v<Event>, "Event must be default constructible");
+        dispatcher.sink<Event>();
+    }
 
-    template
-    class PP_API_EXPORT Family<struct InternalRegistryTagFamily>;
+    template <typename ... Types>
+    void init_components(shiva::entt::entity_registry &registry, meta::type_list<Types...>)
+    {
+        (init_component<Types>(registry), ...);
+    }
 
-    template
-    class PP_API_EXPORT Family<struct InternalRegistryComponentFamily>;
+    template <typename ... Types>
+    void init_events(shiva::entt::dispatcher &dispatcher, meta::type_list<Types...>)
+    {
+        (init_event<Types>(dispatcher), ...);
+    }
 
-    template
-    class PP_API_EXPORT Family<struct InternalRegistryHandlerFamily>;
+    void init_library([[maybe_unused]] shiva::entt::entity_registry &registry, shiva::entt::dispatcher &dispatcher)
+    {
+        init_events(dispatcher, shiva::event::common_events_list{});
+    }
 }

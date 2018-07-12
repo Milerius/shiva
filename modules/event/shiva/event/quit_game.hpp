@@ -8,7 +8,7 @@
 
 namespace shiva::event
 {
-    struct PP_API_EXPORT quit_game
+    struct quit_game
     {
         quit_game(int return_value) noexcept : return_value_(return_value) //NOLINT
         {

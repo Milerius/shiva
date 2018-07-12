@@ -7,6 +7,7 @@
 #include <shiva/spdlog/spdlog.hpp>
 #include <shiva/ecs/base_system.hpp>
 #include <shiva/ecs/details/system_type_traits.hpp>
+#include <shiva/entt/entt_config.hpp>
 
 namespace shiva::ecs
 {
@@ -20,6 +21,8 @@ namespace shiva::ecs
         explicit system(Args &&...args) noexcept : base_system(std::forward<Args>(args)...),
                                                    log_{shiva::log::stdout_color_mt(SystemDerived::class_name())}
         {
+            if (this->is_a_plugin())
+                shiva::entt::init_library(entity_registry_, dispatcher_);
         }
 
         system(shiva::entt::dispatcher &dispatcher,

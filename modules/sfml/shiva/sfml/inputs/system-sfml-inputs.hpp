@@ -5,9 +5,10 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include <shiva/entt_shared/entt_shared.hpp>
+#include <shiva/entt/entt.hpp>
 #include <shiva/ecs/system.hpp>
 #include <shiva/sfml/event/set_render_window.hpp>
+#include <shiva/entt/entt_config.hpp>
 
 namespace shiva::plugins
 {
@@ -24,9 +25,8 @@ namespace shiva::plugins
 
         input_system(shiva::entt::dispatcher &dispatcher, shiva::entt::entity_registry &registry,
                      const float &fixed_delta_time) noexcept :
-            system(dispatcher, registry, fixed_delta_time)
+            system(dispatcher, registry, fixed_delta_time, true)
         {
-            shiva::entt_shared::init_library(entity_registry_, dispatcher_);
         }
 
         static std::unique_ptr<shiva::ecs::base_system> system_creator(entt::dispatcher &dispatcher,

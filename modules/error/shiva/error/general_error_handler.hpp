@@ -4,13 +4,13 @@
 
 #pragma once
 
-#include <signal.h>
+#include <csignal>
 #include <string>
 #include <iostream>
 #include <fstream>
 #include <shiva/filesystem/filesystem.hpp>
 #include <shiva/stacktrace/stacktrace.hpp>
-#include <shiva/entt/entt.hpp>
+#include <shiva/entt/entt_config.hpp>
 
 namespace shiva::error
 {
@@ -47,6 +47,7 @@ namespace shiva::error
             dispatcher_(dispatcher),
             entity_registry_(entity_registry)
         {
+            shiva::entt::init_library(entity_registry_, dispatcher_);
             this->dispatcher_.sink<shiva::event::fatal_error_occured>().connect(this);
             signal(SIGSEGV, general_handler::handler);
 #if !defined(__EMSCRIPTEN__)

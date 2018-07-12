@@ -8,7 +8,7 @@
 
 namespace shiva::event
 {
-    struct PP_API_EXPORT start_game
+    struct start_game
     {
         reflect_class(start_game)
     };

@@ -5,8 +5,10 @@
 #pragma once
 
 #include <string>
-#include <shiva/entt/entt_config.hpp>
+#include <entt/signal/dispatcher.hpp>
+#include <entt/entity/registry.hpp>
 #include <shiva/reflection/reflection.hpp>
+#include <shiva/meta/list.hpp>
 
 // Using alias with good case
 namespace shiva::entt
