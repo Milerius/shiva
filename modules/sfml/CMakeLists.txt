@@ -14,7 +14,7 @@ if (SHIVA_USE_SFML_AS_RENDERER)
 
     AUTO_TARGETS_MODULE_INSTALL(sfml-event)
 
-    if (LINUX)
+    if (LINUX OR WIN32)
         set(SFML_STATIC_LIBRARIES TRUE)
     endif()
 
