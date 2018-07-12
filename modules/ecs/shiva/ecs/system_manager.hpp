@@ -255,6 +255,24 @@ namespace shiva::ecs
             return res;
         }
 
+        const base_system *get_system_by_name(std::string system_name, shiva::ecs::system_type type) const noexcept
+        {
+            auto &&system_collection = systems_[type];
+            auto it = shiva::ranges::find_if(system_collection, [name = std::move(system_name)](auto &&sys) {
+                return sys->get_name() == name;
+            });
+            return (it != system_collection.end()) ? (*it).get() : nullptr;
+        }
+
+        base_system *get_system_by_name(std::string system_name, shiva::ecs::system_type type) noexcept
+        {
+            auto &&system_collection = systems_[type];
+            auto it = shiva::ranges::find_if(system_collection, [name = std::move(system_name)](auto &&sys) {
+                return sys->get_name() == name;
+            });
+            return (it != system_collection.end()) ? (*it).get() : nullptr;
+        }
+
     private:
         base_system &add_system_(system_ptr &&system, system_type sys_type) noexcept
         {

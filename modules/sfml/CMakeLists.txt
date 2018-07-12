@@ -3,7 +3,7 @@ macro(mini_module module_name additional_library)
     include(shiva/sfml/${module_name}/CMakeSources.cmake)
     set(MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
     CREATE_MODULE_PLUGIN(shiva::system-sfml-${module_name} "${MODULE_SOURCES}" ${MODULE_PATH} "systems" "sfml/shiva")
-    target_link_libraries(system-sfml-${module_name} PUBLIC shiva::ecs shiva::sfml-event PUBLIC ${additional_library})
+    target_link_libraries(system-sfml-${module_name} PUBLIC shiva::entt_shared shiva::ecs shiva::sfml-event PUBLIC ${additional_library})
     AUTO_TARGETS_PLUGINS_INSTALL(system-sfml-${module_name} shiva-sfml)
 endmacro()
 
@@ -22,7 +22,6 @@ if (SHIVA_USE_SFML_AS_RENDERER)
 
     mini_module(graphics sfml-graphics)
     mini_module(inputs shiva::system-sfml-graphics)
-
 
     #set_target_properties(system-sfml-inputs PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 

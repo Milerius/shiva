@@ -5,7 +5,7 @@
 #pragma once
 
 #include <string>
-#include <entt/entt.hpp>
+#include <shiva/entt/entt_config.hpp>
 #include <shiva/reflection/reflection.hpp>
 
 // Using alias with good case

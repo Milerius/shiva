@@ -7,6 +7,7 @@ set(MODULE_PUBLIC_HEADERS
         ${MODULE_PATH}/pp_count_args.hpp
         ${MODULE_PATH}/pp_first_arg.hpp
         ${MODULE_PATH}/pp_for_each.hpp
+        ${MODULE_PATH}/pp_export.hpp
         ${MODULE_PATH}/PP.hpp
         )
 

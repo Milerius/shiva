@@ -3,6 +3,7 @@ set(MODULE_PATH
 
 set(MODULE_PUBLIC_HEADERS
         "${MODULE_PATH}/entt.hpp"
+        "${MODULE_PATH}/entt_config.hpp"
         )
 
 set(MODULE_PRIVATE_HEADERS

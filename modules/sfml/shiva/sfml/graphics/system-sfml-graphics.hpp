@@ -5,6 +5,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <shiva/entt_shared/entt_shared.hpp>
 #include <shiva/ecs/system.hpp>
 #include <shiva/event/after_load_systems_plugins.hpp>
 #include <shiva/sfml/event/set_render_window.hpp>
@@ -14,17 +15,13 @@ namespace shiva::plugins
     class render_system : public shiva::ecs::post_update_system<render_system>
     {
     public:
-        void receive([[maybe_unused]] const shiva::event::after_load_systems_plugins &evt)
-        {
-            this->dispatcher_.trigger<shiva::sfml::event::set_render_window>(win_);
-        }
-
         ~render_system() noexcept override = default;
 
         render_system(shiva::entt::dispatcher& dispatcher, shiva::entt::entity_registry &registry, const float& fixed_delta_time) noexcept :
         system(dispatcher, registry, fixed_delta_time)
         {
-            dispatcher_.sink<shiva::event::after_load_systems_plugins>().connect(this);
+            user_data_ = &win_;
+            shiva::entt_shared::init_library(entity_registry_, dispatcher_);
         }
 
         static std::unique_ptr<shiva::ecs::base_system> system_creator(entt::dispatcher &dispatcher,

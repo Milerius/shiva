@@ -28,6 +28,10 @@ namespace shiva::ecs
         virtual void update() noexcept = 0;
         virtual const std::string &get_name() const noexcept = 0;
         virtual system_type get_system_type_RTTI() const noexcept = 0;
+        virtual void on_set_user_data() noexcept
+        {
+
+        }
 
         //! Public member functions
         void mark() noexcept
@@ -70,10 +74,22 @@ namespace shiva::ecs
             return is_plugin;
         }
 
+        void* get_user_data() noexcept
+        {
+            return user_data_;
+        }
+
+        void set_user_data(void *data) noexcept
+        {
+            user_data_ = data;
+            on_set_user_data();
+        }
+
     protected:
         [[maybe_unused]] entt::dispatcher &dispatcher_;
         [[maybe_unused]] entt::entity_registry &entity_registry_;
         [[maybe_unused]] const float &fixed_delta_time_;
+        [[maybe_unused]] void *user_data_{nullptr};
 
     private:
         bool is_plugin{false};
