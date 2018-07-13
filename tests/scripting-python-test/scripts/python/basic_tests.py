@@ -3,9 +3,9 @@ import shiva
 
 def test_create_entity():
     result = shiva.ett_registry.create()
-    assert result == 0, "result should be 0"
-    assert shiva.ett_registry.nb_entities() == 1, "should be 1"
-    return result
+    res = shiva.ett_registry.valid(result)
+    assert res, "res should be true"
+    return res
 
 
 def test_destroy_entity():

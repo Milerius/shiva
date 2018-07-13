@@ -40,8 +40,8 @@ protected:
 TEST_F(fixture_scripting, create_entity)
 {
     sol::state &state = system_ptr->get_state();
-    shiva::entt::entity_registry::entity_type id = state["test_create_entity"]();
-    ASSERT_EQ(id, 0);
+    bool res = state["test_create_entity"]();
+    ASSERT_TRUE(res);
 }
 
 TEST_F(fixture_scripting, destroy_entity)

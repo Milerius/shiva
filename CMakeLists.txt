@@ -48,22 +48,23 @@ add_library(shiva INTERFACE)
 
 add_library(shiva::shiva ALIAS shiva)
 target_link_libraries(shiva INTERFACE
-        shiva::pp
+        shiva::dll
+        shiva::ecs
+        shiva::entt
+        shiva::enums
+        shiva::error
+        shiva::event
+        shiva::filesystem
+        shiva::input
+        shiva::lua
         shiva::meta
+        shiva::pp
+        shiva::pyscripting
+        shiva::range
         shiva::reflection
         shiva::stacktrace
-        shiva::entt
-        shiva::filesystem
-        shiva::dll
-        shiva::event
-        shiva::range
-        shiva::error
-        shiva::ecs
-        shiva::enums
+        shiva::timer
         shiva::world
-        shiva::lua
-        shiva::pyscripting
-        shiva::input
         )
 
 ##! Install

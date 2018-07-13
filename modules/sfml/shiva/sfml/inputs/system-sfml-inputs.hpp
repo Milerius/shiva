@@ -7,7 +7,6 @@
 #include <SFML/Graphics.hpp>
 #include <shiva/entt/entt.hpp>
 #include <shiva/ecs/system.hpp>
-#include <shiva/sfml/event/set_render_window.hpp>
 #include <shiva/entt/entt_config.hpp>
 
 namespace shiva::plugins
@@ -15,10 +14,9 @@ namespace shiva::plugins
     class input_system : public shiva::ecs::pre_update_system<input_system>
     {
     public:
-        virtual void on_set_user_data() noexcept final
+        void on_set_user_data() noexcept final
         {
-            log_->info("SALUT SALUT");
-            win_ = reinterpret_cast<sf::RenderWindow *>(user_data_);
+            win_ = static_cast<sf::RenderWindow *>(user_data_);
         }
 
         ~input_system() noexcept override = default;

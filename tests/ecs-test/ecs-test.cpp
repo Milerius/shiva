@@ -8,8 +8,6 @@
 #include <shiva/meta/list.hpp>
 #include <shiva/meta/tuple_for_each.hpp>
 #include <shiva/ecs/ecs.hpp>
-#include <shiva/ecs/system_manager.hpp>
-#include <shiva/ecs/details/system_type_traits.hpp>
 #include <shiva/world/world.hpp>
 #include "plugins/system_plugged_bar.hpp"
 
@@ -267,9 +265,9 @@ TEST_F(fixture_system, size_per_system_type)
 
 TEST_F(fixture_system, fake_plugin)
 {
-    std::ofstream outfile("systems_test/test.so");
+    std::ofstream outfile("systems_test/system-test.so");
     ASSERT_FALSE(system_manager_.load_plugins());
-    shiva::fs::remove("systems_test/test.so");
+    shiva::fs::remove("systems_test/system-test.so");
 }
 
 TEST_F(fixture_system, plugin_not_regular_file)
