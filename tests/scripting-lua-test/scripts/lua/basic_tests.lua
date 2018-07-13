@@ -8,8 +8,9 @@
 
 function test_create_entity()
     local id = shiva.entity_registry:create()
-    assert(id == 0, "id should be 0 here")
-    return id
+    local is_valid = shiva.entity_registry:valid(id)
+    assert(is_valid, "id should be valid here")
+    return is_valid
 end
 
 function test_destroy_entity()

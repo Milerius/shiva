@@ -45,8 +45,8 @@ TEST_F(fixture_scripting, create_entity)
 {
     pybind11::module &module = this->system_ptr->get_module();
     py::object obj = module.attr("basic_tests").attr("test_create_entity");
-    auto result = obj().cast<unsigned int>();
-    ASSERT_EQ(result, 0u);
+    auto result = obj().cast<bool>();
+    ASSERT_TRUE(result);
 }
 
 TEST_F(fixture_scripting, destroy_entity)
