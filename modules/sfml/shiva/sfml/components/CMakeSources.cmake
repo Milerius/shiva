@@ -1,8 +1,9 @@
 set(MODULE_PATH
-        ${CMAKE_CURRENT_SOURCE_DIR}/shiva/sfml/event)
+        ${CMAKE_CURRENT_SOURCE_DIR}/shiva/sfml/components)
 
 set(MODULE_PUBLIC_HEADERS
-        "${MODULE_PATH}/set_render_window.hpp"
+        "${MODULE_PATH}/sprite.hpp"
+        "${MODULE_PATH}/components.hpp"
         )
 
 set(MODULE_PRIVATE_HEADERS
