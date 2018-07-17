@@ -17,7 +17,7 @@ endmacro()
 set(SOURCES ecs-test.cpp)
 CREATE_UNIT_TEST(ecs-test shiva: "${SOURCES}")
 
-generate_local_plugin("plugins/system_plugged_bar.hpp;plugins/system_plugged_bar.cpp" system-plugin-bar)
+generate_local_plugin("plugins/system_plugged_bar.hpp;plugins/system_plugged_bar.cpp" shiva-system-plugin-bar)
 
 if(EMSCRIPTEN)
     #target_compile_options(system-plugin-bar PUBLIC -s SIDE_MODULE=1)
@@ -31,6 +31,6 @@ if(EMSCRIPTEN)
 endif()
 
 target_link_libraries(ecs-test shiva::world)
-add_dependencies(ecs-test system-plugin-bar)
+add_dependencies(ecs-test shiva-system-plugin-bar)
 
 magic_source_group(ecs-test)

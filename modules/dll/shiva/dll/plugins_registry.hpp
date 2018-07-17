@@ -56,7 +56,7 @@ namespace shiva::helpers
             for (fs::recursive_directory_iterator it(plugins_directory_); it != endit; ++it) {
                 if (!fs::is_regular_file(*it) ||
                     !is_shared_library((*it).path()) ||
-                    (*it).path().filename().stem().string().find("system") == std::string::npos) {
+                    (*it).path().filename().stem().string().find("shiva-system") == std::string::npos) {
                     continue;
                 }
                 try {
