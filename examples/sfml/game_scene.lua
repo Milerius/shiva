@@ -7,3 +7,20 @@
 --
 
 print("hello guys")
+
+function update()
+    print("nb entities" .. shiva.entity_registry:nb_entities())
+end
+
+function on_key_pressed(keycode)
+end
+
+function on_key_released(keycode)
+end
+
+return {
+    on_key_released = on_key_released,
+    on_key_pressed = on_key_pressed,
+    update = update,
+    scene_active = true
+}
