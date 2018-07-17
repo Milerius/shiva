@@ -87,6 +87,10 @@ namespace shiva::scripting
                                                           {"logic_update", shiva::ecs::system_type::logic_update}
                                                       });
             state_->new_enum<shiva::input::keyboard::TKey>("Keyboard", KEYBOARD_INIT_LIST);
+            (*state_)["load_script"] = [this](std::string filename, std::string path)
+                {
+                    return this->load_script(std::move(filename), fs::path(std::move(path)));
+                };
             disable();
         }
 
@@ -139,7 +143,7 @@ namespace shiva::scripting
         {
             try {
                 state_->script_file((script_directory / fs::path(file_name)).string());
-                log_->debug("successfully register script: {}", file_name);
+                log_->info("successfully register script: {}", file_name);
             } catch (const std::exception &e) {
                 log_->error("error when loading script {0}: {1}\n script_directory {2}", file_name,
                             e.what(), script_directory.string());
