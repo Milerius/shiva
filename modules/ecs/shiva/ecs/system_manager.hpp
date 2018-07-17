@@ -82,18 +82,22 @@ namespace shiva::ecs
             shiva::ranges::for_each(systems_, [this, update_system_functor](auto &&vec) {
                 if (!vec.empty()) {
                     system_type current_system_type = vec.front()->get_system_type_RTTI();
-                    shiva::ranges::for_each(this->systems_[current_system_type],
-                                            [this, current_system_type, update_system_functor](auto &&sys) {
-                                                if (current_system_type != system_type::logic_update) {
+                    auto update_functor = [this, update_system_functor, current_system_type]() {
+                        shiva::ranges::for_each(this->systems_[current_system_type],
+                                                [update_system_functor](auto &&sys) {
                                                     update_system_functor(std::forward<decltype(sys)>(sys));
-                                                } else {
-                                                    timestep_.start_frame();
-                                                    while (timestep_.is_update_required()) {
-                                                        update_system_functor(std::forward<decltype(sys)>(sys));
-                                                        timestep_.perform_update();
-                                                    }
-                                                }
-                                            });
+                                                });
+                    };
+
+                    if (current_system_type != system_type::logic_update) {
+                        update_functor();
+                    } else {
+                        timestep_.start_frame();
+                        while (timestep_.is_update_required()) {
+                            update_functor();
+                            timestep_.perform_update();
+                        }
+                    }
                 };
             });
 

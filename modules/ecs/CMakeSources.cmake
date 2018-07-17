@@ -10,6 +10,7 @@ set(MODULE_PUBLIC_HEADERS
         "${MODULE_PATH}/base_system.hpp"
 		"${MODULE_PATH}/components/all.hpp"
 		"${MODULE_PATH}/components/layer.hpp"
+		"${MODULE_PATH}/components/drawable.hpp"
         )
 
 set(MODULE_PRIVATE_HEADERS

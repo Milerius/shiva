@@ -44,8 +44,9 @@ namespace shiva::ecs
             using is_same_list = meta::list::Transform<details::valid_systems_list, is_kind_system>;
             static_assert(details::is_valid_system_v(is_same_list{}),
                           "valid_system_list is an invalid template parameter");
-            if constexpr (std::is_same_v<TSystemType, system_logic_update>)
+            if constexpr (std::is_same_v<TSystemType, system_logic_update>) {
                 return logic_update;
+            }
             else if constexpr (std::is_same_v<TSystemType, system_pre_update>)
                 return pre_update;
             else if constexpr (std::is_same_v<TSystemType, system_post_update>)

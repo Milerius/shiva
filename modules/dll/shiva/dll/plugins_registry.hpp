@@ -17,7 +17,8 @@ namespace shiva::helpers
     {
         const std::string &s = p.string();
         return (s.find(".dll") != std::string::npos || s.find(".so") != std::string::npos ||
-                s.find(".dylib") != std::string::npos)
+                s.find(".dylib") != std::string::npos
+                || s.find(".bc") != std::string::npos)
                && s.find(".lib") == std::string::npos
                && s.find(".exp") == std::string::npos
                && s.find(".pdb") == std::string::npos
