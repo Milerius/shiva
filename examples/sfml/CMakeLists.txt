@@ -1,6 +1,6 @@
 if (SHIVA_USE_SFML_AS_RENDERER)
     add_executable(sfml-example sfml-example.cpp sfml-example.hpp)
-    add_dependencies(sfml-example shiva::system-sfml-graphics shiva::system-sfml-inputs)
+    add_dependencies(sfml-example shiva::shiva-system-sfml-graphics shiva::shiva-system-sfml-inputs)
     target_link_libraries(sfml-example shiva::shiva)
     set_target_properties(sfml-example
             PROPERTIES

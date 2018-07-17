@@ -13,7 +13,8 @@
 namespace shiva::entt
 {
     template <typename Component>
-    void init_component(shiva::entt::entity_registry &registry, shiva::entt::entity_registry::entity_type entity) noexcept
+    static inline void
+    init_component(shiva::entt::entity_registry &registry, shiva::entt::entity_registry::entity_type entity) noexcept
     {
         registry.type<Component>();
         if constexpr (std::is_default_constructible_v<Component>)
@@ -21,31 +22,31 @@ namespace shiva::entt
     }
 
     template <typename Event>
-    void init_event(shiva::entt::dispatcher &dispatcher) noexcept
+    static inline void init_event(shiva::entt::dispatcher &dispatcher) noexcept
     {
         static_assert(std::is_default_constructible_v<Event>, "Event must be default constructible");
         dispatcher.sink<Event>();
     }
 
     template <typename ... Types>
-    void init_components(shiva::entt::entity_registry &registry, shiva::entt::entity_registry::entity_type entity,
-                         meta::type_list<Types...>)
+    static inline void
+    init_components(shiva::entt::entity_registry &registry, shiva::entt::entity_registry::entity_type entity,
+                    meta::type_list<Types...>)
     {
         (init_component<Types>(registry, entity), ...);
     }
 
     template <typename ... Types>
-    void init_events(shiva::entt::dispatcher &dispatcher, meta::type_list<Types...>)
+    static inline void init_events(shiva::entt::dispatcher &dispatcher, meta::type_list<Types...>)
     {
         (init_event<Types>(dispatcher), ...);
     }
 
-    void init_library(shiva::entt::entity_registry &registry, shiva::entt::dispatcher &dispatcher)
+    static inline void init_library(shiva::entt::entity_registry &registry, shiva::entt::dispatcher &dispatcher)
     {
         auto id = registry.create();
         init_events(dispatcher, shiva::event::common_events_list{});
         init_components(registry, id, shiva::ecs::common_components{});
         registry.destroy_entity(id);
-        registry.reset();
     }
 }

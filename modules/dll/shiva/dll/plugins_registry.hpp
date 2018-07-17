@@ -17,7 +17,8 @@ namespace shiva::helpers
     {
         const std::string &s = p.string();
         return (s.find(".dll") != std::string::npos || s.find(".so") != std::string::npos ||
-                s.find(".dylib") != std::string::npos)
+                s.find(".dylib") != std::string::npos
+                || s.find(".bc") != std::string::npos)
                && s.find(".lib") == std::string::npos
                && s.find(".exp") == std::string::npos
                && s.find(".pdb") == std::string::npos
@@ -55,7 +56,7 @@ namespace shiva::helpers
             for (fs::recursive_directory_iterator it(plugins_directory_); it != endit; ++it) {
                 if (!fs::is_regular_file(*it) ||
                     !is_shared_library((*it).path()) ||
-                    (*it).path().filename().stem().string().find("system") == std::string::npos) {
+                    (*it).path().filename().stem().string().find("shiva-system") == std::string::npos) {
                     continue;
                 }
                 try {

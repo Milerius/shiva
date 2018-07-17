@@ -15,7 +15,7 @@ namespace shiva::ecs
     class lua_scripted_system : public system<lua_scripted_system<SystemType>, SystemType>
     {
     public:
-        using TSystem = system<lua_scripted_system<SystemType>, SystemType>;
+        using TSystem = system <lua_scripted_system<SystemType>, SystemType>;
 
         lua_scripted_system(shiva::entt::dispatcher &dispatcher,
                             shiva::entt::entity_registry &entity_registry,

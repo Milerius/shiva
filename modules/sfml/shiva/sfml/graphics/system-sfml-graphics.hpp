@@ -20,6 +20,12 @@ namespace shiva::plugins
             system(dispatcher, registry, fixed_delta_time, true)
         {
             user_data_ = &win_;
+            auto entity = entity_registry_.create();
+
+            //Example
+            auto &spr = entity_registry_.assign<shiva::ecs::drawable>(entity, std::make_shared<sf::CircleShape>(50));
+            std::static_pointer_cast<sf::CircleShape>(spr.drawable_)->setFillColor(sf::Color(100, 250, 50));
+            entity_registry_.assign<shiva::ecs::layer_1>(entity);
         }
 
         static std::unique_ptr<shiva::ecs::base_system> system_creator(entt::dispatcher &dispatcher,
