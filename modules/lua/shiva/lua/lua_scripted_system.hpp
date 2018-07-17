@@ -61,7 +61,10 @@ namespace shiva::ecs
         void safe_function(const std::string &function, Args &&... args)
         {
             try {
-                (*state_)[table_name_][function](std::forward<Args>(args)...);
+                sol::optional<sol::function> f = (*state_)[table_name_][function];
+                if (f) {
+                    f.value()(std::forward<Args>(args)...);
+                }
             }
             catch (const std::exception &error) {
                 this->log_->error("lua error: {}", error.what());
