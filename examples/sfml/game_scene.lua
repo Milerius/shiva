@@ -6,16 +6,16 @@
 -- To change this template use File | Settings | File Templates.
 --
 
-print("hello guys")
-
 function update()
-    print("nb entities" .. shiva.entity_registry:nb_entities())
+    --print("nb entities" .. shiva.entity_registry:nb_entities())
 end
 
-function on_key_pressed(keycode)
+function on_key_pressed(evt)
+    print("game scene keycode: " .. evt.keycode)
 end
 
-function on_key_released(keycode)
+function on_key_released(evt)
+    print("game scene released keycode: " .. evt.keycode)
 end
 
 return {

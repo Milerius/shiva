@@ -11,5 +11,15 @@ namespace shiva::event
     struct start_game
     {
         reflect_class(start_game)
+
+        static constexpr auto reflected_functions() noexcept
+        {
+            return meta::makeMap();
+        }
+
+        static constexpr auto reflected_members() noexcept
+        {
+            return meta::makeMap();
+        }
     };
 }

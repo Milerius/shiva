@@ -27,8 +27,12 @@ namespace shiva::plugins
                 case sf::Event::TextEntered:
                     break;
                 case sf::Event::KeyPressed:
+                    dispatcher_.trigger<shiva::event::key_pressed>(
+                        static_cast<shiva::input::keyboard::TKey >(evt.key.code));
                     break;
                 case sf::Event::KeyReleased:
+                    dispatcher_.trigger<shiva::event::key_released>(
+                        static_cast<shiva::input::keyboard::TKey>(evt.key.code));
                     break;
                 case sf::Event::MouseWheelMoved:
                     break;

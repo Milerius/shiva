@@ -18,22 +18,26 @@ function get_file_extension(url)
     return url:match("^.+(%..+)$")
 end
 
-function attrdir(path, original_path, require_path)
+function load_scene(require_path, filename)
+    if (get_file_extension(filename) == ".lua") then
+        local scene_name = string.gsub(get_file_name(filename), '.lua$', '')
+        print("filename: " .. scene_name)
+        scenes_table[scene_name] = require(require_path .. "." .. scene_name)
+        if scenes_table[scene_name].scene_active == true then
+            current_scene = scenes_table[scene_name]
+        end
+    end
+end
+
+function recursive_directory_crossing(path, require_path)
     for file in lfs.dir(path) do
         if file ~= "." and file ~= ".." then
             local f = path .. '/' .. file
             local attr = lfs.attributes(f)
             if attr.mode == "directory" then
-                attrdir(f, original_path, require_path)
+                recursive_directory_crossing(f, require_path)
             else
-                if (get_file_extension(f) == ".lua") then
-                    local scene_name = string.gsub(get_file_name(f), '.lua$', '')
-                    print("filename: " .. scene_name)
-                    scenes_table[scene_name] = require(require_path .. "." .. scene_name)
-                    if scenes_table[scene_name].scene_active == true then
-                        current_scene = scenes_table[scene_name]
-                    end
-                end
+                load_scene(require_path, f)
             end
         end
     end
@@ -42,7 +46,7 @@ end
 function __constructor__()
     print("scene manager constructor")
     local dir = lfs.currentdir() .. "/assets/scripts/scenes/lua"
-    attrdir(dir, dir, "assets.scripts.scenes.lua")
+    recursive_directory_crossing(dir, "assets.scripts.scenes.lua")
 end
 
 function __destructor__()
@@ -50,12 +54,31 @@ function __destructor__()
 end
 
 function internal_update()
-    print("scene manager update")
-    current_scene.update()
+    if (current_scene.update ~= nil) then
+        current_scene.update()
+    end
+end
+
+function internal_key_pressed(evt)
+    if current_scene.on_key_pressed ~= nil then
+        current_scene.on_key_pressed(evt)
+    else
+        print("current scene doesn't have on_key_pressed callback")
+    end
+end
+
+function internal_key_released(evt)
+    if current_scene.on_key_released ~= nil then
+        current_scene.on_key_released(evt)
+    else
+        print("current scene doesn't have on_key_released callback")
+    end
 end
 
 scenes_system_table = {
     update = internal_update,
+    on_key_pressed = internal_key_pressed,
+    on_key_released = internal_key_released,
     on_construct = __constructor__,
     on_destruct = __destructor__,
     current_system_type = system_type.logic_update

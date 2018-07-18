@@ -22,6 +22,16 @@ namespace shiva::event
 
         reflect_class(add_base_system)
 
+        static constexpr auto reflected_functions() noexcept
+        {
+            return meta::makeMap();
+        }
+
+        static constexpr auto reflected_members() noexcept
+        {
+            return meta::makeMap();
+        }
+
         std::unique_ptr<shiva::ecs::base_system> system_ptr{nullptr};
     };
 }
