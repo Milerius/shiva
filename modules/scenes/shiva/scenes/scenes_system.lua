@@ -21,10 +21,10 @@ end
 function load_scene(require_path, filename)
     if (get_file_extension(filename) == ".lua") then
         local scene_name = string.gsub(get_file_name(filename), '.lua$', '')
-        print("filename: " .. scene_name)
         scenes_table[scene_name] = require(require_path .. "." .. scene_name)
         if scenes_table[scene_name].scene_active == true then
             current_scene = scenes_table[scene_name]
+            current_scene.enter()
         end
     end
 end
@@ -72,6 +72,15 @@ function internal_key_released(evt)
         current_scene.on_key_released(evt)
     else
         print("current scene doesn't have on_key_released callback")
+    end
+end
+
+function internal_change_scene(scene_name)
+    if scenes_table[scene_name] ~= nil then
+        current_scene.leave()
+        current_scene = scenes_table[scene_name]
+        current_scene.scene_active = true
+        current_scene.enter()
     end
 end
 

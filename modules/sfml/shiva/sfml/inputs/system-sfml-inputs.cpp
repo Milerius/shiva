@@ -2,9 +2,9 @@
 // Created by roman Sztergbaum on 18/06/2018.
 //
 
+#include <boost/dll.hpp>
 #include <shiva/sfml/inputs/system-sfml-inputs.hpp>
 #include <shiva/event/quit_game.hpp>
-#include <boost/dll.hpp>
 
 namespace shiva::plugins
 {

@@ -18,9 +18,23 @@ function on_key_released(evt)
     print("game scene released keycode: " .. evt.keycode)
 end
 
+function leave()
+    print("leave game scene")
+end
+
+function enter()
+    print("enter game scene")
+    shiva.resource_registry:load_all_resources("game_scene")
+    local id, sprite = shiva.entity_registry:create_game_object_with_sprite()
+    sprite:set_texture(shiva.resource_registry:get_texture("game_scene/toto"), false)
+    shiva.entity_registry:add_layer_1_component(id)
+end
+
 return {
     on_key_released = on_key_released,
     on_key_pressed = on_key_pressed,
+    leave = leave,
+    enter = enter,
     update = update,
     scene_active = true
 }

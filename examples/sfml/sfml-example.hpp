@@ -26,6 +26,8 @@ namespace shiva::examples::sfml
             lua_system.register_world();
             auto render_system = system_manager_.get_system_by_name("render_system", shiva::ecs::system_type::post_update);
             auto input_system = system_manager_.get_system_by_name("input_system", shiva::ecs::system_type::pre_update);
+            auto resources_system = system_manager_.get_system_by_name("resources_system", shiva::ecs::system_type::pre_update);
+            resources_system->set_user_data(&lua_system.get_state());
             input_system->set_user_data(render_system->get_user_data());
             lua_system.load_all_scripted_systems();
         }

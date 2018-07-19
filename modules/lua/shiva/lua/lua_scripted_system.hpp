@@ -55,9 +55,6 @@ namespace shiva::ecs
         {
             using namespace std::string_literals;
             this->log_->info("event_type received: {}", EventType::class_name());
-            /*if constexpr (shiva::event::has_get_data_v<EventType>)
-                safe_function("on_"s + EventType::class_name(), evt.get_data());
-            else*/
             safe_function("on_"s + EventType::class_name(), evt);
         }
 
