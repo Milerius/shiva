@@ -9,7 +9,12 @@
 #include <shiva/entt/entt_config.hpp>
 #include "sfml-resources-registry.hpp"
 #include <array>
+#if defined(fmt)
+#undef fmt
 #include <sol/state.hpp>
+#else
+#include <sol/state.hpp>
+#endif
 
 namespace shiva::plugins
 {

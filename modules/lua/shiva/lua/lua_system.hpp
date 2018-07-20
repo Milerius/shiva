@@ -4,7 +4,12 @@
 
 #pragma once
 
+#if defined(fmt)
+#undef fmt
 #include <sol/state.hpp>
+#else
+#include <sol/state.hpp>
+#endif
 #include <shiva/filesystem/filesystem.hpp>
 #include <shiva/ecs/system.hpp>
 #include <shiva/event/add_base_system.hpp>
@@ -87,10 +92,9 @@ namespace shiva::scripting
                                                           {"logic_update", shiva::ecs::system_type::logic_update}
                                                       });
             state_->new_enum<shiva::input::keyboard::TKey>("Keyboard", KEYBOARD_INIT_LIST);
-            (*state_)["load_script"] = [this](std::string filename, std::string path)
-                {
-                    return this->load_script(std::move(filename), fs::path(std::move(path)));
-                };
+            (*state_)["load_script"] = [this](std::string filename, std::string path) {
+                return this->load_script(std::move(filename), fs::path(std::move(path)));
+            };
             register_types_list(shiva::event::common_events_list{});
             disable();
         }
