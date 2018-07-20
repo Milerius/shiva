@@ -79,6 +79,7 @@ namespace shiva::ecs
                 }
             };
 
+            timestep_.start_frame();
             shiva::ranges::for_each(systems_, [this, update_system_functor](auto &&vec) {
                 if (!vec.empty()) {
                     system_type current_system_type = vec.front()->get_system_type_RTTI();
@@ -88,11 +89,9 @@ namespace shiva::ecs
                                                     update_system_functor(std::forward<decltype(sys)>(sys));
                                                 });
                     };
-
                     if (current_system_type != system_type::logic_update) {
                         update_functor();
                     } else {
-                        timestep_.start_frame();
                         while (timestep_.is_update_required()) {
                             update_functor();
                             timestep_.perform_update();

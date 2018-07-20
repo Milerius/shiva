@@ -91,6 +91,7 @@ namespace shiva::scripting
                 {
                     return this->load_script(std::move(filename), fs::path(std::move(path)));
                 };
+            register_types_list(shiva::event::common_events_list{});
             disable();
         }
 

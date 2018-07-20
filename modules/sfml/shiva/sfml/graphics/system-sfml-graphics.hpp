@@ -22,7 +22,7 @@ namespace shiva::plugins
             user_data_ = &win_;
             auto entity = entity_registry_.create();
 
-            //Example
+            //TODO: Remove this example
             auto &spr = entity_registry_.assign<shiva::ecs::drawable>(entity, std::make_shared<sf::CircleShape>(50));
             std::static_pointer_cast<sf::CircleShape>(spr.drawable_)->setFillColor(sf::Color(100, 250, 50));
             entity_registry_.assign<shiva::ecs::layer_1>(entity);

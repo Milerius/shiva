@@ -27,6 +27,7 @@ namespace shiva::ecs
             state_(state),
             table_name_(std::move(table_name))
         {
+            register_common_events(shiva::event::common_events_list{});
             class_name_ = std::move(class_name);
             safe_function("on_construct");
         }
@@ -34,6 +35,27 @@ namespace shiva::ecs
         ~lua_scripted_system() noexcept override
         {
             safe_function("on_destruct");
+        }
+
+        template <typename EventType>
+        void register_common_event()
+        {
+            this->dispatcher_.template sink<EventType>().connect(this);
+            this->log_->info("connect to event_type: {}", EventType::class_name());
+        }
+
+        template <typename ... Types>
+        void register_common_events(meta::type_list<Types...>) noexcept
+        {
+            (register_common_event<Types>(), ...);
+        }
+
+        template <typename EventType>
+        void receive([[maybe_unused]] const EventType &evt) noexcept
+        {
+            using namespace std::string_literals;
+            this->log_->info("event_type received: {}", EventType::class_name());
+            safe_function("on_"s + EventType::class_name(), evt);
         }
 
         void update() noexcept override

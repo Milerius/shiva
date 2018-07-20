@@ -21,6 +21,16 @@ namespace shiva::event
 
         reflect_class(quit_game)
 
+        static constexpr auto reflected_functions() noexcept
+        {
+            return meta::makeMap();
+        }
+
+        static constexpr auto reflected_members() noexcept
+        {
+            return meta::makeMap();
+        }
+
         int return_value_;
     };
 }

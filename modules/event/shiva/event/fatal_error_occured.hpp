@@ -21,6 +21,16 @@ namespace shiva::event
 
         reflect_class(fatal_error_occured)
 
+        static constexpr auto reflected_functions() noexcept
+        {
+            return meta::makeMap();
+        }
+
+        static constexpr auto reflected_members() noexcept
+        {
+            return meta::makeMap();
+        }
+
         std::error_code ec_;
     };
 }

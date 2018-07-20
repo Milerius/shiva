@@ -2,9 +2,9 @@
 // Created by roman Sztergbaum on 18/06/2018.
 //
 
+#include <boost/dll.hpp>
 #include <shiva/sfml/inputs/system-sfml-inputs.hpp>
 #include <shiva/event/quit_game.hpp>
-#include <boost/dll.hpp>
 
 namespace shiva::plugins
 {
@@ -27,8 +27,12 @@ namespace shiva::plugins
                 case sf::Event::TextEntered:
                     break;
                 case sf::Event::KeyPressed:
+                    dispatcher_.trigger<shiva::event::key_pressed>(
+                        static_cast<shiva::input::keyboard::TKey >(evt.key.code));
                     break;
                 case sf::Event::KeyReleased:
+                    dispatcher_.trigger<shiva::event::key_released>(
+                        static_cast<shiva::input::keyboard::TKey>(evt.key.code));
                     break;
                 case sf::Event::MouseWheelMoved:
                     break;
