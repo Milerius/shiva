@@ -64,7 +64,6 @@ namespace shiva::plugins
                          const float &fixed_delta_time) noexcept :
             system(dispatcher, registry, fixed_delta_time, true)
         {
-            disable();
         }
 
         static std::unique_ptr<shiva::ecs::base_system> system_creator(entt::dispatcher &dispatcher,
@@ -86,6 +85,7 @@ namespace shiva::plugins
 
     private:
         sfml::resources_registry resources_registry_;
+        float progress_{0.0f};
         sol::state *state_{nullptr};
     };
 }

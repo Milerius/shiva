@@ -25,9 +25,11 @@ end
 function enter()
     print("enter game scene")
     shiva.resource_registry:load_all_resources("game_scene")
-    local id, sprite = shiva.entity_registry:create_game_object_with_sprite()
-    sprite:set_texture(shiva.resource_registry:get_texture("game_scene/toto"), false)
-    shiva.entity_registry:add_layer_1_component(id)
+    print("should be here")
+
+    --local id, sprite = shiva.entity_registry:create_game_object_with_sprite()
+    --sprite:set_texture(shiva.resource_registry:get_texture("game_scene/toto"), false)
+    --shiva.entity_registry:add_layer_1_component(id)
 end
 
 return {

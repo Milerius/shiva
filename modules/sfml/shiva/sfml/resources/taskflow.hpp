@@ -609,7 +609,7 @@ namespace tf {
     template <typename F>
     template <typename... Bs>
     typename BasicTaskflow<F>::Task& BasicTaskflow<F>::Task::gather(Bs&&... tgts) {
-        (tgts->precede(*_node), ...);
+        (tgts.precede(*this), ...);
         return *this;
     }
 
@@ -1215,7 +1215,6 @@ auto BasicTaskflow<F>::parallel_range(const I beg, const I end, C&& c, ssize_t g
 //-------------------------------------------------------------------------------------------------
 
     using Taskflow = BasicTaskflow<std::function<void()>>;
-
 
 };  // end of namespace tf. -----------------------------------------------------------------------
 

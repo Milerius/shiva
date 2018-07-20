@@ -16,6 +16,15 @@ namespace shiva::plugins
 
     void resources_system::update() noexcept
     {
+        if (resources_registry_.is_working()) {
+            auto& current_loaded = resources_registry_.get_nb_current_files_loaded_();
+            auto& nb_files = resources_registry_.get_nb_files();
+            progress_ = static_cast<float>(current_loaded) / nb_files;
+            log_->info("loading files: {0} / {1}, percentage: {2}%",
+                       current_loaded,
+                       nb_files,
+                       progress_ * 100);
+        }
     }
 }
 
