@@ -13,6 +13,7 @@ target_link_libraries(ecs INTERFACE
         shiva::dll
         shiva::timer
         shiva::shiva-spdlog)
-target_compile_options(ecs INTERFACE $<$<PLATFORM_ID:Linux>:-Wno-attributes>)
+target_compile_options(ecs INTERFACE $<$<PLATFORM_ID:Linux>:-Wno-attributes>
+                           INTERFACE $<$<CXX_COMPILER_ID:MSVC>:/wd4702>)
 
 AUTO_TARGETS_MODULE_INSTALL(ecs)
