@@ -67,7 +67,8 @@ namespace shiva::plugins
         resources_system(shiva::entt::dispatcher &dispatcher,
                          shiva::entt::entity_registry &registry,
                          const float &fixed_delta_time) noexcept :
-            system(dispatcher, registry, fixed_delta_time, true)
+            system(dispatcher, registry, fixed_delta_time, true),
+            resources_registry_(dispatcher)
         {
         }
 

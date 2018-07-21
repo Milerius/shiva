@@ -32,6 +32,7 @@ namespace shiva::sfml
 
     private:
         shiva::logging::logger log_{shiva::log::stdout_color_mt("resources_registry")};
+        shiva::entt::dispatcher &dispatcher_;
         textures_cache textures_{};
         musics_cache musics_{};
         sounds_cache sounds_{};
@@ -43,11 +44,12 @@ namespace shiva::sfml
         std::atomic_bool working_{false};
         tf::Taskflow tf_{std::thread::hardware_concurrency()};
 
-
     public:
-        resources_registry(shiva::fs::path textures_path = shiva::fs::current_path() /= "assets/textures",
+        resources_registry(shiva::entt::dispatcher &dispatcher,
+                           shiva::fs::path textures_path = shiva::fs::current_path() /= "assets/textures",
                            shiva::fs::path sounds_path = shiva::fs::current_path() /= "assets/sounds",
                            shiva::fs::path musics_path = shiva::fs::current_path() /= "assets/musics") noexcept :
+            dispatcher_(dispatcher),
             textures_path_(std::move(textures_path)),
             sounds_path_(std::move(sounds_path)),
             musics_path_(std::move(musics_path))
@@ -190,7 +192,7 @@ namespace shiva::sfml
                                   additional_path);
         }
 
-        bool load_all_resources(const shiva::fs::path& additional_path = "") noexcept
+        bool load_all_resources(const shiva::fs::path &additional_path = "") noexcept
         {
             working_ = true;
             nb_files_ = count_all_resources(additional_path);
@@ -205,6 +207,7 @@ namespace shiva::sfml
                     this->working_ = false;
                     this->nb_files_ = 0;
                     this->current_files_loaded_ = 0;
+                    this->dispatcher_.trigger<shiva::event::after_load_resources>();
                 });
 
             D.gather(A, B, C);

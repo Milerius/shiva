@@ -18,7 +18,7 @@ namespace shiva
             std::move(plugin_path))
         {    
             #if defined(_WIN32)
-                SetDllDirectoryA((shiva::fs::current_path() /= "systems").string().c_str());
+                SetDllDirectoryA(plugin_path.string().c_str());
             #endif
             dispatcher_.sink<shiva::event::quit_game>().connect(this);
         }
