@@ -14,7 +14,8 @@ namespace shiva::entt
 {
     template <typename Component>
     static inline void
-    init_component(shiva::entt::entity_registry &registry, shiva::entt::entity_registry::entity_type entity) noexcept
+    init_component(shiva::entt::entity_registry &registry,
+                   [[maybe_unused]] shiva::entt::entity_registry::entity_type entity) noexcept
     {
         registry.type<Component>();
         if constexpr (std::is_default_constructible_v<Component>)

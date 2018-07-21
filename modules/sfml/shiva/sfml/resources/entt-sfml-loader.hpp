@@ -15,7 +15,7 @@ namespace shiva::sfml
         template <typename ... Args>
         std::shared_ptr<ResourceType> load(Args &&...args) const
         {
-            auto resource_ptr = std::make_unique<ResourceType>();
+            auto resource_ptr = std::make_shared<ResourceType>();
             if (!resource_ptr->loadFromFile(std::forward<Args>(args)...)) {
                 throw std::runtime_error("Impossible to load file");
             }
@@ -29,7 +29,7 @@ namespace shiva::sfml
         template <typename ... Args>
         std::shared_ptr<sf::Music> load(Args &&...args) const
         {
-            auto resource_ptr = std::make_unique<sf::Music>();
+            auto resource_ptr = std::make_shared<sf::Music>();
             if (!resource_ptr->openFromFile(std::forward<Args>(args)...)) {
                 throw std::runtime_error("Impossible to load file");
             }

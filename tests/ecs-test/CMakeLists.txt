@@ -31,6 +31,8 @@ if(EMSCRIPTEN)
 endif()
 
 target_link_libraries(ecs-test shiva::world)
+target_compile_options(ecs-test PUBLIC $<$<PLATFORM_ID:Linux>:-Wno-unused-variable>)
+
 add_dependencies(ecs-test shiva-system-plugin-bar)
 
 magic_source_group(ecs-test)

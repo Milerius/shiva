@@ -16,7 +16,10 @@ namespace shiva
 
         world(fs::path plugin_path = fs::current_path() /= "systems") noexcept : plugins_registry_(
             std::move(plugin_path))
-        {
+        {    
+            #if defined(_WIN32)
+                SetDllDirectoryA((shiva::fs::current_path() /= "systems").string().c_str());
+            #endif
             dispatcher_.sink<shiva::event::quit_game>().connect(this);
         }
 

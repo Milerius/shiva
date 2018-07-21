@@ -9,7 +9,12 @@
 #include <shiva/entt/entt_config.hpp>
 #include "sfml-resources-registry.hpp"
 #include <array>
+#if defined(fmt)
+#undef fmt
 #include <sol/state.hpp>
+#else
+#include <sol/state.hpp>
+#endif
 
 namespace shiva::plugins
 {
@@ -47,8 +52,8 @@ namespace shiva::plugins
             (*state_).new_usertype<sf::Texture>("sf_texture");
             (*state_).new_usertype<sf::Sprite>("sf_sprite",
                                                "set_texture", &sf::Sprite::setTexture,
-                                               sol::base_classes,
-                                               sol::bases<sf::Drawable, sf::Transformable>());
+                                              sol::base_classes,
+                                              sol::bases<sf::Drawable, sf::Transformable>());
             register_type<sfml::resources_registry>();
             (*state_)[entity_registry_.class_name()]["create_game_object_with_sprite"] = [this]() {
                 auto entity_id = this->entity_registry_.create();
@@ -64,7 +69,6 @@ namespace shiva::plugins
                          const float &fixed_delta_time) noexcept :
             system(dispatcher, registry, fixed_delta_time, true)
         {
-            disable();
         }
 
         static std::unique_ptr<shiva::ecs::base_system> system_creator(entt::dispatcher &dispatcher,
@@ -86,6 +90,7 @@ namespace shiva::plugins
 
     private:
         sfml::resources_registry resources_registry_;
+        float progress_{0.0f};
         sol::state *state_{nullptr};
     };
 }
