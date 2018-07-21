@@ -33,7 +33,7 @@ namespace shiva::sfml
             if (!resource_ptr->openFromFile(std::forward<Args>(args)...)) {
                 throw std::runtime_error("Impossible to load file");
             }
-            return nullptr;
+            return resource_ptr;
         }
     };
 }
