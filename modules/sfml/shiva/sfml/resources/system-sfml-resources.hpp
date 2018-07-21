@@ -52,8 +52,8 @@ namespace shiva::plugins
             (*state_).new_usertype<sf::Texture>("sf_texture");
             (*state_).new_usertype<sf::Sprite>("sf_sprite",
                                                "set_texture", &sf::Sprite::setTexture,
-                                               sol::base_classes,
-                                               sol::bases<sf::Drawable, sf::Transformable>());
+                                              sol::base_classes,
+                                              sol::bases<sf::Drawable, sf::Transformable>());
             register_type<sfml::resources_registry>();
             (*state_)[entity_registry_.class_name()]["create_game_object_with_sprite"] = [this]() {
                 auto entity_id = this->entity_registry_.create();

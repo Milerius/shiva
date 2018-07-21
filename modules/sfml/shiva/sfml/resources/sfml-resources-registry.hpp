@@ -190,7 +190,7 @@ namespace shiva::sfml
                                   additional_path);
         }
 
-        bool load_all_resources(const shiva::fs::path &additional_path = "") noexcept
+        bool load_all_resources(const shiva::fs::path& additional_path = "") noexcept
         {
             working_ = true;
             nb_files_ = count_all_resources(additional_path);

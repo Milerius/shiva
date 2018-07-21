@@ -22,6 +22,7 @@ namespace shiva::examples::sfml
             bool res = system_manager_.load_plugins();
             if (!res) {
                 std::cerr << "error loading plugins" << std::endl;
+
                 exit(1);
             }
             auto &lua_system = system_manager_.create_system<shiva::scripting::lua_system>();

@@ -8,6 +8,7 @@ int main()
 {
     int res = 0;
     try {
+        SetDllDirectoryA((shiva::fs::current_path() /= "systems").string().c_str());
         spdlog::set_pattern("[%n][%r][pid: %P][%^%l%$]: %v");
         shiva::examples::sfml::example_world world;
         res = world.run();
