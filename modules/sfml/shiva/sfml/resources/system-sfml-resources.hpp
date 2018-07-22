@@ -21,6 +21,7 @@ namespace shiva::plugins
     class resources_system final : public shiva::ecs::pre_update_system<resources_system>
     {
     private:
+
         template <typename T>
         void register_type() noexcept
         {
@@ -49,11 +50,16 @@ namespace shiva::plugins
         void on_set_user_data() noexcept final
         {
             state_ = static_cast<sol::state *>(user_data_);
+            (*state_).new_enum<sfml::resources_registry::work_type>("work_type",
+                                          {
+                                              {"loading", sfml::resources_registry::work_type::loading},
+                                              {"unloading", sfml::resources_registry::work_type::unloading}
+                                          });
             (*state_).new_usertype<sf::Texture>("sf_texture");
             (*state_).new_usertype<sf::Sprite>("sf_sprite",
                                                "set_texture", &sf::Sprite::setTexture,
-                                              sol::base_classes,
-                                              sol::bases<sf::Drawable, sf::Transformable>());
+                                               sol::base_classes,
+                                               sol::bases<sf::Drawable, sf::Transformable>());
             register_type<sfml::resources_registry>();
             (*state_)[entity_registry_.class_name()]["create_game_object_with_sprite"] = [this]() {
                 auto entity_id = this->entity_registry_.create();

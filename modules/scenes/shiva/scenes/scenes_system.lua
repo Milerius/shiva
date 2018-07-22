@@ -51,6 +51,11 @@ end
 
 function __destructor__()
     print("scene manager destructor")
+    if current_scene.leave ~= nil then
+        current_scene.leave()
+    else
+        print("current scene doesn't have leave callback")
+    end
 end
 
 function internal_update()

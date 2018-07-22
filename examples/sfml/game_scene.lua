@@ -6,6 +6,8 @@
 -- To change this template use File | Settings | File Templates.
 --
 
+local entities = {}
+
 function update()
     --print("nb entities" .. shiva.entity_registry:nb_entities())
 end
@@ -20,11 +22,16 @@ end
 
 function leave()
     print("leave game scene")
+    for key, value in pairs(entities) do
+        shiva.entity_registry:destroy(value)
+    end
+    shiva.resource_registry:unload_all_resources("game_scene")
 end
 
 function on_after_load_resources(evt)
     local id, sprite = shiva.entity_registry:create_game_object_with_sprite()
     sprite:set_texture(shiva.resource_registry:get_texture("game_scene/toto"), false)
+    entities[#entities + 1] = id
     shiva.entity_registry:add_layer_1_component(id)
 end
 
