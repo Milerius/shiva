@@ -11,8 +11,10 @@
 #include <shiva/event/start_game.hpp>
 #include <shiva/event/key_released.hpp>
 #include <shiva/event/key_pressed.hpp>
+#include <shiva/event/after_load_resources.hpp>
 
 #include <shiva/meta/list.hpp>
+
 
 namespace shiva::event
 {
@@ -32,6 +34,7 @@ namespace shiva::event
         quit_game,
         start_game,
         key_pressed,
-        key_released>;
+        key_released,
+        after_load_resources>;
 }
 

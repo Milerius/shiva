@@ -26,12 +26,19 @@ namespace shiva::sfml
     class resources_registry
     {
     public:
+        enum class work_type
+        {
+            loading,
+            unloading
+        };
+
         using textures_cache = ::entt::ResourceCache<sf::Texture>;
         using musics_cache = ::entt::ResourceCache<sf::Music>;
         using sounds_cache = ::entt::ResourceCache<sf::SoundBuffer>;
 
     private:
         shiva::logging::logger log_{shiva::log::stdout_color_mt("resources_registry")};
+        shiva::entt::dispatcher &dispatcher_;
         textures_cache textures_{};
         musics_cache musics_{};
         sounds_cache sounds_{};
@@ -43,11 +50,12 @@ namespace shiva::sfml
         std::atomic_bool working_{false};
         tf::Taskflow tf_{std::thread::hardware_concurrency()};
 
-
     public:
-        resources_registry(shiva::fs::path textures_path = shiva::fs::current_path() /= "assets/textures",
+        resources_registry(shiva::entt::dispatcher &dispatcher,
+                           shiva::fs::path textures_path = shiva::fs::current_path() /= "assets/textures",
                            shiva::fs::path sounds_path = shiva::fs::current_path() /= "assets/sounds",
                            shiva::fs::path musics_path = shiva::fs::current_path() /= "assets/musics") noexcept :
+            dispatcher_(dispatcher),
             textures_path_(std::move(textures_path)),
             sounds_path_(std::move(sounds_path)),
             musics_path_(std::move(musics_path))
@@ -69,40 +77,69 @@ namespace shiva::sfml
             return working_;
         }
 
+        template <typename Identifier = const char *>
+        bool unload_music(Identifier id, const std::string &original_path)
+        {
+            const auto identifier = musics_cache::resource_type{id};
+            musics_.discard(identifier);
+            log_->info("unloading resource: {0} from original_path {1}", id, original_path);
+            return musics_.contains(identifier);
+        }
+
+        template <typename Identifier = const char *>
+        bool unload_sound(Identifier id, const std::string &original_path)
+        {
+            const auto identifier = sounds_cache::resource_type{id};
+            sounds_.discard(identifier);
+            log_->info("unloading resource: {0} from original_path {1}", id, original_path);
+            return sounds_.contains(identifier);
+        }
+
+        template <typename Identifier = const char *>
+        bool unload_texture(Identifier id, const std::string &original_path)
+        {
+            const auto identifier = textures_cache::resource_type{id};
+            textures_.discard(identifier);
+            log_->info("unloading resource: {0} from original_path {1}", id, original_path);
+            return textures_.contains(identifier);
+        }
+
         template <typename Identifier = const char *, typename ... Args>
         bool load_music(Identifier id, Args &&...args)
         {
             const auto identifier = musics_cache::resource_type{id};
-            return musics_.load<loader<sf::Music>>(identifier, std::forward<Args>(args)...);
+            return musics_.load<loader<sf::Music >>(identifier, std::forward<Args>(args)...);
         }
 
         template <typename Identifier = const char *, typename ... Args>
         bool load_texture(Identifier id, Args &&...args)
         {
             const auto identifier = textures_cache::resource_type{id};
-            return textures_.load<loader<sf::Texture>>(identifier, std::forward<Args>(args)...);
+            return textures_.load<loader<sf::Texture >>(identifier, std::forward<Args>(args)...);
         }
 
         template <typename Identifier = const char *, typename ... Args>
         bool load_sound(Identifier id, Args &&...args)
         {
             const auto identifier = sounds_cache::resource_type{id};
-            return sounds_.load<loader<sf::SoundBuffer>>(identifier, std::forward<Args>(args)...);
+            return sounds_.load<loader<sf::SoundBuffer >>(identifier, std::forward<Args>(args)...);
         }
 
         template <typename LoaderFunctor>
-        bool load_resources(shiva::fs::path &current_resource_path,
-                            std::string_view resource_type,
-                            std::string_view resource_type_singular,
-                            LoaderFunctor &&loader_functor,
-                            const shiva::fs::path &additional_path) noexcept
+        bool work_on_resources(shiva::fs::path &current_resource_path,
+                               std::string_view resource_type,
+                               std::string_view resource_type_singular,
+                               LoaderFunctor &&loader_functor,
+                               const shiva::fs::path &additional_path,
+                               work_type type = work_type::loading) noexcept
         {
             if (additional_path.empty())
-                return load_resources(current_resource_path,
-                                      resource_type,
-                                      resource_type_singular,
-                                      loader_functor,
-                                      current_resource_path);
+                return work_on_resources(current_resource_path,
+                                         resource_type,
+                                         resource_type_singular,
+                                         loader_functor,
+                                         current_resource_path,
+                                         type);
             std::string id;
             shiva::fs::path directory_path = current_resource_path;
 
@@ -112,12 +149,14 @@ namespace shiva::sfml
             }
 
             if (!shiva::fs::exists(directory_path)) {
-                this->log_->error("trying to load resources from a non existent directory: {0}",
+                this->log_->error("trying to {0} resources from a non existent directory: {1}",
+                                  (type == work_type::loading) ? "load" : "unload",
                                   directory_path.string());
                 return false;
             }
 
-            log_->info("load {0} from path: {1}", resource_type, directory_path.string());
+            log_->info("{0} {1} from path: {2}", (type == work_type::loading) ? "load" : "unload", resource_type,
+                       directory_path.string());
             bool res = true;
             fs::recursive_directory_iterator endit;
             for (fs::recursive_directory_iterator it(directory_path); it != endit; ++it) {
@@ -134,7 +173,8 @@ namespace shiva::sfml
                     }
                     current_files_loaded_++;
                     res &= loader_functor(id.c_str(), it->path().string());
-                    log_->info("loaded {0}: [ filename: {1}, id: {2}, path: {3} ]\nremaining file: {4} / {5}",
+                    log_->info("{0} {1}: [ filename: {2}, id: {3}, path: {4} ]\nremaining file: {5} / {6}",
+                               (type == work_type::loading) ? "loaded" : "unloaded",
                                resource_type_singular,
                                filename,
                                id,
@@ -157,54 +197,106 @@ namespace shiva::sfml
             return res;
         }
 
-        bool load_textures(const shiva::fs::path &additional_path = "") noexcept
+        bool work_on_textures(const shiva::fs::path &additional_path = "", work_type type = work_type::loading) noexcept
         {
-            return load_resources(textures_path_,
-                                  "textures",
-                                  "texture",
-                                  [this](auto &&...params) {
-                                      return this->load_texture(std::forward<decltype(params)>(params)...);
-                                  },
-                                  additional_path);
+            auto loader_functor = [this](auto &&...params) {
+                return this->load_texture(std::forward<decltype(params)>(params)...);
+            };
+
+            auto unloader_functor = [this](auto &&...params) {
+                return this->unload_texture(std::forward<decltype(params)>(params)...);
+            };
+
+            if (type == work_type::loading) {
+                return work_on_resources(textures_path_,
+                                         "textures",
+                                         "texture",
+                                         loader_functor,
+                                         additional_path,
+                                         type);
+            } else {
+                return work_on_resources(textures_path_,
+                                         "textures",
+                                         "texture",
+                                         unloader_functor,
+                                         additional_path,
+                                         type);
+            }
         }
 
-        bool load_musics(const shiva::fs::path &additional_path = "") noexcept
+        bool work_on_musics(const shiva::fs::path &additional_path = "",
+                            work_type type = work_type::loading) noexcept
         {
-            return load_resources(musics_path_,
-                                  "musics",
-                                  "music",
-                                  [this](auto &&...params) {
-                                      return this->load_music(std::forward<decltype(params)>(params)...);
-                                  },
-                                  additional_path);
+            auto loader_functor = [this](auto &&...params) {
+                return this->load_music(std::forward<decltype(params)>(params)...);
+            };
+
+            auto unloader_functor = [this](auto &&...params) {
+                return this->unload_music(std::forward<decltype(params)>(params)...);
+            };
+            if (type == work_type::loading) {
+                return work_on_resources(musics_path_,
+                                         "musics",
+                                         "music",
+                                         loader_functor,
+                                         additional_path,
+                                         type);
+            } else {
+                return work_on_resources(musics_path_,
+                                         "musics",
+                                         "music",
+                                         unloader_functor,
+                                         additional_path,
+                                         type);
+            }
         }
 
-        bool load_sounds(const shiva::fs::path &additional_path = "") noexcept
+        bool work_on_sounds(const shiva::fs::path &additional_path = "",
+                            work_type type = work_type::loading) noexcept
         {
-            return load_resources(sounds_path_,
-                                  "sounds",
-                                  "sound",
-                                  [this](auto &&...params) {
-                                      return this->load_sound(std::forward<decltype(params)>(params)...);
-                                  },
-                                  additional_path);
+            auto loader_functor = [this](auto &&...params) {
+                return this->load_sound(std::forward<decltype(params)>(params)...);
+            };
+
+            auto unloader_functor = [this](auto &&...params) {
+                return this->unload_sound(std::forward<decltype(params)>(params)...);
+            };
+            if (type == work_type::loading) {
+                return work_on_resources(sounds_path_,
+                                         "sounds",
+                                         "sound",
+                                         loader_functor,
+                                         additional_path,
+                                         type);
+            } else {
+                return work_on_resources(sounds_path_,
+                                         "sounds",
+                                         "sound",
+                                         unloader_functor,
+                                         additional_path,
+                                         type);
+            }
         }
 
-        bool load_all_resources(const shiva::fs::path& additional_path = "") noexcept
+        bool work_on_all_resources(const shiva::fs::path &additional_path = "",
+                                   work_type type = work_type::loading) noexcept
         {
             working_ = true;
             nb_files_ = count_all_resources(additional_path);
             this->log_->info("nb_resources: {0}", nb_files_);
 
             auto[A, B, C, D] = tf_.silent_emplace(
-                [this, additional_path]() { return this->load_textures(additional_path); },
-                [this, additional_path]() { return this->load_musics(additional_path); },
-                [this, additional_path]() { return this->load_sounds(additional_path); },
-                [this]() {
-                    this->log_->info("all resources have been loaded");
+                [this, additional_path, type]() { return this->work_on_textures(additional_path, type); },
+                [this, additional_path, type]() { return this->work_on_musics(additional_path, type); },
+                [this, additional_path, type]() { return this->work_on_sounds(additional_path, type); },
+                [this, type]() {
+                    this->log_->info("all resources have been {0}",
+                                     (type == work_type::loading) ? "loaded" : "unloaded");
                     this->working_ = false;
                     this->nb_files_ = 0;
                     this->current_files_loaded_ = 0;
+                    if (type == work_type::loading)
+                        this->dispatcher_.trigger<shiva::event::after_load_resources>();
                 });
 
             D.gather(A, B, C);
@@ -214,7 +306,12 @@ namespace shiva::sfml
 
         bool load_all_resources(std::string additional_path = "") noexcept
         {
-            return load_all_resources(shiva::fs::path(std::move(additional_path)));
+            return work_on_all_resources(shiva::fs::path(std::move(additional_path)), work_type::loading);
+        }
+
+        bool unload_all_resources(std::string additional_path = "") noexcept
+        {
+            return work_on_all_resources(shiva::fs::path(std::move(additional_path)), work_type::unloading);
         }
 
         size_t nb_resources(const shiva::fs::path &path) const noexcept
@@ -276,7 +373,8 @@ namespace shiva::sfml
                 "get_texture",
                 sol::resolve<sf::Texture &(const char *)>(&resources_registry::get_texture),
                 "load_all_resources",
-                sol::resolve<bool(std::string)>(&resources_registry::load_all_resources)
+                sol::resolve<bool(std::string)>(&resources_registry::load_all_resources),
+                reflect_function(&resources_registry::unload_all_resources)
             );
         }
 

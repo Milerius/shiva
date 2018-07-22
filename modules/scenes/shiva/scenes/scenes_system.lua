@@ -51,6 +51,11 @@ end
 
 function __destructor__()
     print("scene manager destructor")
+    if current_scene.leave ~= nil then
+        current_scene.leave()
+    else
+        print("current scene doesn't have leave callback")
+    end
 end
 
 function internal_update()
@@ -75,6 +80,14 @@ function internal_key_released(evt)
     end
 end
 
+function internal_after_load_resources(evt)
+    if current_scene.on_after_load_resources ~= nil then
+        current_scene.on_after_load_resources(evt)
+    else
+        print("current scene doesn't have on_after_load_resources callback")
+    end
+end
+
 function internal_change_scene(scene_name)
     if scenes_table[scene_name] ~= nil then
         current_scene.leave()
@@ -88,6 +101,7 @@ scenes_system_table = {
     update = internal_update,
     on_key_pressed = internal_key_pressed,
     on_key_released = internal_key_released,
+    on_after_load_resources = internal_after_load_resources,
     on_construct = __constructor__,
     on_destruct = __destructor__,
     current_system_type = system_type.logic_update
