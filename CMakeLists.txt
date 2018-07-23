@@ -57,6 +57,7 @@ target_link_libraries(shiva INTERFACE
         shiva::pyscripting
         shiva::range
         shiva::reflection
+        shiva::shiva-spdlog
         shiva::stacktrace
         shiva::timer
         shiva::world
