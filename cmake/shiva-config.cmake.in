@@ -29,6 +29,11 @@ include("${CMAKE_CURRENT_LIST_DIR}/shiva-lua-targets.cmake")
 find_package(pybind11 CONFIG REQUIRED)
 include("${CMAKE_CURRENT_LIST_DIR}/shiva-pyscripting-targets.cmake")
 
+find_package(Threads REQUIRED)
+find_package(spdlog CONFIG REQUIRED)
+find_package(fmt CONFIG REQUIRED)
+include("${CMAKE_CURRENT_LIST_DIR}/shiva-spdlog-targets.cmake")
+
 include("${CMAKE_CURRENT_LIST_DIR}/shiva-world-targets.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/shiva-targets.cmake")
 
@@ -47,5 +52,6 @@ check_required_components("ecs")
 check_required_components("input")
 check_required_components("lua")
 check_required_components("pyscripting")
+check_required_components("spdlog")
 check_required_components("world")
 check_required_components("shiva")
