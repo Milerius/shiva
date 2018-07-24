@@ -38,7 +38,7 @@ namespace
 
     struct i_have_a_reflectible_name
     {
-        reflect_class(i_have_a_reflectible_name);
+        reflect_class(i_have_a_reflectible_name)
     };
 
     struct i_have_refl_member_functions

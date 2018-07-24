@@ -25,7 +25,7 @@ namespace shiva::event
     using has_get_data_t = meta::is_detected<has_get_data, T>;
 
     template <typename T>
-    inline constexpr bool has_get_data_v = has_get_data_t<T>::value;
+    static inline constexpr bool has_get_data_v = has_get_data_t<T>::value;
 
     using common_events_list = meta::type_list<
         add_base_system,

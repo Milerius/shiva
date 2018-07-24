@@ -37,7 +37,7 @@ namespace shiva::ecs
         {
             log_->info("dropping {} logger", log_->name());
             spdlog::drop(log_->name());
-        };
+        }
 
         static constexpr system_type get_system_type() noexcept
         {
@@ -83,7 +83,7 @@ namespace shiva::ecs
 
 #define SYSTEM_BASIC_REFLECTION(name)                                                       \
     public:                                                                                 \
-        reflect_class(name);                                                                \
+        reflect_class(name)                                                                 \
         static constexpr auto reflected_functions() noexcept                                \
         {                                                                                   \
             return shiva::meta::makeMap(reflect_function(&name::update));                   \

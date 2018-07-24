@@ -215,11 +215,11 @@ namespace shiva::ecs
         {
             static_assert(details::is_system_v<TSystem>,
                           "The system type given as template parameter doesn't seems to be valid");
-            auto creator = [this](auto &&... args) {
+            auto creator = [this](auto &&... args_) {
                 return std::make_unique<TSystem>(this->dispatcher_,
                                                  this->ett_registry_,
                                                  this->timestep_.get_fixed_delta_time(),
-                                                 std::forward<decltype(args)>(args)...);
+                                                 std::forward<decltype(args_)>(args_)...);
             };
             system_ptr sys = creator(std::forward<SystemArgs>(args)...);
             return static_cast<TSystem &>(add_system_(std::move(sys), TSystem::get_system_type()));
@@ -304,7 +304,7 @@ namespace shiva::ecs
                 return std::reference_wrapper<TSystem>(system);
             }
             return tl::make_unexpected(std::make_error_code(std::errc::result_out_of_range));
-        };
+        }
 
         template <typename TSystem>
         tl::expected<std::reference_wrapper<const TSystem>, std::error_code> get_system_() const noexcept
@@ -325,7 +325,7 @@ namespace shiva::ecs
                 return std::reference_wrapper<const TSystem>(system);
             }
             return tl::make_unexpected(std::make_error_code(std::errc::result_out_of_range));
-        };
+        }
 
         void sweep_systems_() noexcept
         {

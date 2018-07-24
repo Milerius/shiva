@@ -48,7 +48,7 @@ protected:
 class test_system : public shiva::ecs::post_update_system<test_system>
 {
 public:
-    reflect_class(test_system);
+    reflect_class(test_system)
 
     test_system(shiva::entt::dispatcher &dispatcher, shiva::entt::entity_registry &registry,
                 const float &fixed_delta_time) noexcept :
@@ -64,7 +64,7 @@ public:
 class another_test_system : public shiva::ecs::pre_update_system<another_test_system>
 {
 public:
-    reflect_class(another_test_system);
+    reflect_class(another_test_system)
 
     another_test_system(shiva::entt::dispatcher &dispatcher, shiva::entt::entity_registry &registry,
                         const float &fixed_delta_time) noexcept :
@@ -80,7 +80,7 @@ public:
 class third_test_system : public shiva::ecs::logic_update_system<third_test_system>
 {
 public:
-    reflect_class(third_test_system);
+    reflect_class(third_test_system)
 
     third_test_system(shiva::entt::dispatcher &dispatcher,
                       shiva::entt::entity_registry &registry,
@@ -98,7 +98,7 @@ class fourth_test_system : public shiva::ecs::pre_update_system<fourth_test_syst
 {
 
 public:
-    reflect_class(four_test_system);
+    reflect_class(four_test_system)
 
     fourth_test_system(shiva::entt::dispatcher &dispatcher,
                        shiva::entt::entity_registry &registry,

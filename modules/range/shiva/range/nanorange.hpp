@@ -105,7 +105,7 @@ inline namespace ranges                                                        \
 #ifdef NANO_HAVE_INLINE_VARS
 #define NANO_INLINE_VAR(type, name)                                            \
     inline namespace function_objects {                                        \
-    inline constexpr type name{};                                              \
+    static inline constexpr type name{};                                              \
     }
 
 #else
@@ -3399,7 +3399,7 @@ NANO_BEGIN_NAMESPACE
 
                 // We shouldn't need to define this, as we only need its return type,
                 // but GCC gets stroppy sometimes.
-                indirect_result_t<Proj&, I> operator*() const { throw 0; };
+                indirect_result_t<Proj&, I> operator*() const { throw 0; }
             };
 
         } // namespace detail

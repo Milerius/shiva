@@ -207,6 +207,8 @@ namespace shiva::scripting
                                                                                 fixed_delta_time_, state_, table_name,
                                                                                 script_name.filename().stem().string()));
                     break;
+                case shiva::ecs::size:
+                    break;
                 default:
                     break;
             }
@@ -235,7 +237,7 @@ namespace shiva::scripting
 
     public:
         //! Reflection
-        reflect_class(lua_system);
+        reflect_class(lua_system)
 
         static constexpr auto reflected_functions() noexcept
         {

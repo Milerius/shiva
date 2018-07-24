@@ -33,31 +33,31 @@ namespace shiva::refl
     using has_base_class = meta::is_detected<base_class_t, T>;
 
     template <typename T>
-    inline constexpr bool has_base_class_v = has_base_class<T>::value;
+    static inline constexpr bool has_base_class_v = has_base_class<T>::value;
 
     template <typename T>
     using has_reflectible_members = meta::is_detected<member_map_t, T>;
 
     template <typename T>
-    inline constexpr bool has_reflectible_members_v = has_reflectible_members<T>::value;
+    static inline constexpr bool has_reflectible_members_v = has_reflectible_members<T>::value;
 
     template <typename T>
     using has_reflectible_functions = meta::is_detected<function_map_t, T>;
 
     template <typename T>
-    inline constexpr bool has_reflectible_functions_v = has_reflectible_functions<T>::value;
+    static inline constexpr bool has_reflectible_functions_v = has_reflectible_functions<T>::value;
 
     template <typename T>
     using has_reflectible_class_name = meta::is_detected<class_name_t, T>;
 
     template <typename T>
-    inline constexpr bool has_reflectible_class_name_v = has_reflectible_class_name<T>::value;
+    static inline constexpr bool has_reflectible_class_name_v = has_reflectible_class_name<T>::value;
 
     template <typename T>
     using is_reflectible = std::disjunction<has_reflectible_members<T>, has_reflectible_functions<T>>;
 
     template <typename T>
-    inline constexpr bool is_reflectible_v = is_reflectible<T>::value;
+    static inline constexpr bool is_reflectible_v = is_reflectible<T>::value;
 
     namespace details
     {
@@ -95,9 +95,9 @@ namespace shiva::refl
     static inline constexpr auto getMember(MapT &&map, KeyT &&k) noexcept
     {
         std::optional<MemberPtrT> result;
-        auto visitor = shiva::meta::makeVisitor([&result]([[maybe_unused]] auto &&k, MemberPtrT v) {
+        auto visitor = shiva::meta::makeVisitor([&result]([[maybe_unused]] auto &&k_, MemberPtrT v) {
             result = v;
-        }, []([[maybe_unused]] auto &&k, [[maybe_unused]] auto &&v) {
+        }, []([[maybe_unused]] auto &&k_, [[maybe_unused]] auto &&v) {
         });
 
         getMember(std::forward<MapT>(map), std::forward<KeyT>(k), visitor);

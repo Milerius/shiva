@@ -17,7 +17,7 @@ namespace shiva::event
         {
         }
 
-        reflect_class(key_released);
+        reflect_class(key_released)
 
         static constexpr auto reflected_functions() noexcept
         {

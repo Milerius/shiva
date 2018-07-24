@@ -29,7 +29,7 @@ namespace shiva::examples
 
     public:
         //Reflection
-        reflect_class(pre_system);
+        reflect_class(pre_system)
 
         static constexpr auto reflected_functions() noexcept
         {

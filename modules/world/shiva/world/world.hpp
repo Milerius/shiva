@@ -12,7 +12,7 @@ namespace shiva
     class world
     {
     public:
-        virtual ~world() noexcept = default;
+        ~world() noexcept = default;
 
         world(fs::path plugin_path = fs::current_path() /= "systems") noexcept : plugins_registry_(
             std::move(plugin_path))

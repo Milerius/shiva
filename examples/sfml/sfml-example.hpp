@@ -12,10 +12,7 @@ namespace shiva::examples::sfml
     class example_world : public shiva::world
     {
     public:
-        ~example_world() noexcept override
-        {
-
-        }
+        ~example_world() noexcept = default;
 
         example_world() noexcept
         {

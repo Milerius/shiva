@@ -37,7 +37,7 @@ namespace shiva::ecs
         ~python_scripted_system() noexcept override
         {
             safe_function("on_destruct");
-        };
+        }
 
         template <typename EventType>
         void register_common_event()

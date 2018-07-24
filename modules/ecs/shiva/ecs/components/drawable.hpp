@@ -15,7 +15,7 @@ namespace shiva::ecs
         {
         }
 
-        reflect_class(drawable);
+        reflect_class(drawable)
 
         static constexpr auto reflected_functions() noexcept
         {
