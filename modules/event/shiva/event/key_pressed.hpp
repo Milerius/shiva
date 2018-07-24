@@ -18,7 +18,7 @@ namespace shiva::event
 
         }
 
-        reflect_class(key_pressed);
+        reflect_class(key_pressed)
 
         static constexpr auto reflected_functions() noexcept
         {

@@ -27,7 +27,7 @@ namespace shiva::examples
         }
 
     public:
-        reflect_class(post_system);
+        reflect_class(post_system)
 
         static constexpr auto reflected_functions() noexcept
         {

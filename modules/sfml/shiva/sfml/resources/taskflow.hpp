@@ -76,7 +76,7 @@ namespace tf {
     };
 
     template <typename T>
-    inline constexpr bool is_iterator_v = is_iterator<T>::value;
+    static inline constexpr bool is_iterator_v = is_iterator<T>::value;
 
 // Struct: is_iterable
     template <typename T, typename = void>
@@ -90,7 +90,7 @@ namespace tf {
     };
 
     template <typename T>
-    inline constexpr bool is_iterable_v = is_iterable<T>::value;
+    static inline constexpr bool is_iterable_v = is_iterable<T>::value;
 
 //-------------------------------------------------------------------------------------------------
 // Utility
@@ -214,7 +214,8 @@ namespace tf {
                         case Signal::SHUTDOWN:
                             stop = true;
                             break;
-
+                        case Signal::STANDARD:
+                            break;
                         default:
                             break;
                     };
@@ -522,7 +523,7 @@ namespace tf {
 // Function: dependents
     template <typename F>
     size_t BasicTaskflow<F>::Node::dependents() const {
-        return _dependents.load();
+        return static_cast<size_t>(_dependents.load());
     }
 
 // Function: name

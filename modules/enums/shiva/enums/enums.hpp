@@ -28,15 +28,15 @@
                                                                             \
         using EnumType = enum_##name;                                       \
                                                                             \
-        constexpr name() noexcept : _value(pp_first_arg(__VA_ARGS__))       \
+        [[maybe_unused]] constexpr name() noexcept : _value(pp_first_arg(__VA_ARGS__)) \
         {                                                                   \
         }                                                                   \
                                                                             \
-        constexpr name(EnumType value) noexcept : _value(value)             \
+        [[maybe_unused]] constexpr name(EnumType value) noexcept : _value(value) \
         {                                                                   \
         }                                                                   \
                                                                             \
-        name &operator=(EnumType value) noexcept                            \
+        [[maybe_unused]] name &operator=(EnumType value) noexcept           \
         {                                                                   \
             _value = value;                                                 \
             return *this;                                                   \
@@ -49,7 +49,7 @@
         }                                                                   \
                                                                             \
                                                                             \
-        static constexpr size_t size() noexcept                             \
+        [[maybe_unused]] static constexpr size_t size() noexcept            \
         {                                                                   \
             return pp_count_args(__VA_ARGS__);                              \
         }                                                                   \
@@ -80,22 +80,22 @@
         }                                                                   \
                                                                             \
     public:                                                                 \
-        name(const std::string_view v) : _value(_stringToValue(v))          \
+        [[maybe_unused]] name(const std::string_view v) : _value(_stringToValue(v))          \
         {                                                                   \
         }                                                                   \
                                                                             \
-        name &operator=(const std::string_view v)                           \
+        [[maybe_unused]] name &operator=(const std::string_view v)          \
         {                                                                   \
             _value = _stringToValue(v);                                     \
             return *this;                                                   \
         }                                                                   \
                                                                             \
-        operator EnumType() const noexcept                                  \
+        [[maybe_unused]] operator EnumType() const noexcept                 \
         {                                                                   \
             return _value;                                                  \
         }                                                                   \
                                                                             \
-        std::string toString() const noexcept                               \
+        [[maybe_unused]] std::string toString() const noexcept              \
         {                                                                   \
             switch (_value) {                                               \
                 pp_for_each(__DO_CASE_STR, __VA_ARGS__)                     \

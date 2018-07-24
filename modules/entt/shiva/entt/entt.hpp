@@ -19,7 +19,7 @@ namespace shiva::entt
     {
     public:
         //! Reflection
-        reflect_class(entity_registry);
+        reflect_class(entity_registry)
 
         using base_class_t = ::entt::DefaultRegistry;
 

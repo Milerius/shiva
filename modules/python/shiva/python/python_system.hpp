@@ -17,10 +17,14 @@ namespace py = pybind11;
 
 namespace shiva::scripting
 {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wmissing-prototypes"
+#pragma clang diagnostic ignored "-Wmissing-variable-declarations"
     PYBIND11_EMBEDDED_MODULE(shiva, module_)
     {
         static_cast<void>(module_);
     };
+#pragma clang diagnostic pop
 
     class python_system : public shiva::ecs::logic_update_system<python_system>
     {
@@ -157,6 +161,8 @@ namespace shiva::scripting
                                                                                        stem_name,
                                                                                        stem_name));
                         break;
+                    case shiva::ecs::system_type::size:
+                        break;
                     default:
                         break;
                 }
@@ -258,7 +264,7 @@ namespace shiva::scripting
         }
 
     public:
-        reflect_class(python_system);
+        reflect_class(python_system)
 
         static constexpr auto reflected_functions() noexcept
         {

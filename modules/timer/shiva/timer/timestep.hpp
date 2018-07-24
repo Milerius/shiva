@@ -32,7 +32,7 @@ namespace shiva::timer
         void perform_update() noexcept
         {
             lag_ -= fps_;
-        };
+        }
 
         const float &get_fixed_delta_time() const noexcept
         {

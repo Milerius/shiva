@@ -27,5 +27,9 @@ TEST_F(fixture_world, run)
 
 TEST_F(fixture_world, error_handler)
 {
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wused-but-marked-unused"
     ASSERT_DEATH(shiva::error::general_handler::handler(1), "");
+#pragma clang diagnostic pop
 }

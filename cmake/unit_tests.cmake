@@ -7,6 +7,9 @@ macro(__internal_specific_unit_test_platform_configuration EXECUTABLE_NAME)
         ##DLL BASE CLASS WARNING SUPPRESION
         set_target_properties(${EXECUTABLE_NAME} PROPERTIES COMPILE_FLAGS "${CMAKE_CXX_FLAGS} /wd4251 /wd4275")
     endif (WIN32)
+    if (CLANG)
+        set_target_properties(${EXECUTABLE_NAME} PROPERTIES COMPILE_FLAGS "${CMAKE_CXX_FLAGS} -Wno-global-constructors")
+    endif()
 endmacro()
 
 macro(__internal_specific_unit_test_properties EXECUTABLE_NAME)
