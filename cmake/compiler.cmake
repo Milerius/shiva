@@ -11,7 +11,7 @@ set(CMAKE_C_STANDARD 11)
 
 ##! Global Configuration
 if (UNIX)
-    set(STANDARD_UNIX_CXX_FLAGS "-Wall -Wextra -Wfatal-errors")
+    set(STANDARD_UNIX_CXX_FLAGS "-Wall -Wextra -Wfatal-errors -Wno-unknown-pragmas")
     if (CLANG)
         set(STANDARD_UNIX_CXX_FLAGS "${STANDARD_UNIX_CXX_FLAGS} -Weverything -Wno-exit-time-destructors -Wno-covered-switch-default -Wno-documentation-unknown-command -Wno-gnu-zero-variadic-macro-arguments -Wno-global-constructors -Wno-newline-eof -Wno-reserved-id-macro -Wno-deprecated -Wno-padded -Wno-c++98-compat-pedantic -Wno-c++98-compat -Wno-weak-vtables")
     endif()
