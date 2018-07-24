@@ -16,7 +16,7 @@ if (UNIX)
         set(STANDARD_UNIX_CXX_FLAGS "${STANDARD_UNIX_CXX_FLAGS} -Weverything -Wno-exit-time-destructors -Wno-covered-switch-default -Wno-documentation-unknown-command -Wno-gnu-zero-variadic-macro-arguments -Wno-global-constructors -Wno-newline-eof -Wno-reserved-id-macro -Wno-deprecated -Wno-padded -Wno-c++98-compat-pedantic -Wno-c++98-compat -Wno-weak-vtables")
     endif()
 elseif(MSVC)
-    set(STANDARD_MSVC_CXX_FLAGS "/std:c++latest /W4 /permissive-")
+    set(STANDARD_MSVC_CXX_FLAGS "/std:c++latest /W4 /permissive- /wd4068")
     add_definitions(-DNOMINMAX)
 endif()
 
