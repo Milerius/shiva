@@ -5,6 +5,7 @@
 #pragma once
 
 #include <memory>
+#include <shiva/reflection/reflection.hpp>
 
 namespace shiva::ecs
 {

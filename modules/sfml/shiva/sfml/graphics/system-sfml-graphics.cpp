@@ -22,7 +22,6 @@ namespace shiva::plugins
         };
 
         win_.clear();
-        win_.draw(spr);
         entity_registry_.view<shiva::ecs::layer_1, shiva::ecs::drawable>().each(draw);
         entity_registry_.view<shiva::ecs::layer_2, shiva::ecs::drawable>().each(draw);
         entity_registry_.view<shiva::ecs::layer_3, shiva::ecs::drawable>().each(draw);
