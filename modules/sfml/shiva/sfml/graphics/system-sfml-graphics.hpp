@@ -20,12 +20,14 @@ namespace shiva::plugins
             system(dispatcher, registry, fixed_delta_time, true)
         {
             user_data_ = &win_;
-            auto entity = entity_registry_.create();
 
             //TODO: Remove this example
-            auto &spr = entity_registry_.assign<shiva::ecs::drawable>(entity, std::make_shared<sf::CircleShape>(50));
-            std::static_pointer_cast<sf::CircleShape>(spr.drawable_)->setFillColor(sf::Color(100, 250, 50));
-            entity_registry_.assign<shiva::ecs::layer_1>(entity);
+            //auto entity = entity_registry_.create();
+            //auto &spr = entity_registry_.assign<shiva::ecs::drawable>(entity, std::make_shared<sf::CircleShape>(50));
+            //std::static_pointer_cast<sf::CircleShape>(spr.drawable_)->setFillColor(sf::Color(100, 250, 50));
+            //entity_registry_.assign<shiva::ecs::layer_1>(entity);
+                text.loadFromFile("assets/textures/game_scene/toto.png");
+                spr.setTexture(text);
         }
 
         static std::unique_ptr<shiva::ecs::base_system> system_creator(entt::dispatcher &dispatcher,
@@ -48,6 +50,8 @@ namespace shiva::plugins
 
     private:
         //TODO: Parse a config file
+        sf::Sprite spr;
+        sf::Texture text;
         sf::RenderWindow win_{sf::VideoMode(800, 600), "SFML window"};
     };
 }
