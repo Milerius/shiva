@@ -60,6 +60,7 @@ namespace shiva::helpers
                     continue;
                 }
                 try {
+                    std::cout << it->path().string() << std::endl;
                     symbols.emplace_back(
                         boost::dll::import_alias<CreatorSignature>(
                             boost::filesystem::path(it->path().string()),
