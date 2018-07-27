@@ -41,7 +41,7 @@ namespace shiva::ecs
         void register_common_event()
         {
 #if defined(__GNUC__) && !defined(__clang__)
-            dispatcher_.sink<EventType>().connect(this);
+            this->dispatcher_.sink<EventType>().connect(this);
 #else
             this->dispatcher_.template sink<EventType>().connect(this);
 #endif
