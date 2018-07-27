@@ -53,7 +53,7 @@ namespace shiva::ecs
         }
 
         template <typename EventType>
-        void receive([[maybe_unused]] const EventType &evt) noexcept
+        void receive([[maybe_unused]] const EventType &evt)
         {
             using namespace std::string_literals;
             this->log_->info("event_type received: {}", EventType::class_name());
