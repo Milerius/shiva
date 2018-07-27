@@ -38,6 +38,14 @@ namespace shiva::ecs
         }
 
         template <typename EventType>
+        void receive([[maybe_unused]] const EventType &evt) noexcept
+        {
+            using namespace std::string_literals;
+            this->log_->info("event_type received: {}", EventType::class_name());
+            safe_function("on_"s + EventType::class_name(), evt);
+        }
+
+        template <typename EventType>
         void register_common_event()
         {
             this->dispatcher_.template sink<EventType>().connect(this);
@@ -48,14 +56,6 @@ namespace shiva::ecs
         void register_common_events(meta::type_list<Types...>) noexcept
         {
             (register_common_event<Types>(), ...);
-        }
-
-        template <typename EventType>
-        void receive([[maybe_unused]] const EventType &evt) noexcept
-        {
-            using namespace std::string_literals;
-            this->log_->info("event_type received: {}", EventType::class_name());
-            safe_function("on_"s + EventType::class_name(), evt);
         }
 
         void update() noexcept override
