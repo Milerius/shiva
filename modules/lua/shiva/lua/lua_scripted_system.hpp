@@ -40,11 +40,7 @@ namespace shiva::ecs
         template <typename EventType>
         void register_common_event()
         {
-#if defined(__GNUC__) && !defined(__clang__)
-            this->dispatcher_.sink<EventType>().connect(this);
-#else
             this->dispatcher_.template sink<EventType>().connect(this);
-#endif
             this->log_->info("connect to event_type: {}", EventType::class_name());
         }
 
