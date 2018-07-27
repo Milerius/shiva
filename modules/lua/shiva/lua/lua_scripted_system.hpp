@@ -38,7 +38,7 @@ namespace shiva::ecs
         }
 
         template <typename EventType>
-        void on_event([[maybe_unused]] const EventType &evt) noexcept
+        void receive(const EventType &evt)
         {
             using namespace std::string_literals;
             this->log_->info("event_type received: {}", EventType::class_name());
@@ -48,7 +48,7 @@ namespace shiva::ecs
         template <typename EventType>
         void register_common_event()
         {
-            this->dispatcher_.template sink<EventType>().template connect<lua_scripted_system, &lua_scripted_system::on_event>(this);
+            this->dispatcher_.template sink<EventType>().connect(this);
             this->log_->info("connect to event_type: {}", EventType::class_name());
         }
 
