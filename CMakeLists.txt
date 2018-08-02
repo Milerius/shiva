@@ -15,7 +15,7 @@ project(shiva VERSION 0.2)
 enable_testing()
 
 ##! Project options
-option(SHIVA_BUILD_TESTS "Build tests of shiva C++ engine" ON)
+option(SHIVA_BUILD_TESTS "Build tests of shiva C++ engine" OFF)
 option(SHIVA_BUILD_EXAMPLES "Build examples of shiva C++ engine" OFF)
 option(SHIVA_USE_SFML_AS_RENDERER "Build shiva with SFML rendering" OFF)
 option(DISABLE_INSTALL_SHIVA_CORE "Disable install main targets" OFF)

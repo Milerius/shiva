@@ -10,9 +10,25 @@ macro(CREATE_MODULE ModuleAlias LibSources BuildInterfaceDirectory)
     if (USE_PROJECT_IN_AN_IDE)
         target_sources(${RealModuleName} INTERFACE ${LibSources})
     endif ()
+
+    set(ExtraMacroArgs ${ARGN})
+
+    set(INSTALL_MODULE_NAME_DIRECTORY "${RealModuleName}")
+    # Get the length of the list
+    list(LENGTH ExtraMacroArgs NumExtraMacroArgs)
+
+    # Execute the following block only if the length is > 0
+    if(NumExtraMacroArgs GREATER 0)
+        message(STATUS ">>> First optional arg = \"${ARGV2}\"")
+        foreach(ExtraArg ${ExtraMacroArgs})
+            message(STATUS ">>> Element of list of opt args = ${ExtraArg}")
+            set(INSTALL_MODULE_NAME_DIRECTORY "${ExtraArg}")
+        endforeach()
+    endif()
+
     target_include_directories(${RealModuleName} INTERFACE
             $<BUILD_INTERFACE:${BuildInterfaceDirectory}>
-            $<INSTALL_INTERFACE:include/shiva/modules/${RealModuleName}>)
+            $<INSTALL_INTERFACE:include/shiva/modules/${INSTALL_MODULE_NAME_DIRECTORY}>)
     add_library(${ModuleAlias} ALIAS ${RealModuleName})
     MSG_CYAN_BOLD(STATUS "Module" "${ModuleAlias}" "successfully created.")
 endmacro()

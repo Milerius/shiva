@@ -17,7 +17,7 @@ if (WIN32)
     file(COPY ${PYTHON_DLL} DESTINATION ${CMAKE_SOURCE_DIR}/bin)
 endif ()
 
-CREATE_MODULE(shiva::pyscripting "${MODULE_SOURCES}" ${MODULE_PATH})
+CREATE_MODULE(shiva::pyscripting "${MODULE_SOURCES}" ${MODULE_PATH} "python")
 
 target_link_libraries(pyscripting INTERFACE shiva::ecs shiva::input pybind11::embed pybind11::module)
 
