@@ -40,13 +40,24 @@ def replace_in_files(replacements, filename):
     with open(filename, 'w') as outfile:
         for line in lines:
             outfile.write(line)
+        outfile.write('\n')
 
 
 def replace_occurences():
-    replacements = {'project_name': args.project_name}
-    replace_in_files(replacements, args.output_directory + "/CMakeLists.txt")
+    replacements = {'<project_name>': args.project_name,
+                    'project_name': args.project_name,
+                    '<PROJECT_NAME>': args.project_name.upper()}
+
+    os.rename(args.output_directory + "/project_name/world/project_name_world.cpp",
+              args.output_directory + "/project_name/world/" + args.project_name + "_world.cpp")
+    os.rename(args.output_directory + "/project_name/world/project_name_world.hpp",
+              args.output_directory + "/project_name/world/" + args.project_name + "_world.hpp")
     os.rename(args.output_directory + "/project_name", args.output_directory + "/" + args.project_name)
 
+    for root, dirs, files in os.walk(args.output_directory):
+        for file in files:
+            print(os.path.join(root, file))
+            replace_in_files(replacements, os.path.join(root, file))
 
 print_option()
 copy_template()
