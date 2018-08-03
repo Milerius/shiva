@@ -43,9 +43,9 @@ def replace_in_files(replacements, filename):
 
 
 def replace_occurences():
-    replacements = {'<project_name>': args.project_name}
+    replacements = {'project_name': args.project_name}
     replace_in_files(replacements, args.output_directory + "/CMakeLists.txt")
-    os.rename(args.output_directory + "/<project_name>", args.output_directory + "/" + args.project_name)
+    os.rename(args.output_directory + "/project_name", args.output_directory + "/" + args.project_name)
 
 
 print_option()
