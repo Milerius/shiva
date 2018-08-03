@@ -93,6 +93,11 @@ if (NOT DISABLE_INSTALL_SHIVA_CORE)
                 FILES_MATCHING PATTERN "*.h*" PATTERN "*.lua"
                 )
 
+        install(DIRECTORY
+                ${CMAKE_CURRENT_SOURCE_DIR}/tools
+                DESTINATION
+                ${CMAKE_INSTALL_DATADIR}/shiva)
+
         install(EXPORT shiva-targets
                 FILE shiva-targets.cmake
                 NAMESPACE shiva::
