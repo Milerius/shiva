@@ -3,6 +3,10 @@ project(<project_name>)
 
 set(CMAKE_CXX_STANDARD 17)
 
+##! CMake Path
+set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+include(library)
+
 ##! Shiva
 find_package(shiva CONFIG REQUIRED)
 find_package(shiva-sfml CONFIG REQUIRED)
