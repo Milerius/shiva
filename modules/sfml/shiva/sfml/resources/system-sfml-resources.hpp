@@ -61,6 +61,11 @@ namespace shiva::plugins
                                                sol::base_classes,
                                                sol::bases<sf::Drawable, sf::Transformable>());
             register_type<sfml::resources_registry>();
+
+            (*state_)["shiva"]["is_key_pressed"] = [](shiva::input::keyboard::TKey key) {
+                return sf::Keyboard::isKeyPressed(static_cast<sf::Keyboard::Key>(key));
+            };
+
             (*state_)[entity_registry_.class_name()]["create_game_object_with_sprite"] = [this]() {
                 auto entity_id = this->entity_registry_.create();
                 auto &drawable = entity_registry_.assign<shiva::ecs::drawable>(entity_id,

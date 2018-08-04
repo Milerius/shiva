@@ -41,7 +41,7 @@ namespace shiva::ecs
         void receive(const EventType &evt)
         {
             using namespace std::string_literals;
-            this->log_->info("event_type received: {}", EventType::class_name());
+            this->log_->debug("event_type received: {}", EventType::class_name());
             safe_function("on_"s + EventType::class_name(), evt);
         }
 

@@ -28,8 +28,16 @@ namespace shiva::refl
     template <typename T>
     using base_class_t = decltype(std::declval<typename T::base_class_t>());
 
+    template <typename T>
+    using constructor_arg_t = decltype(std::declval<typename T::constructor_arg_type_t>());
 
-    template<typename T>
+    template <typename T>
+    using has_constructor_arg = meta::is_detected<constructor_arg_t, T>;
+
+    template <typename T>
+    static inline constexpr bool has_constructor_arg_type_v = has_constructor_arg<T>::value;
+
+    template <typename T>
     using has_base_class = meta::is_detected<base_class_t, T>;
 
     template <typename T>

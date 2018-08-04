@@ -18,10 +18,7 @@ namespace shiva::ecs::details
     template<typename IsPlugin>
     static constexpr bool is_plugged_system_v() noexcept
     {
-        if constexpr (std::is_same_v<IsPlugin, plugin_system>) {
-            return true;
-        } else
-            return false;
+        return std::is_same_v<IsPlugin, plugin_system>;
     }
 
     using valid_systems_list = meta::type_list<system_pre_update, system_logic_update, system_post_update>;
