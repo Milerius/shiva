@@ -19,8 +19,11 @@ file(GLOB_RECURSE <PROJECT_NAME>_HEADERS <project_name>/*.hpp)
 add_executable(<project_name> ${<PROJECT_NAME>_SOURCES} ${<PROJECT_NAME>_HEADERS})
 
 ##! Linking
-target_link_libraries(<project_name>
-        shiva::shiva)
+##! We manualy link LUA_LIBRARIES on Windows,
+##! CMake seems to have a bug on interfacing this libraries from the module shiva::lua
+target_link_libraries(<project_name> PUBLIC
+        shiva::shiva
+        $<$<CXX_COMPILER_ID:MSVC>:${LUA_LIBRARIES}>)
 
 set_target_properties(<project_name>
         PROPERTIES
