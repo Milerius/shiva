@@ -26,11 +26,13 @@ include("${CMAKE_CURRENT_LIST_DIR}/shiva-error-targets.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/shiva-event-targets.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/shiva-ecs-targets.cmake")
 
+##! Lua
 find_package(sol2 CONFIG REQUIRED)
 find_package(Lua 5.3)
-find_file(LFSDLL lfs.dll PATH_SUFFIXES bin)
-configure_file(${LFSDLL} ${CMAKE_SOURCE_DIR}/bin COPYONLY)
-
+if (MSVC)
+    find_file(LFSDLL lfs.dll PATH_SUFFIXES bin)
+    configure_file(${LFSDLL} ${CMAKE_SOURCE_DIR}/bin COPYONLY)
+endif()
 include("${CMAKE_CURRENT_LIST_DIR}/shiva-lua-targets.cmake")
 
 find_package(pybind11 CONFIG REQUIRED)
