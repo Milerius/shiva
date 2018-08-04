@@ -14,14 +14,26 @@ namespace shiva
     public:
         ~world() noexcept = default;
 
-        world(fs::path plugin_path = fs::current_path() /= "systems") noexcept : plugins_registry_(
+#if defined(DEBUG)
+        world(fs::path plugin_path = fs::current_path() /= "Debug/systems") noexcept : plugins_registry_(
             std::move(plugin_path))
-        {    
-            #if defined(_WIN32)
-                SetDllDirectoryA(plugin_path.string().c_str());
-            #endif
+        {
+#if defined(_WIN32)
+            SetDllDirectoryA(plugin_path.string().c_str());
+#endif
             dispatcher_.sink<shiva::event::quit_game>().connect(this);
         }
+
+#elif defined(RELEASE)
+        world(fs::path plugin_path = fs::current_path() /= "Release/systems") noexcept : plugins_registry_(
+                    std::move(plugin_path))
+                {
+#if defined(_WIN32)
+                        SetDllDirectoryA(plugin_path.string().c_str());
+#endif
+                    dispatcher_.sink<shiva::event::quit_game>().connect(this);
+                }
+#endif
 
         int run() noexcept
         {

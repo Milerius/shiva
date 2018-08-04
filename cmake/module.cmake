@@ -47,13 +47,13 @@ macro(CREATE_MODULE_PLUGIN ModuleAlias LibSources BuildInterfaceDirectory Output
     set_property(TARGET ${RealModuleName} PROPERTY POSITION_INDEPENDENT_CODE ON)
     set_target_properties(${RealModuleName}
             PROPERTIES
-            ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/${OutputDirectory}"
-            LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/${OutputDirectory}"
-            RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/${OutputDirectory}"
-            LIBRARY_OUTPUT_DIRECTORY_DEBUG "${CMAKE_SOURCE_DIR}/bin/${OutputDirectory}"
-            LIBRARY_OUTPUT_DIRECTORY_RELEASE "${CMAKE_SOURCE_DIR}/bin/${OutputDirectory}"
-            RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_SOURCE_DIR}/bin/${OutputDirectory}"
-            RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_SOURCE_DIR}/bin/${OutputDirectory}")
+            ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE}/${OutputDirectory}"
+            LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE}/${OutputDirectory}"
+            RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE}/${OutputDirectory}"
+            LIBRARY_OUTPUT_DIRECTORY_DEBUG "${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE}/${OutputDirectory}"
+            LIBRARY_OUTPUT_DIRECTORY_RELEASE "${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE}/${OutputDirectory}"
+            RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE}/${OutputDirectory}"
+            RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE}/${OutputDirectory}")
     MSG_CYAN_BOLD(STATUS "Module" "${ModuleAlias}" "successfully created.")
 endmacro()
 
@@ -84,9 +84,9 @@ macro(AUTO_TARGETS_PLUGINS_INSTALL MODULE_NAME EXPORT_NAME)
         install(TARGETS
                 ${MODULE_NAME}
                 EXPORT ${PROJECT_NAME}-${MODULE_NAME}-targets
-                RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}/${PROJECT_NAME}/plugins/${EXPORT_NAME}
-                ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}/${PROJECT_NAME}/plugins/${EXPORT_NAME}
-                LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/${PROJECT_NAME}/plugins/${EXPORT_NAME}
+                RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}/${PROJECT_NAME}/plugins/${EXPORT_NAME}/${CMAKE_BUILD_TYPE}
+                ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}/${PROJECT_NAME}/plugins/${EXPORT_NAME}/${CMAKE_BUILD_TYPE}
+                LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/${PROJECT_NAME}/plugins/${EXPORT_NAME}/${CMAKE_BUILD_TYPE}
                 INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
                 )
 
