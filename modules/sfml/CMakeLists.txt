@@ -10,7 +10,14 @@ endmacro()
 
 if (SHIVA_USE_SFML_AS_RENDERER)
     find_package(SFML CONFIG REQUIRED system window graphics audio)
+
+    include(shiva/sfml/common/CMakeSources.cmake)
+    CREATE_MODULE(shiva::sfml-common "${MODULE_SOURCES}" ${MODULE_PATH})
+    target_link_libraries(sfml-common INTERFACE sfml-graphics)
+    AUTO_TARGETS_PLUGINS_INSTALL(sfml-common shiva-sfml)
+
     mini_module(resources "sfml-graphics;sfml-audio;shiva::lua")
+    mini_module(animation "sfml-graphics;sfml-common;shiva::lua")
     mini_module(graphics sfml-graphics)
     mini_module(inputs sfml-graphics)
     PREPARE_MODULE_INSTALLATION(shiva-sfml)

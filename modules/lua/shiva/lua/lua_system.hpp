@@ -14,6 +14,7 @@
 #include <shiva/ecs/system.hpp>
 #include <shiva/event/add_base_system.hpp>
 #include <shiva/input/input.hpp>
+#include <shiva/lua/lua_helpers.hpp>
 #include "lua_scripted_system.hpp"
 
 namespace sol
@@ -123,31 +124,9 @@ namespace shiva::scripting
             disable();
         }
 
-        template <typename T>
-        void register_type() noexcept
-        {
-            const auto table = std::tuple_cat(
-                std::make_tuple(T::class_name()),
-                T::reflected_functions(),
-                T::reflected_members());
-
-            try {
-                std::apply(
-                    [this](auto &&...params) {
-                        this->state_->new_usertype<T>(std::forward<decltype(params)>(params)...);
-                    }, table);
-            }
-            catch (const std::exception &error) {
-                log_->error("error: {}", error.what());
-                return;
-            }
-
-            log_->info("successfully registering type: {}", T::class_name());
-        }
-
         void register_entity_registry() noexcept
         {
-            register_type<shiva::entt::entity_registry>();
+            shiva::lua::register_type<shiva::entt::entity_registry>(*state_, log_);
             using comp_type = shiva::entt::entity_registry::component_type;
             (*state_)[entity_registry_.class_name()]["for_each_runtime"] = [](shiva::entt::entity_registry &self,
                                                                               std::vector<comp_type> array,
@@ -190,20 +169,20 @@ namespace shiva::scripting
         template <typename ...Types>
         void register_types_list(meta::type_list<Types...>) noexcept
         {
-            (register_type<Types>(), ...);
+            (shiva::lua::register_type<Types>(*state_, log_), ...);
         }
 
         template <typename ... Types>
         void register_components(meta::type_list<Types...>)
         {
-            (register_type<Types>(), ...);
+            (shiva::lua::register_type<Types>(*state_, log_), ...);
             (register_component<Types>(), ...);
         }
 
         template<typename ... Types>
         void register_events(meta::type_list<Types...>)
         {
-            (register_type<Types>(), ...);
+            (shiva::lua::register_type<Types>(*state_, log_), ...);
             (register_event<Types>(), ...);
         }
 

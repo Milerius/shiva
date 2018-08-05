@@ -7,6 +7,7 @@
 #include <shiva/meta/list.hpp>
 #include <shiva/ecs/components/layer.hpp>
 #include <shiva/ecs/components/drawable.hpp>
+#include <shiva/ecs/components/animation.hpp>
 
 namespace shiva::ecs
 {
@@ -18,5 +19,6 @@ namespace shiva::ecs
         layer_6,
         layer_7,
         layer_8,
-        drawable>;
+        drawable,
+        animation>;
 }
