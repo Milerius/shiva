@@ -58,13 +58,13 @@ namespace shiva::plugins
     }
 
     entt::entity_registry::entity_type animation_system::create_game_object_with_animated_sprite(status_t status,
-                                                                             double delta_time,
-                                                                             bool loop,
-                                                                             int repeat,
-                                                                             unsigned int nb_columns,
-                                                                             unsigned int nb_lines,
-                                                                             unsigned int nb_anims,
-                                                                             const char *texture_name) noexcept
+                                                                                                 double delta_time,
+                                                                                                 bool loop,
+                                                                                                 int repeat,
+                                                                                                 unsigned int nb_columns,
+                                                                                                 unsigned int nb_lines,
+                                                                                                 unsigned int nb_anims,
+                                                                                                 const char *texture_name) noexcept
     {
         auto entity_id = this->entity_registry_.create();
 
@@ -72,8 +72,8 @@ namespace shiva::plugins
         auto &drawable_component = entity_registry_.assign<shiva::ecs::drawable>(entity_id,
                                                                                  std::make_shared<sf::Sprite>());
 
-        std::string script = "return shiva.resource_registry:get_texture_c(\"" + std::string(texture_name) + "\")";
-        const sf::Texture& texture = state_->script(script);
+        sol::table self = (*state_)["shiva"]["resource_registry"];
+        const sf::Texture &texture = self["get_texture_c"](self, texture_name);
 
         std::static_pointer_cast<sf::Sprite>(drawable_component.drawable_)->setTexture(texture);
 
