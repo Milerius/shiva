@@ -16,9 +16,6 @@ namespace <project_name>
             if (!res)
                 exit(1);
             auto &lua_system = system_manager_.create_system<shiva::scripting::lua_system>();
-            lua_system.register_entity_registry();
-            lua_system.register_components(shiva::ecs::common_components{});
-            lua_system.register_world();
             auto render_system = system_manager_.get_system_by_name("render_system", shiva::ecs::system_type::post_update);
             auto input_system = system_manager_.get_system_by_name("input_system", shiva::ecs::system_type::pre_update);
             auto resources_system = system_manager_.get_system_by_name("resources_system", shiva::ecs::system_type::pre_update);

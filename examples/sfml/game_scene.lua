@@ -10,14 +10,19 @@ local entities = {}
 
 function update()
     --print("nb entities" .. shiva.entity_registry:nb_entities())
+    if (shiva.is_key_pressed(Keyboard.Z) == true) then
+        print("Z pressed")
+    end
 end
 
 function on_key_pressed(evt)
-    print("game scene keycode: " .. evt.keycode)
+    if (evt.keycode == Keyboard.Escape) then
+        print("should quit_game")
+        shiva.dispatcher.trigger_quit_game_event(shiva.dispatcher, 1)
+    end
 end
 
 function on_key_released(evt)
-    print("game scene released keycode: " .. evt.keycode)
 end
 
 function leave()

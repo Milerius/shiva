@@ -73,6 +73,26 @@ namespace shiva::scripting
             }
         }
 
+        template<typename Event>
+        void register_event()
+        {
+            using namespace std::string_literals;
+
+            if constexpr (std::is_default_constructible_v<Event> && shiva::refl::has_constructor_arg_type_v<Event>) {
+                std::cout << Event::class_name() << std::endl;
+                (*state_)["dispatcher"]["trigger_"s + Event::class_name() + "_event"s] = [](
+                    shiva::entt::dispatcher &self,
+                    typename Event::constructor_arg_type_t arg) {
+                    return self.trigger<Event>(arg);
+                };
+            } else {
+                (*state_)["dispatcher"]["trigger_"s + Event::class_name() + "_event"s] = [](
+                    shiva::entt::dispatcher &self) {
+                    return self.trigger<Event>();
+                };
+            }
+        }
+
     public:
         lua_system(entt::dispatcher &dispatcher,
                    entt::entity_registry &entity_registry,
@@ -95,7 +115,11 @@ namespace shiva::scripting
             (*state_)["load_script"] = [this](std::string filename, std::string path) {
                 return this->load_script(std::move(filename), fs::path(std::move(path)));
             };
-            register_types_list(shiva::event::common_events_list{});
+            register_entity_registry();
+            register_components(shiva::ecs::common_components{});
+            this->state_->new_usertype<shiva::entt::dispatcher>("dispatcher");
+            register_events(shiva::event::common_events_list{});
+            register_world();
             disable();
         }
 
@@ -141,6 +165,7 @@ namespace shiva::scripting
         void register_world() noexcept
         {
             (*state_)["shiva"] = state_->create_table_with("entity_registry", std::ref(entity_registry_),
+                                                           "dispatcher", std::ref(dispatcher_),
                                                            "fixed_delta_time", fixed_delta_time_);
         }
 
@@ -173,6 +198,13 @@ namespace shiva::scripting
         {
             (register_type<Types>(), ...);
             (register_component<Types>(), ...);
+        }
+
+        template<typename ... Types>
+        void register_events(meta::type_list<Types...>)
+        {
+            (register_type<Types>(), ...);
+            (register_event<Types>(), ...);
         }
 
         void update() noexcept override

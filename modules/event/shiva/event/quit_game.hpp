@@ -10,6 +10,8 @@ namespace shiva::event
 {
     struct quit_game
     {
+        using constructor_arg_type_t = int;
+
         quit_game(int return_value) noexcept : return_value_(return_value) //NOLINT
         {
         }
