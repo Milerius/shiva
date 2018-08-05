@@ -10,7 +10,7 @@
 
 namespace shiva::plugins
 {
-    class render_system : public shiva::ecs::post_update_system<render_system>
+    class render_system final : public shiva::ecs::post_update_system<render_system>
     {
     public:
         ~render_system() noexcept override = default;

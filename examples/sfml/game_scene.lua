@@ -34,9 +34,16 @@ function leave()
 end
 
 function on_after_load_resources(evt)
-    local id, sprite = shiva.entity_registry:create_game_object_with_sprite()
-    sprite:set_texture(shiva.resource_registry:get_texture("game_scene/toto"), false)
-    entities[#entities + 1] = id
+    --local id, sprite = shiva.entity_registry:create_game_object_with_sprite()
+    --sprite:set_texture(shiva.resource_registry:get_texture("game_scene/toto"), false)
+    --entities[#entities + 1] = id
+    --shiva.entity_registry:add_layer_1_component(id)
+
+    --local id = shiva.anim:create_game_object_with_animated_sprite(anim_status.playing,
+    --    0.12, true, 1, 1, 1, 9, "game_scene/mage_idle_dir_1")
+
+    local id = shiva.anim:create_game_object_with_animated_sprite(anim_status.playing,
+        0.09, true, 1, 12, 7, 80, "game_scene/bheet_arrival")
     shiva.entity_registry:add_layer_1_component(id)
 end
 

@@ -7,43 +7,13 @@
 #include <SFML/Graphics.hpp>
 #include <shiva/ecs/system.hpp>
 #include <shiva/entt/entt_config.hpp>
-#include "sfml-resources-registry.hpp"
-#include <array>
-#if defined(fmt)
-#undef fmt
-#include <sol/state.hpp>
-#else
-#include <sol/state.hpp>
-#endif
+#include <shiva/sfml/resources/sfml-resources-registry.hpp>
+#include <shiva/lua/lua_helpers.hpp>
 
 namespace shiva::plugins
 {
     class resources_system final : public shiva::ecs::pre_update_system<resources_system>
     {
-    private:
-
-        template <typename T>
-        void register_type() noexcept
-        {
-            const auto table = std::tuple_cat(
-                std::make_tuple(T::class_name()),
-                T::reflected_functions(),
-                T::reflected_members());
-
-            try {
-                std::apply(
-                    [this](auto &&...params) {
-                        this->state_->new_usertype<T>(std::forward<decltype(params)>(params)...);
-                    }, table);
-            }
-            catch (const std::exception &error) {
-                log_->error("error: {}", error.what());
-                return;
-            }
-
-            log_->info("successfully registering type: {}", T::class_name());
-        }
-
     public:
         ~resources_system() noexcept final = default;
 
@@ -60,7 +30,7 @@ namespace shiva::plugins
                                                "set_texture", &sf::Sprite::setTexture,
                                                sol::base_classes,
                                                sol::bases<sf::Drawable, sf::Transformable>());
-            register_type<sfml::resources_registry>();
+            shiva::lua::register_type<sfml::resources_registry>(*state_, log_);
 
             (*state_)["shiva"]["is_key_pressed"] = [](shiva::input::keyboard::TKey key) {
                 return sf::Keyboard::isKeyPressed(static_cast<sf::Keyboard::Key>(key));
