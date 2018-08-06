@@ -9,6 +9,7 @@ set(MODULE_PUBLIC_HEADERS
         "${MODULE_PATH}/key_pressed.hpp"
         "${MODULE_PATH}/after_load_systems_plugins.hpp"
         "${MODULE_PATH}/after_load_resources.hpp"
+        "${MODULE_PATH}/change_scene.hpp"
         "${MODULE_PATH}/all.hpp"
         )
 

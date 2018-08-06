@@ -21,10 +21,10 @@ namespace shiva::plugins
         {
             state_ = static_cast<sol::state *>(user_data_);
             (*state_).new_enum<sfml::resources_registry::work_type>("work_type",
-                                          {
-                                              {"loading", sfml::resources_registry::work_type::loading},
-                                              {"unloading", sfml::resources_registry::work_type::unloading}
-                                          });
+                                                                    {
+                                                                        {"loading",   sfml::resources_registry::work_type::loading},
+                                                                        {"unloading", sfml::resources_registry::work_type::unloading}
+                                                                    });
             (*state_).new_usertype<sf::Texture>("sf_texture");
             (*state_).new_usertype<sf::Sprite>("sf_sprite",
                                                "set_texture", &sf::Sprite::setTexture,
@@ -41,6 +41,23 @@ namespace shiva::plugins
                 auto &drawable = entity_registry_.assign<shiva::ecs::drawable>(entity_id,
                                                                                std::make_shared<sf::Sprite>());
                 return std::make_tuple(entity_id, std::static_pointer_cast<sf::Sprite>(drawable.drawable_));
+            };
+
+            (*state_)[entity_registry_.class_name()]["create_text"] = [this]([[maybe_unused]] shiva::entt::entity_registry& self,
+                                                                             const char *text,
+                                                                             const char *font_name,
+                                                                             unsigned int size) {
+                auto entity_id = this->entity_registry_.create();
+                auto &drawable = entity_registry_.assign<shiva::ecs::drawable>(entity_id,
+                                                                               std::make_shared<sf::Text>());
+                auto text_ptr = std::static_pointer_cast<sf::Text>(drawable.drawable_);
+                text_ptr->setFont(resources_registry_.get_font(font_name));
+                text_ptr->setString(sf::String(text));
+                text_ptr->setCharacterSize(size);
+
+                //TODO: Remove this latter
+                text_ptr->setPosition(1920 / 2, 1080 / 2);
+                return entity_id;
             };
             (*state_)["shiva"]["resource_registry"] = std::ref(resources_registry_);
         }
