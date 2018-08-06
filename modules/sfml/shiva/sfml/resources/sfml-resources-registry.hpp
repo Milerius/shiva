@@ -334,7 +334,7 @@ namespace shiva::sfml
                 });
 
             E.gather(A, B, C, D);
-            tf_.silent_dispatch();
+            tf_.wait_for_all();
             return true;
         }
 

@@ -18,4 +18,8 @@ if (SHIVA_USE_SFML_AS_RENDERER)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/game_scene.lua
             ${CMAKE_SOURCE_DIR}/bin/assets/scripts/scenes/lua/game_scene.lua
             COPYONLY)
+
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sprite_scene.lua
+            ${CMAKE_SOURCE_DIR}/bin/assets/scripts/scenes/lua/sprite_scene.lua
+            COPYONLY)
 endif()
