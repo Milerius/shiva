@@ -45,6 +45,9 @@ function on_after_load_resources(evt)
     local id = shiva.anim:create_game_object_with_animated_sprite(anim_status.playing,
         0.09, true, 1, 12, 7, 80, "game_scene/bheet_arrival")
     shiva.entity_registry:add_layer_1_component(id)
+
+    local other_id = shiva.entity_registry:create_text("Hello from game_scene", "game_scene/kenney_future", 24)
+    shiva.entity_registry:add_layer_1_component(other_id)
 end
 
 function enter()
