@@ -48,7 +48,7 @@ namespace shiva::helpers
          * in their names will be loaded. [libshiva-system-plugin.so] will be loaded [libother-things.so] will not be
          * loaded.
          */
-        explicit plugins_registry(shiva::fs::path &&plugins_directory, std::string library_pattern_matching) noexcept;
+        explicit plugins_registry(shiva::fs::path &&plugins_directory, const std::string library_pattern_matching) noexcept;
 
         //! Public member functions
 
