@@ -15,8 +15,10 @@ namespace shiva
         ~world() noexcept = default;
 
 #if defined(DEBUG)
-        world(fs::path plugin_path = fs::current_path() /= "Debug/systems") noexcept : plugins_registry_(
-            std::move(plugin_path))
+
+        world(fs::path plugin_path = fs::current_path() /= "Debug/systems",
+              const std::string library_pattern_matching = "shiva-system") noexcept :
+            plugins_registry_(std::move(plugin_path), std::move(library_pattern_matching))
         {
 #if defined(_WIN32)
             SetDllDirectoryA(plugin_path.string().c_str());
@@ -25,8 +27,9 @@ namespace shiva
         }
 
 #elif defined(RELEASE)
-        world(fs::path plugin_path = fs::current_path() /= "Release/systems") noexcept : plugins_registry_(
-                    std::move(plugin_path))
+        world(fs::path plugin_path = fs::current_path() /= "Release/systems",
+            const std::string library_pattern_matching = "shiva-system") noexcept :
+            plugins_registry_(std::move(plugin_path), std::move(library_pattern_matching))
                 {
 #if defined(_WIN32)
                         SetDllDirectoryA(plugin_path.string().c_str());
