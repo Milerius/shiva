@@ -14,6 +14,7 @@ namespace shiva::helpers
     namespace dll = boost::dll;
 
     /**
+     * \note check if the path passed in parameter is a shared library
      * \fn bool is_shared_library(const fs::path& p) noexcept
      * \param p the path to be tested
      * \return true if the path is a shared_library, false otherwise.
