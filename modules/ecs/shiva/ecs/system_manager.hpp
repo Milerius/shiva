@@ -34,6 +34,8 @@ namespace shiva::ecs
         using system_registry = std::array<system_array, size>;
         typedef system_ptr (pluginapi_create_t)(shiva::entt::dispatcher &, shiva::entt::entity_registry &,
                                                 const float &fixed_delta_time);
+        /*using pluginapi_create_t = system_ptr (*) (shiva::entt::dispatcher &, shiva::entt::entity_registry &,
+                                                   const float &fixed_delta_time);*/
         using plugins_registry_t = shiva::helpers::plugins_registry<pluginapi_create_t>;
 
         //! Public callbacks
@@ -91,13 +93,13 @@ namespace shiva::ecs
          * \throw Throw a std::logic_error if the system could not be obtained correctly or if it was never loaded.
          */
         template <typename TSystem>
-        inline const TSystem &get_system() const;
+        const TSystem &get_system() const;
 
         /**
          * \overload get_system
          */
         template <typename TSystem>
-        inline TSystem &get_system();
+        TSystem &get_system();
 
         /**
          * \note This function allow you to get multiple system through multiple templates parameters.
@@ -108,13 +110,13 @@ namespace shiva::ecs
          * \see get_system
          */
         template <typename ...Systems>
-        inline std::tuple<std::add_lvalue_reference_t<Systems>...> get_systems();
+        std::tuple<std::add_lvalue_reference_t<Systems>...> get_systems();
 
         /**
          * @overload get_systems
          */
         template <typename ...Systems>
-        inline std::tuple<std::add_lvalue_reference_t<std::add_const_t<Systems>>...> get_systems() const;
+        std::tuple<std::add_lvalue_reference_t<std::add_const_t<Systems>>...> get_systems() const;
 
         /**
          * \note This function allow you to verify if a system is already registered in the system_manager.
@@ -122,8 +124,8 @@ namespace shiva::ecs
          * \return true if the system has been loaded, false otherwise
          */
         template <typename TSystem>
-        inline bool has_system() const noexcept;
-        template <typename ... Systems>
+        bool has_system() const noexcept;
+
 
         /**
          * \note This function allow you to verify if a list of systems is already registered in the system_manager.
@@ -132,15 +134,17 @@ namespace shiva::ecs
          * \details This function recursively calls the has_system function
          * \see has_system
          */
-        inline bool has_systems() const noexcept;
-        template <typename TSystem>
+        template <typename ... Systems>
+        bool has_systems() const noexcept;
+
 
         /**
          * \note This function marks a system that will be destroyed at the next turn of the game loop.
          * \tparam TSystem Represents the system that needs to be marked
          * \return true if the system has been marked, false otherwise
          */
-        inline bool mark_system() noexcept;
+        template <typename TSystem>
+        bool mark_system() noexcept;
 
         /**
          * \note This function marks a list of systems, marked systems will be destroyed at the next turn of the game loop.
@@ -150,7 +154,7 @@ namespace shiva::ecs
          * \see mark_system
          */
         template <typename ... Systems>
-        inline bool mark_systems() noexcept;
+        bool mark_systems() noexcept;
 
         /**
          * \note This function enable a system
@@ -158,7 +162,7 @@ namespace shiva::ecs
          * \return true if the system has been enabled, false otherwise
          */
         template <typename TSystem>
-        inline bool enable_system() noexcept;
+        bool enable_system() noexcept;
 
         /**
          * \note This function enable a list of systems
@@ -168,7 +172,7 @@ namespace shiva::ecs
          * \see enable_system
          */
         template <typename ... Systems>
-        inline bool enable_systems() noexcept;
+        bool enable_systems() noexcept;
 
         /**
          * \note This function disable a system
@@ -177,7 +181,7 @@ namespace shiva::ecs
          * \attention If you deactivate a system, it will not be destroyed but simply ignore during the game loop
          */
         template <typename TSystem>
-        inline bool disable_system() noexcept;
+        bool disable_system() noexcept;
 
         /**
          * \note This function disable a list of systems
@@ -186,7 +190,7 @@ namespace shiva::ecs
          * \details This function recursively calls the disable_system function
          */
         template <typename ... Systems>
-        inline bool disable_systems() noexcept;
+        bool disable_systems() noexcept;
 
         /**
          * \note This function allow you to create a system with the given argument
@@ -196,7 +200,7 @@ namespace shiva::ecs
          * \return Returns a reference to the created system
          */
         template <typename TSystem, typename ... SystemArgs>
-        inline TSystem &create_system(SystemArgs &&...args) noexcept;
+        TSystem &create_system(SystemArgs &&...args) noexcept;
 
         /**
          * \tparam [Systems...] represents a list of systems to be loaded
@@ -205,7 +209,7 @@ namespace shiva::ecs
          * \see create_system
          */
         template <typename ...TSystems>
-        inline decltype(auto) load_systems();
+        decltype(auto) load_systems();
 
         /**
          * \return number of systems
@@ -244,10 +248,10 @@ namespace shiva::ecs
         inline base_system &add_system_(system_ptr &&system, system_type sys_type) noexcept;
 
         template <typename TSystem>
-        inline tl::expected<std::reference_wrapper<TSystem>, std::error_code> get_system_() noexcept;
+        tl::expected<std::reference_wrapper<TSystem>, std::error_code> get_system_() noexcept;
 
         template <typename TSystem>
-        inline tl::expected<std::reference_wrapper<const TSystem>, std::error_code> get_system_() const noexcept;
+        tl::expected<std::reference_wrapper<const TSystem>, std::error_code> get_system_() const noexcept;
 
         inline void sweep_systems_() noexcept;
 
@@ -544,7 +548,7 @@ namespace shiva::ecs
     }
 
     template <typename TSystem>
-    tl::expected<std::reference_wrapper<const TSystem>, std::error_code> system_manager::get_system_() const noexcept
+    tl::expected<std::reference_wrapper<const TSystem>, std::error_code> system_manager::   get_system_() const noexcept
     {
         static_assert(details::is_system_v<TSystem>,
                       "The system type given as template parameter doesn't seems to be valid");
