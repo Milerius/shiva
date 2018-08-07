@@ -219,20 +219,23 @@ namespace shiva::ecs
         inline size_t nb_systems(system_type sys_type) const noexcept;
 
         /**
-         * @note This function allow you to load the plugins of the plugins_registry and create systems.
-         * @return true if all the plugins has been successfully loaded, false otherwise
+         * \note This function allow you to load the plugins of the plugins_registry and create systems
+         * with the creator functions of each plugins.
+         * \return true if all the plugins has been successfully loaded, false otherwise
          */
         inline bool load_plugins() noexcept;
 
         /**
-         * @note This function allow you to get a system by his name, used for get a specific plugin for example.
-         * @return a pointer to the base system which match this name, nullptr otherwise.
+         * \note This function allow you to get a system by his name, used for get a specific plugin for example.
+         * \param system_name name of the system to get
+         * \param type system_type of the system to get
+         * \return a pointer to the base system which match this name, nullptr otherwise.
          */
         inline const base_system *get_system_by_name(std::string system_name,
                                                      shiva::ecs::system_type type) const noexcept;
 
         /**
-         * @overload get_system_by_name
+         * \overload get_system_by_name
          */
         inline base_system *get_system_by_name(std::string system_name, shiva::ecs::system_type type) noexcept;
 
