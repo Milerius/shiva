@@ -14,6 +14,7 @@ namespace shiva::helpers
     namespace dll = boost::dll;
 
     /**
+     * \note check if the path passed in parameter is a shared library
      * \fn bool is_shared_library(const fs::path& p) noexcept
      * \param p the path to be tested
      * \return true if the path is a shared_library, false otherwise.
@@ -41,7 +42,7 @@ namespace shiva::helpers
         //! Constructors
 
         /**
-         * \brief Basic constructor
+         * \note Basic constructor
          * \param plugins_directory represents the path to the directory containing the plugins
          * \param represents a basic pattern to respect for libraries to load
          * \example for example if the pattern is [shiva-system] then only libraries that have [shiva-system]
@@ -53,29 +54,26 @@ namespace shiva::helpers
         //! Public member functions
 
         /**
-         * \fn bool load_all_symbols() noexcept
          * \return true if all symbols have been correctly loaded, false otherwise
          * \note This function allows you to load symbols from the template to create the object.
          * \note The symbols are loaded recursively from the folder you specified in the object's constructor.
          * \warning If one of the symbols could not be correctly loaded the function does not stop and proceeds to load the next plugin.
          * \warning If when browsing folders a corrupted file is spotted the function will switch to loading the next plugin.
          */
-        bool load_all_symbols() noexcept;
+        inline bool load_all_symbols() noexcept;
 
         /**
-         * \fn size_t nb_plugins() const noexcept
          * \return numbers of loaded plugins
          */
-        size_t nb_plugins() const noexcept;
+        inline size_t nb_plugins() const noexcept;
 
         /**
-         * \fn template<typename Functor> void apply_on_each_symbols(Functor &&functor)
          * \tparam Functor Represents the functor to apply on each of the loaded symbols.
          * \note This function applies the functor as a parameter to each of the symbols
          *  that were previously loaded by the load_all_symbols function.
          */
         template <typename Functor>
-        void apply_on_each_symbols(Functor &&functor);
+        inline void apply_on_each_symbols(Functor &&functor);
 
     private:
         //! Private data members

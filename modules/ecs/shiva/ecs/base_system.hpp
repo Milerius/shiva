@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <shiva/ecs/using_alias_library.hpp>
+#include <shiva/entt/entt.hpp>
 #include <shiva/ecs/system_type.hpp>
 
 namespace shiva::ecs
@@ -29,10 +29,7 @@ namespace shiva::ecs
         virtual void update() noexcept = 0;
         virtual const std::string &get_name() const noexcept = 0;
         virtual system_type get_system_type_RTTI() const noexcept = 0;
-        virtual void on_set_user_data() noexcept
-        {
-
-        }
+        virtual void on_set_user_data() noexcept {}
 
         //! Public member functions
         void mark() noexcept
@@ -75,7 +72,7 @@ namespace shiva::ecs
             return is_plugin;
         }
 
-        void* get_user_data() noexcept
+        void *get_user_data() noexcept
         {
             return user_data_;
         }
