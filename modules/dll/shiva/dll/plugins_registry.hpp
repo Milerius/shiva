@@ -43,8 +43,12 @@ namespace shiva::helpers
         /**
          * \brief Basic constructor
          * \param plugins_directory represents the path to the directory containing the plugins
+         * \param represents a basic pattern to respect for libraries to load
+         * \example for example if the pattern is [shiva-system] then only libraries that have [shiva-system]
+         * in their names will be loaded. [libshiva-system-plugin.so] will be loaded [libother-things.so] will not be
+         * loaded.
          */
-        explicit plugins_registry(shiva::fs::path &&plugins_directory) noexcept;
+        explicit plugins_registry(shiva::fs::path &&plugins_directory, std::string library_pattern_matching) noexcept;
 
         //! Public member functions
 
@@ -77,6 +81,7 @@ namespace shiva::helpers
         //! Private data members
         symbols_container symbols{};
         shiva::fs::path plugins_directory_{};
+        const std::string plugins_library_pattern_matching_{};
         shiva::logging::logger log_{shiva::log::stdout_color_mt("plugins_registry")};
     };
 }
@@ -105,8 +110,10 @@ namespace shiva::helpers
 {
     //! Constructor
     template <typename CreatorSignature>
-    plugins_registry<CreatorSignature>::plugins_registry(shiva::fs::path &&plugins_directory) noexcept :
-        plugins_directory_{plugins_directory}
+    plugins_registry<CreatorSignature>::plugins_registry(shiva::fs::path &&plugins_directory,
+                                                         const std::string library_pattern_matching) noexcept :
+        plugins_directory_{plugins_directory},
+        plugins_library_pattern_matching_{std::move(library_pattern_matching)}
     {
         log_->info("plugins_registry directory: {}", plugins_directory.string());
         log_->info("plugins_registry successfully created.");
@@ -123,7 +130,7 @@ namespace shiva::helpers
         for (fs::recursive_directory_iterator it(plugins_directory_); it != endit; ++it) {
             if (!fs::is_regular_file(*it) ||
                 !is_shared_library((*it).path()) ||
-                (*it).path().filename().stem().string().find("shiva-system") == std::string::npos) {
+                (*it).path().filename().stem().string().find(plugins_library_pattern_matching_) == std::string::npos) {
                 continue;
             }
             try {
