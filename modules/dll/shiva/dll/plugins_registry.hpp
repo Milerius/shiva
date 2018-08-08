@@ -73,7 +73,7 @@ namespace shiva::helpers
          *  that were previously loaded by the load_all_symbols function.
          */
         template <typename Functor>
-        inline void apply_on_each_symbols(Functor &&functor);
+        void apply_on_each_symbols(Functor &&functor);
 
     private:
         //! Private data members

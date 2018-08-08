@@ -34,8 +34,6 @@ namespace shiva::ecs
         using system_registry = std::array<system_array, size>;
         typedef system_ptr (pluginapi_create_t)(shiva::entt::dispatcher &, shiva::entt::entity_registry &,
                                                 const float &fixed_delta_time);
-        /*using pluginapi_create_t = system_ptr (*) (shiva::entt::dispatcher &, shiva::entt::entity_registry &,
-                                                   const float &fixed_delta_time);*/
         using plugins_registry_t = shiva::helpers::plugins_registry<pluginapi_create_t>;
 
         //! Public callbacks
@@ -126,7 +124,6 @@ namespace shiva::ecs
         template <typename TSystem>
         bool has_system() const noexcept;
 
-
         /**
          * \note This function allow you to verify if a list of systems is already registered in the system_manager.
          * \tparam [Systems...] represents a list of system that needs to be verified
@@ -136,7 +133,6 @@ namespace shiva::ecs
          */
         template <typename ... Systems>
         bool has_systems() const noexcept;
-
 
         /**
          * \note This function marks a system that will be destroyed at the next turn of the game loop.
@@ -209,7 +205,7 @@ namespace shiva::ecs
          * \see create_system
          */
         template <typename ...TSystems>
-        decltype(auto) load_systems();
+        auto load_systems();
 
         /**
          * \return number of systems
@@ -465,7 +461,7 @@ namespace shiva::ecs
     }
 
     template <typename... TSystems>
-    decltype(auto) system_manager::load_systems()
+    auto system_manager::load_systems()
     {
         (create_system<TSystems>(), ...);
         return get_systems<TSystems ...>();
@@ -548,7 +544,7 @@ namespace shiva::ecs
     }
 
     template <typename TSystem>
-    tl::expected<std::reference_wrapper<const TSystem>, std::error_code> system_manager::   get_system_() const noexcept
+    tl::expected<std::reference_wrapper<const TSystem>, std::error_code> system_manager::get_system_() const noexcept
     {
         static_assert(details::is_system_v<TSystem>,
                       "The system type given as template parameter doesn't seems to be valid");
