@@ -27,9 +27,21 @@ namespace shiva::ecs
         using is_kind_system = std::is_same<TSystemType, T>;
     public:
         //! Constructors
-        template <typename ...Args>
-        explicit system(Args &&...args) noexcept;
 
+        /**
+         * \note this is the basic constructor
+         * \tparam TArgs the arguments that will be forwarded to the base_system constructor
+         */
+        template <typename ...TArgs>
+        explicit system(TArgs &&...args) noexcept;
+
+        /**
+         * \note this constructor is used for scripting.
+         * \param dispatcher represents a reference to the dispatcher, stored in base_system.
+         * \param entity_registry represents a reference to the entity registry, stored in base system.
+         * \param fixed_delta_time represents a reference to the fixed delta_time, stored in base_system.
+         * \param class_name the name of the scripted class, used for logging.
+         */
         system(shiva::entt::dispatcher &dispatcher,
                shiva::entt::entity_registry &entity_registry,
                const float &fixed_delta_time,
@@ -39,14 +51,28 @@ namespace shiva::ecs
         ~system() noexcept override;
 
         //! Public static functions
+
+        /**
+         * \note this function allows you to retrieve the type of a system at compile time.
+         * \return ​system_type of the derived system.
+         */
         static constexpr system_type get_system_type() noexcept;
 
         //! Pure virtual functions
         void update() noexcept override = 0;
 
         //! Public member functions overriden
+
+        /**
+         * \note this function allow you to get the name of the derived system
+         * \return name of the derived system.
+         */
         const std::string &get_name() const noexcept final;
 
+        /**
+         * \note this function allows you to retrieve the type of a system at runtime.
+         * \return ​system_type of the derived system
+         */
         system_type get_system_type_RTTI() const noexcept final;
 
     protected:
@@ -54,12 +80,44 @@ namespace shiva::ecs
         shiva::logging::logger log_;
     };
 
+    /**
+     * \typedef logic_update_system
+     * \note this typedef is a shortcut, and this is the one that should be used when you want to inherit as a logical system.
+     * \example
+     * \code
+     * class system_implementation : public logic_update_system<system_implementation>
+     * {
+     *
+     * };
+     * \endcode
+     */
     template <typename TSystemDerived>
     using logic_update_system = system<TSystemDerived, system_logic_update>;
 
+
+    /**
+     * \typedef pre_update_system
+     * \note this typedef is a shortcut, and this is the one that should be used when you want to inherit as a pre update system.
+     * \code
+     * class system_implementation : public pre_update_system<system_implementation>
+     * {
+     *
+     * };
+     * \endcode
+     */
     template <typename TSystemDerived>
     using pre_update_system = system<TSystemDerived, system_pre_update>;
 
+    /**
+     * \typedef post_update_system
+     * \note this typedef is a shortcut, and this is the one that should be used when you want to inherit as a post update system.
+     * \code
+     * class system_implementation : public post_update_system<system_implementation>
+     * {
+     *
+     * };
+     * \endcode
+     */
     template <typename TSystemDerived>
     using post_update_system = system<TSystemDerived, system_post_update>;
 }
@@ -68,10 +126,10 @@ namespace shiva::ecs
 {
     //! Constructors
     template <typename TSystemDerived, typename TSystemType>
-    template <typename... Args>
-    system<TSystemDerived, TSystemType>::system(Args &&... args) noexcept : base_system(std::forward<Args>(args)...),
-                                                                           log_{shiva::log::stdout_color_mt(
-                                                                               TSystemDerived::class_name())}
+    template <typename... TArgs>
+    system<TSystemDerived, TSystemType>::system(TArgs &&... args) noexcept : base_system(std::forward<TArgs>(args)...),
+                                                                             log_{shiva::log::stdout_color_mt(
+                                                                                 TSystemDerived::class_name())}
     {
         if (this->is_a_plugin())
             shiva::entt::init_library(entity_registry_, dispatcher_);
@@ -79,8 +137,8 @@ namespace shiva::ecs
 
     template <typename TSystemDerived, typename TSystemType>
     system<TSystemDerived, TSystemType>::system(shiva::entt::dispatcher &dispatcher,
-                                               shiva::entt::entity_registry &entity_registry,
-                                               const float &fixed_delta_time, std::string class_name) noexcept
+                                                shiva::entt::entity_registry &entity_registry,
+                                                const float &fixed_delta_time, std::string class_name) noexcept
         : base_system(dispatcher, entity_registry, fixed_delta_time),
           log_{shiva::log::stdout_color_mt(std::move(class_name))}
     {
