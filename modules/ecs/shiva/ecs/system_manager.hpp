@@ -101,7 +101,7 @@ namespace shiva::ecs
 
         /**
          * \note This function allow you to get multiple system through multiple templates parameters.
-         * \tparam [Systems...] represents a list of systems to get
+         * \tparam [TSystems...] represents a list of systems to get
          * \return Tuple of systems obtained.
          * \details This function recursively calls the get_system function
          * \throw can throw a std::logic_error through the member function get_system.
@@ -113,8 +113,8 @@ namespace shiva::ecs
         /**
          * @overload get_systems
          */
-        template <typename ...Systems>
-        std::tuple<std::add_lvalue_reference_t<std::add_const_t<Systems>>...> get_systems() const;
+        template <typename ...TSystems>
+        std::tuple<std::add_lvalue_reference_t<std::add_const_t<TSystems>>...> get_systems() const;
 
         /**
          * \note This function allow you to verify if a system is already registered in the system_manager.
@@ -126,12 +126,12 @@ namespace shiva::ecs
 
         /**
          * \note This function allow you to verify if a list of systems is already registered in the system_manager.
-         * \tparam [Systems...] represents a list of system that needs to be verified
+         * \tparam [TSystems...] represents a list of system that needs to be verified
          * \return true if the list of systems has been loaded, false otherwise
          * \details This function recursively calls the has_system function
          * \see has_system
          */
-        template <typename ... Systems>
+        template <typename ... TSystems>
         bool has_systems() const noexcept;
 
         /**
@@ -144,12 +144,12 @@ namespace shiva::ecs
 
         /**
          * \note This function marks a list of systems, marked systems will be destroyed at the next turn of the game loop.
-         * \tparam [Systems...] Represents a list of systems that needs to be marked
+         * \tparam [TSystems...] Represents a list of systems that needs to be marked
          * \return true if  the list of systems has been marked, false otherwise
          * \details This function recursively calls the mark_system function
          * \see mark_system
          */
-        template <typename ... Systems>
+        template <typename ... TSystems>
         bool mark_systems() noexcept;
 
         /**
@@ -162,12 +162,12 @@ namespace shiva::ecs
 
         /**
          * \note This function enable a list of systems
-         * \tparam [Systems...] Represents a list of systems that needs to be enabled
+         * \tparam [TSystems...] Represents a list of systems that needs to be enabled
          * \return true if the list of systems has been enabled, false otherwise
          * \details This function recursively calls the enable_system function
          * \see enable_system
          */
-        template <typename ... Systems>
+        template <typename ... TSystems>
         bool enable_systems() noexcept;
 
         /**
@@ -181,25 +181,25 @@ namespace shiva::ecs
 
         /**
          * \note This function disable a list of systems
-         * \tparam [Systems...]  Represents a list of systems that needs to be disabled
+         * \tparam [TSystems...]  Represents a list of systems that needs to be disabled
          * \return true if the list of systems has been disabled, false otherwise
          * \details This function recursively calls the disable_system function
          */
-        template <typename ... Systems>
+        template <typename ... TSystems>
         bool disable_systems() noexcept;
 
         /**
          * \note This function allow you to create a system with the given argument
          * \note This function is a factory
          * \tparam TSystem represents the type of system to create
-         * \tparam SystemArgs represents the arguments needed to construct the system to create
+         * \tparam TSystemArgs represents the arguments needed to construct the system to create
          * \return Returns a reference to the created system
          */
-        template <typename TSystem, typename ... SystemArgs>
-        TSystem &create_system(SystemArgs &&...args) noexcept;
+        template <typename TSystem, typename ... TSystemArgs>
+        TSystem &create_system(TSystemArgs &&...args) noexcept;
 
         /**
-         * \tparam [Systems...] represents a list of systems to be loaded
+         * \tparam [TSystems...] represents a list of systems to be loaded
          * \return Tuple of systems loaded
          * \warning This function calls get_systems and can therefore potentially throw.
          * \see create_system
@@ -360,16 +360,16 @@ namespace shiva::ecs
         return (*ret).get();
     }
 
-    template <typename... Systems>
-    std::tuple<std::add_lvalue_reference_t<Systems>...> system_manager::get_systems()
+    template <typename... TSystems>
+    std::tuple<std::add_lvalue_reference_t<TSystems>...> system_manager::get_systems()
     {
-        return {get_system<Systems>()...};
+        return {get_system<TSystems>()...};
     }
 
-    template <typename... Systems>
-    std::tuple<std::add_lvalue_reference_t<std::add_const_t<Systems>>...> system_manager::get_systems() const
+    template <typename... TSystems>
+    std::tuple<std::add_lvalue_reference_t<std::add_const_t<TSystems>>...> system_manager::get_systems() const
     {
-        return {get_system<Systems>()...};
+        return {get_system<TSystems>()...};
     }
 
     template <typename TSystem>
@@ -383,10 +383,10 @@ namespace shiva::ecs
         });
     }
 
-    template <typename... Systems>
+    template <typename... TSystems>
     bool system_manager::has_systems() const noexcept
     {
-        return (has_system<Systems>() && ...);
+        return (has_system<TSystems>() && ...);
     }
 
     template <typename TSystem>
@@ -403,10 +403,10 @@ namespace shiva::ecs
         return false;
     }
 
-    template <typename... Systems>
+    template <typename... TSystems>
     bool system_manager::mark_systems() noexcept
     {
-        return (mark_system<Systems>() && ...);
+        return (mark_system<TSystems>() && ...);
     }
 
     template <typename TSystem>
@@ -421,10 +421,10 @@ namespace shiva::ecs
         return false;
     }
 
-    template <typename... Systems>
+    template <typename... TSystems>
     bool system_manager::enable_systems() noexcept
     {
-        return (enable_system<Systems>() && ...);
+        return (enable_system<TSystems>() && ...);
     }
 
     template <typename TSystem>
@@ -439,14 +439,14 @@ namespace shiva::ecs
         return false;
     }
 
-    template <typename... Systems>
+    template <typename... TSystems>
     bool system_manager::disable_systems() noexcept
     {
-        return (disable_system<Systems>() && ...);
+        return (disable_system<TSystems>() && ...);
     }
 
-    template <typename TSystem, typename... SystemArgs>
-    TSystem &system_manager::create_system(SystemArgs &&... args) noexcept
+    template <typename TSystem, typename... TSystemArgs>
+    TSystem &system_manager::create_system(TSystemArgs &&... args) noexcept
     {
         static_assert(details::is_system_v<TSystem>,
                       "The system type given as template parameter doesn't seems to be valid");
@@ -456,7 +456,7 @@ namespace shiva::ecs
                                              this->timestep_.get_fixed_delta_time(),
                                              std::forward<decltype(args_)>(args_)...);
         };
-        system_ptr sys = creator(std::forward<SystemArgs>(args)...);
+        system_ptr sys = creator(std::forward<TSystemArgs>(args)...);
         return static_cast<TSystem &>(add_system_(std::move(sys), TSystem::get_system_type()));
     }
 
