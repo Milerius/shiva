@@ -13,6 +13,7 @@ namespace shiva::ecs
      * \class base_system
      * \note This class is an abstract class, it is documented but
      * is present only to make type-erasure of the class system which is templated.
+     * \note This class can be manipulated when using plugins to share data between them.
      */
     class base_system
     {
