@@ -10,7 +10,7 @@
 #include <shiva/ecs/components/all.hpp>
 #include <shiva/meta/list.hpp>
 
-namespace shiva::entt
+namespace shiva::entt::details
 {
     template <typename Component>
     static inline void

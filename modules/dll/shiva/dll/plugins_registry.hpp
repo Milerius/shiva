@@ -22,8 +22,8 @@ namespace shiva::helpers
     static inline bool is_shared_library(const fs::path &p) noexcept;
 
     /**
-     * \note This class will allow you to store plugin creation symbols through its template CreatorSignature parameter.
-     * \note Through this class you will be able to retrieve the number of plugins,
+     * \note This class allows you to store plugin creation symbols through its template CreatorSignature parameter.
+     * \note Through this class you are able to retrieve the number of plugins,
      * apply a functor on each of the symbols (as creates the plugin for example).
      * \class plugins_registry
      * \tparam CreatorSignature Represents the signature of the creator function of a shared library
@@ -58,7 +58,7 @@ namespace shiva::helpers
          * \note This function allows you to load symbols from the template to create the object.
          * \note The symbols are loaded recursively from the folder you specified in the object's constructor.
          * \warning If one of the symbols could not be correctly loaded the function does not stop and proceeds to load the next plugin.
-         * \warning If when browsing folders a corrupted file is spotted the function will switch to loading the next plugin.
+         * \warning If when browsing folders a corrupted file is spotted the function switch to loading the next plugin.
          */
         inline bool load_all_symbols() noexcept;
 
