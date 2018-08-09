@@ -11,12 +11,8 @@ namespace shiva::event
 {
     struct add_base_system
     {
-        add_base_system(std::unique_ptr<shiva::ecs::base_system> system_ptr_) noexcept :
+        add_base_system(std::unique_ptr<shiva::ecs::base_system> system_ptr_ = nullptr) noexcept :
             system_ptr(std::move(system_ptr_))
-        {
-        }
-
-        add_base_system() noexcept : system_ptr{nullptr}
         {
         }
 

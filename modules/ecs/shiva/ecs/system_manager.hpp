@@ -21,8 +21,8 @@
 namespace shiva::ecs
 {
     /**
-     * \note This class will manage the systems of the entity component system.
-     * \note You will be able to add, remove, retrieve , update or delete systems through it.
+     * \note This class manage the systems of the entity component system.
+     * \note You are able to add, remove, retrieve , update or delete systems through it.
      * \class system_manager
      */
     class system_manager
@@ -63,8 +63,8 @@ namespace shiva::ecs
 
         /**
          * \note Basic constructor
-         * \param dispatcher The dispatcher will be provided to the system when it is created.
-         * \param registry The entity_registry will be provided to the system when it is created.
+         * \param dispatcher The dispatcher is provided to the system when it is created.
+         * \param registry The entity_registry is provided to the system when it is created.
          * \param plugins_registry registry of the plugged systems
          * \see plugins_registry
          */
@@ -76,11 +76,11 @@ namespace shiva::ecs
 
         /**
          * \return number of systems successfully updated
-         * \note This is the function that will update your systems.
+         * \note This is the function that update your systems.
          * \note Based on the logic of the different kinds of shiva systems,
-         * this function will take care of updating your systems in the right order.
-         * \warning If you have not loaded any system into the system_manager the function will return 0.
-         * \warning If you decide to mark a system, it will be automatically deleted at the next loop turn through this function.
+         * this function take care of updating your systems in the right order.
+         * \warning If you have not loaded any system into the system_manager the function return 0.
+         * \warning If you decide to mark a system, it's automatically deleted at the next loop tick through this function.
          */
         inline size_t update() noexcept;
 
@@ -135,7 +135,7 @@ namespace shiva::ecs
         bool has_systems() const noexcept;
 
         /**
-         * \note This function marks a system that will be destroyed at the next turn of the game loop.
+         * \note This function marks a system that will be destroyed at the next tick of the game loop.
          * \tparam TSystem Represents the system that needs to be marked
          * \return true if the system has been marked, false otherwise
          */
@@ -143,7 +143,7 @@ namespace shiva::ecs
         bool mark_system() noexcept;
 
         /**
-         * \note This function marks a list of systems, marked systems will be destroyed at the next turn of the game loop.
+         * \note This function marks a list of systems, marked systems will be destroyed at the next tick of the game loop.
          * \tparam [TSystems...] Represents a list of systems that needs to be marked
          * \return true if  the list of systems has been marked, false otherwise
          * \details This function recursively calls the mark_system function

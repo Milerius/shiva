@@ -16,7 +16,7 @@ namespace shiva::ecs
      * \tparam TSystemDerived CRTP implementation of the system
      * \tparam TSystemType Strong type representing the system_type of the implemented system
      * \inherit base_system
-     * \note This class is the class you will have to inherit to create your systems
+     * \note This class is the class that you have to inherit to create your systems
      */
     template <typename TSystemDerived, typename TSystemType>
     class system : public base_system
@@ -30,7 +30,7 @@ namespace shiva::ecs
 
         /**
          * \note this is the basic constructor
-         * \tparam TArgs the arguments that will be forwarded to the base_system constructor
+         * \tparam TArgs the arguments that are forwarded to the base_system constructor
          */
         template <typename ...TArgs>
         explicit system(TArgs &&...args) noexcept;
@@ -132,7 +132,7 @@ namespace shiva::ecs
                                                                                  TSystemDerived::class_name())}
     {
         if (this->is_a_plugin())
-            shiva::entt::init_library(entity_registry_, dispatcher_);
+            shiva::entt::details::init_library(entity_registry_, dispatcher_);
     }
 
     template <typename TSystemDerived, typename TSystemType>
