@@ -13,6 +13,15 @@
 #include <shiva/entt/entt_config.hpp>
 #include <shiva/spdlog/spdlog.hpp>
 
+/**
+ * This module is a centralized error handler, which handle the fatal errors that can happen in shiva,
+ * and uses boost::stacktrace to store information about a fatal error or crash.
+ *
+ * \info The file of the last crash can be found here:std::filesystem::temp_directory_path() /= "backtrace.dump".
+ * \info It is also through this class that is initialized EnTT,
+ * because it is the first class that is created in the program at the creation of a shiva::world.
+ */
+
 namespace shiva::error
 {
     class general_handler
