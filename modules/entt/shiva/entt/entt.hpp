@@ -10,6 +10,13 @@
 #include <shiva/reflection/reflection.hpp>
 #include <shiva/meta/list.hpp>
 
+/**
+ * This module simply makes a namespace alias to use EnTT.
+ * This module is represented by a cmake interface library that facilitates its handling through other modules.
+ * This module contains also helpers for using EnTT across dll boundaries.
+ * But also small changes to avoid situations of ambiguous code related to scripting
+ */
+
 // Using alias with good case
 namespace shiva::entt
 {
