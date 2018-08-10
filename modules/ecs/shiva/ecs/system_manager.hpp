@@ -101,14 +101,14 @@ namespace shiva::ecs
 
         /**
          * \note This function allow you to get multiple system through multiple templates parameters.
-         * \tparam [TSystems...] represents a list of systems to get
+         * \tparam TSystems represents a list of systems to get
          * \return Tuple of systems obtained.
          * \details This function recursively calls the get_system function
          * \throw can throw a std::logic_error through the member function get_system.
          * \see get_system
          */
-        template <typename ...Systems>
-        std::tuple<std::add_lvalue_reference_t<Systems>...> get_systems();
+        template <typename ...TSystems>
+        std::tuple<std::add_lvalue_reference_t<TSystems>...> get_systems();
 
         /**
          * @overload get_systems
@@ -126,7 +126,7 @@ namespace shiva::ecs
 
         /**
          * \note This function allow you to verify if a list of systems is already registered in the system_manager.
-         * \tparam [TSystems...] represents a list of system that needs to be verified
+         * \tparam TSystems represents a list of system that needs to be verified
          * \return true if the list of systems has been loaded, false otherwise
          * \details This function recursively calls the has_system function
          * \see has_system
@@ -144,7 +144,7 @@ namespace shiva::ecs
 
         /**
          * \note This function marks a list of systems, marked systems will be destroyed at the next tick of the game loop.
-         * \tparam [TSystems...] Represents a list of systems that needs to be marked
+         * \tparam TSystems Represents a list of systems that needs to be marked
          * \return true if  the list of systems has been marked, false otherwise
          * \details This function recursively calls the mark_system function
          * \see mark_system
@@ -162,7 +162,7 @@ namespace shiva::ecs
 
         /**
          * \note This function enable a list of systems
-         * \tparam [TSystems...] Represents a list of systems that needs to be enabled
+         * \tparam TSystems Represents a list of systems that needs to be enabled
          * \return true if the list of systems has been enabled, false otherwise
          * \details This function recursively calls the enable_system function
          * \see enable_system
@@ -181,7 +181,7 @@ namespace shiva::ecs
 
         /**
          * \note This function disable a list of systems
-         * \tparam [TSystems...]  Represents a list of systems that needs to be disabled
+         * \tparam TSystems  Represents a list of systems that needs to be disabled
          * \return true if the list of systems has been disabled, false otherwise
          * \details This function recursively calls the disable_system function
          */
@@ -199,7 +199,7 @@ namespace shiva::ecs
         TSystem &create_system(TSystemArgs &&...args) noexcept;
 
         /**
-         * \tparam [TSystems...] represents a list of systems to be loaded
+         * \tparam TSystems represents a list of systems to be loaded
          * \return Tuple of systems loaded
          * \warning This function calls get_systems and can therefore potentially throw.
          * \see create_system
