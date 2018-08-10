@@ -44,7 +44,7 @@ namespace shiva::helpers
         /**
          * \note Basic constructor
          * \param plugins_directory represents the path to the directory containing the plugins
-         * \param library_pattern_matching represents a basic pattern to respect for libraries to load
+         * \param represents a basic pattern to respect for libraries to load
          * \example for example if the pattern is [shiva-system] then only libraries that have [shiva-system]
          * in their names will be loaded. [libshiva-system-plugin.so] will be loaded [libother-things.so] will not be
          * loaded.

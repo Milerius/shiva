@@ -108,7 +108,7 @@ namespace shiva::ecs
          * \see get_system
          */
         template <typename ...TSystems>
-        std::tuple<std::add_lvalue_reference_t<TSystems>...> get_systems();
+        std::tuple<std::add_lvalue_reference_t<Systems>...> get_systems();
 
         /**
          * @overload get_systems
