@@ -5,7 +5,7 @@
 #include <gtest/gtest.h>
 #include <shiva/world/world.hpp>
 #include <shiva/lua/lua_system.hpp>
-#include <shiva/lua/lua_scripted_system.hpp>
+#include <shiva/lua/details/lua_scripted_system.hpp>
 #include <shiva/ecs/components/all.hpp>
 #include <systems/all_systems.hpp>
 
@@ -19,12 +19,8 @@ protected:
     void SetUp() override
     {
         system_ptr = std::addressof(system_manager_.create_system<shiva::scripting::lua_system>());
-        system_ptr->register_entity_registry();
-        system_ptr->register_components(shiva::ecs::common_components{});
         system_ptr->register_types_list(fixture_scripting::systems_list{});
-        system_ptr->register_world();
         ASSERT_TRUE(system_ptr->load_script("basic_tests.lua"));
-        system_ptr->update();
         dispatcher_.trigger<shiva::event::start_game>();
     }
 

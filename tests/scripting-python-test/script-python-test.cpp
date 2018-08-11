@@ -21,7 +21,7 @@ protected:
         system_ptr->register_entity_registry();
         system_ptr->register_components(shiva::ecs::common_components{});
         //system_ptr->register_types_list(fixture_scripting::systems_list{});
-        //system_ptr->register_world();
+        //system_ptr->register_world_();
         ASSERT_TRUE(system_ptr->load_script("basic_tests.py"));
         system_ptr->update();
         dispatcher_.trigger<shiva::event::start_game>();
