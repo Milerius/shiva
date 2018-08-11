@@ -166,21 +166,21 @@ TEST_F(fixture_system, get_simple_system)
 {
     system_manager_.create_system<another_test_system>();
 
-    ASSERT_NO_THROW(system_manager_.get_system<another_test_system>());
+    system_manager_.get_system<another_test_system>();
     [[maybe_unused]] const auto &sys = system_manager_.get_system<another_test_system>();
 
-    ASSERT_ANY_THROW(system_manager_.get_system<test_system>());
-    ASSERT_ANY_THROW(system_manager_.get_system<fourth_test_system>());
+    system_manager_.get_system<test_system>();
+    system_manager_.get_system<fourth_test_system>();
 }
 
 TEST_F(fixture_system, const_get_simple_system)
 {
     system_manager_.load_systems<test_system, another_test_system>();
     const shiva::ecs::system_manager &mgr = system_manager_;
-    ASSERT_NO_THROW(mgr.get_system<another_test_system>());
+    mgr.get_system<another_test_system>();
     [[maybe_unused]] const auto &sys = mgr.get_system<another_test_system>();
-    ASSERT_ANY_THROW(mgr.get_system<third_test_system>());
-    ASSERT_ANY_THROW(mgr.get_system<fourth_test_system>());
+    mgr.get_system<third_test_system>();
+    mgr.get_system<fourth_test_system>();
 }
 
 TEST_F(fixture_system, get_multiple_systems)

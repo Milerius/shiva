@@ -88,33 +88,31 @@ namespace shiva::ecs
          * \note This function allow you to get a system through a template parameter.
          * \tparam TSystem represents the system to get.
          * \return A reference to the system obtained.
-         * \throw Throw a std::logic_error if the system could not be obtained correctly or if it was never loaded.
          */
         template <typename TSystem>
-        const TSystem &get_system() const;
+        const TSystem &get_system() const noexcept;
 
         /**
          * \overload get_system
          */
         template <typename TSystem>
-        TSystem &get_system();
+        TSystem &get_system() noexcept;
 
         /**
          * \note This function allow you to get multiple system through multiple templates parameters.
          * \tparam TSystems represents a list of systems to get
          * \return Tuple of systems obtained.
          * \details This function recursively calls the get_system function
-         * \throw can throw a std::logic_error through the member function get_system.
          * \see get_system
          */
         template <typename ...TSystems>
-        std::tuple<std::add_lvalue_reference_t<TSystems>...> get_systems();
+        std::tuple<std::add_lvalue_reference_t<TSystems>...> get_systems() noexcept;
 
         /**
          * @overload get_systems
          */
         template <typename ...TSystems>
-        std::tuple<std::add_lvalue_reference_t<std::add_const_t<TSystems>>...> get_systems() const;
+        std::tuple<std::add_lvalue_reference_t<std::add_const_t<TSystems>>...> get_systems() const noexcept;
 
         /**
          * \note This function allow you to verify if a system is already registered in the system_manager.
@@ -201,11 +199,10 @@ namespace shiva::ecs
         /**
          * \tparam TSystems represents a list of systems to be loaded
          * \return Tuple of systems loaded
-         * \warning This function calls get_systems and can therefore potentially throw.
          * \see create_system
          */
         template <typename ...TSystems>
-        auto load_systems();
+        auto load_systems() noexcept;
 
         /**
          * \return number of systems
@@ -343,7 +340,7 @@ namespace shiva::ecs
     }
 
     template <typename TSystem>
-    const TSystem &system_manager::get_system() const
+    const TSystem &system_manager::get_system() const noexcept
     {
         const auto ret = get_system_<TSystem>().or_else([this](const std::error_code &ec) {
             this->dispatcher_.trigger<shiva::event::fatal_error_occured>(ec);
@@ -352,7 +349,7 @@ namespace shiva::ecs
     }
 
     template <typename TSystem>
-    TSystem &system_manager::get_system()
+    TSystem &system_manager::get_system() noexcept
     {
         auto ret = get_system_<TSystem>().or_else([this](const std::error_code &ec) {
             this->dispatcher_.trigger<shiva::event::fatal_error_occured>(ec);
@@ -361,13 +358,13 @@ namespace shiva::ecs
     }
 
     template <typename... TSystems>
-    std::tuple<std::add_lvalue_reference_t<TSystems>...> system_manager::get_systems()
+    std::tuple<std::add_lvalue_reference_t<TSystems>...> system_manager::get_systems() noexcept
     {
         return {get_system<TSystems>()...};
     }
 
     template <typename... TSystems>
-    std::tuple<std::add_lvalue_reference_t<std::add_const_t<TSystems>>...> system_manager::get_systems() const
+    std::tuple<std::add_lvalue_reference_t<std::add_const_t<TSystems>>...> system_manager::get_systems() const noexcept
     {
         return {get_system<TSystems>()...};
     }
@@ -461,7 +458,7 @@ namespace shiva::ecs
     }
 
     template <typename... TSystems>
-    auto system_manager::load_systems()
+    auto system_manager::load_systems() noexcept
     {
         (create_system<TSystems>(), ...);
         return get_systems<TSystems ...>();

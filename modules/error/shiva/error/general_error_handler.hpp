@@ -37,20 +37,16 @@ namespace shiva::error
             std::terminate();
         }
 
-        [[noreturn]] void receive(const shiva::event::fatal_error_occured &evt)
+        void receive(const shiva::event::fatal_error_occured &evt)
         {
-            using namespace std::string_literals;
-            entity_registry_.each([this](const shiva::entt::entity_registry::entity_type entity) {
-                this->entity_registry_.destroy(entity);
-            });
-            dispatcher_.trigger<shiva::event::quit_game>(evt.ec_.value());
 #if !defined(__EMSCRIPTEN__)
             if (auto &&bs = shiva::bs::stacktrace()) {
                 log_->critical("backtrace:\n {}", shiva::bs::detail::to_string(&bs.as_vector()[0], bs.size()));
                 shiva::bs::safe_dump_to(backtrace_path_.string().c_str());
             }
 #endif
-            throw std::logic_error("fatal_error_occured: "s + evt.ec_.message());
+            log_->critical("fatal_error_occured: {}", evt.ec_.message());
+            dispatcher_.trigger<shiva::event::quit_game>(evt.ec_.value());
         }
 
         general_handler(entt::dispatcher &dispatcher, entt::entity_registry &entity_registry) noexcept :

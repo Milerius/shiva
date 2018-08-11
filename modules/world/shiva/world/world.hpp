@@ -40,7 +40,7 @@ namespace shiva
 
         int run() noexcept
         {
-            if (!system_manager_.nb_systems()) {
+            if (!system_manager_.nb_systems() || init_corrupted) {
                 return game_return_value_;
             }
             dispatcher_.trigger<shiva::event::start_game>();
@@ -55,6 +55,7 @@ namespace shiva
         void receive(const shiva::event::quit_game &evt) noexcept
         {
             is_running = false;
+            init_corrupted = true;
             game_return_value_ = evt.return_value_;
         }
 
@@ -66,6 +67,7 @@ namespace shiva
         shiva::error::general_handler error_handler{dispatcher_, entity_registry_};
         shiva::ecs::system_manager system_manager_{dispatcher_, entity_registry_, plugins_registry_};
         bool is_running{false};
+        bool init_corrupted{false};
         int game_return_value_{0};
     };
 }
