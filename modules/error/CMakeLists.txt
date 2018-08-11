@@ -1,5 +1,8 @@
 include(CMakeSources.cmake)
 set(MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 CREATE_MODULE(shiva::error "${MODULE_SOURCES}" ${MODULE_PATH})
+if (USE_PROJECT_IN_AN_IDE)
+    target_sources(error INTERFACE ${MODULE_PATH}/shiva/error/shiva_error_code.cpp)
+endif()
 target_link_libraries(error INTERFACE shiva::stacktrace shiva::filesystem shiva::entt)
 AUTO_TARGETS_MODULE_INSTALL(error)
