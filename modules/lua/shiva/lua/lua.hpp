@@ -3,3 +3,6 @@
 //
 
 #pragma once
+
+#include <shiva/lua/lua_system.hpp>
+#include <shiva/lua/lua_helpers.hpp>
