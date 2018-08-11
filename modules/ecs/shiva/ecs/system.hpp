@@ -42,10 +42,10 @@ namespace shiva::ecs
          * \param fixed_delta_time represents a reference to the fixed delta_time, stored in base_system.
          * \param class_name the name of the scripted class, used for logging.
          */
-        system(shiva::entt::dispatcher &dispatcher,
-               shiva::entt::entity_registry &entity_registry,
-               const float &fixed_delta_time,
-               std::string class_name) noexcept;
+        inline system(shiva::entt::dispatcher &dispatcher,
+                      shiva::entt::entity_registry &entity_registry,
+                      const float &fixed_delta_time,
+                      std::string class_name) noexcept;
 
         //! Destructors
         ~system() noexcept override;

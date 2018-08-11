@@ -12,7 +12,7 @@ find_package(shiva CONFIG REQUIRED)
 find_package(shiva-sfml CONFIG REQUIRED)
 
 ##! Sources
-file(GLOB_RECURSE <PROJECT_NAME>_SOURCES <project_name>/*.cpp)
+file(GLOB_RECURSE <PROJECT_NAME>_SOURCES <project_name>/*.cpp prerequisites/*.cpp)
 file(GLOB_RECURSE <PROJECT_NAME>_HEADERS <project_name>/*.hpp)
 
 ##! Executable

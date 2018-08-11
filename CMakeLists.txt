@@ -90,7 +90,7 @@ if (NOT DISABLE_INSTALL_SHIVA_CORE)
                 ${CMAKE_CURRENT_SOURCE_DIR}/modules
                 DESTINATION
                 ${CMAKE_INSTALL_INCLUDEDIR}/shiva
-                FILES_MATCHING PATTERN "*.h*" PATTERN "*.lua"
+                FILES_MATCHING PATTERN "*.h*" PATTERN "*.lua" PATTERN "*.cpp"
                 )
 
         install(DIRECTORY

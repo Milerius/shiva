@@ -19,9 +19,9 @@ namespace shiva::ecs
     {
     public:
         //! Constructors
-        explicit base_system(entt::dispatcher &dispatcher,
-                             entt::entity_registry &entity_registry,
-                             const float &fixed_delta_time, bool im_plugin = false) noexcept;
+        inline explicit base_system(entt::dispatcher &dispatcher,
+                                    entt::entity_registry &entity_registry,
+                                    const float &fixed_delta_time, bool im_plugin = false) noexcept;
 
         //! Destructor
         virtual ~base_system() noexcept = default;
@@ -32,7 +32,8 @@ namespace shiva::ecs
         virtual system_type get_system_type_RTTI() const noexcept = 0;
 
         //! virtual functions
-        virtual void on_set_user_data() noexcept {}
+        virtual void on_set_user_data() noexcept
+        {}
 
         //! Public member functions
 
