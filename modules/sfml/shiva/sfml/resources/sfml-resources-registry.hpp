@@ -30,6 +30,7 @@ namespace shiva::sfml
     class resources_registry
     {
     public:
+        //! Public enum
         enum class work_type
         {
             loading,
@@ -37,12 +38,14 @@ namespace shiva::sfml
             inactive
         };
 
+        //! Public typedefs
         using textures_cache = ::entt::ResourceCache<sf::Texture>;
         using musics_cache = ::entt::ResourceCache<sf::Music>;
         using sounds_cache = ::entt::ResourceCache<sf::SoundBuffer>;
         using fonts_cache = ::entt::ResourceCache<sf::Font>;
 
     private:
+        //! Privata data members
         shiva::logging::logger log_{shiva::log::stdout_color_mt("resources_registry")};
         shiva::entt::dispatcher &dispatcher_;
         textures_cache textures_{};
@@ -271,7 +274,7 @@ namespace shiva::sfml
             nb_files_ = static_cast<unsigned int>(count_all_resources(additional_path));
             this->log_->info("nb_resources: {0}", nb_files_);
 
-            auto[A, B, C, D, E] = tf_.silent_emplace(
+            auto[texture_task, music_task, sound_task, font_task, epilogue_task] = tf_.silent_emplace(
                 [this, additional_path]() {
                     auto loader_functor = [this](auto &&...params) {
                         return this->load_texture(std::forward<decltype(params)>(params)...);
@@ -333,7 +336,7 @@ namespace shiva::sfml
                         this->dispatcher_.trigger<shiva::event::after_load_resources>();
                 });
 
-            E.gather(A, B, C, D);
+            epilogue_task.gather(texture_task, music_task, sound_task, font_task);
             tf_.wait_for_all();
             return true;
         }

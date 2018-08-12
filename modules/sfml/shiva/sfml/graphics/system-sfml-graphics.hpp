@@ -13,34 +13,30 @@ namespace shiva::plugins
     class render_system final : public shiva::ecs::post_update_system<render_system>
     {
     public:
-        ~render_system() noexcept override = default;
+        //! Destructor
+        ~render_system() noexcept final = default;
 
+        //! Constructor
         render_system(shiva::entt::dispatcher &dispatcher, shiva::entt::entity_registry &registry,
-                      const float &fixed_delta_time) noexcept :
-            system(dispatcher, registry, fixed_delta_time, true)
-        {
-            user_data_ = &win_;
-        }
+                      const float &fixed_delta_time) noexcept;
 
+        //! Public static functions
         static std::unique_ptr<shiva::ecs::base_system> system_creator(entt::dispatcher &dispatcher,
                                                                        entt::entity_registry &registry,
                                                                        const float &fixed_delta_time) noexcept;
+
+        //! Public member functions overriden
         void update() noexcept final;
 
-    public:
+        //! Reflection
         reflect_class(render_system)
 
-        static constexpr auto reflected_functions() noexcept
-        {
-            return meta::makeMap(reflect_function(&render_system::update));
-        }
+        static constexpr auto reflected_functions() noexcept;
 
-        static constexpr auto reflected_members() noexcept
-        {
-            return meta::makeMap();
-        }
+        static constexpr auto reflected_members() noexcept;
 
     private:
+        //! Private data members
         //TODO: Parse a config file
         sf::RenderWindow win_{sf::VideoMode(1920, 1080), "SFML window"};
     };
