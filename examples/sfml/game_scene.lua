@@ -17,9 +17,9 @@ end
 function on_key_pressed(evt)
     if (evt.keycode == Keyboard.Escape) then
         print("should quit_game")
-        shiva.dispatcher.trigger_quit_game_event(shiva.dispatcher, 1)
+        shiva.dispatcher:trigger_quit_game_event(1)
     elseif (evt.keycode == Keyboard.Right) then
-        shiva.dispatcher.trigger_change_scene_event(shiva.dispatcher, "sprite_scene")
+        shiva.dispatcher:trigger_change_scene_event("sprite_scene")
     end
 
 end
