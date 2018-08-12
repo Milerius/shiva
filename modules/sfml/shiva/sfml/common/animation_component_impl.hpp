@@ -15,17 +15,17 @@ namespace shiva::sfml
     {
         enum status
         {
-            stopped,
-            paused,
-            playing
+            stopped, //!< animation is stopped
+            paused, //!< animation is paused
+            playing //!< animation is playing.
         };
 
-        sf::Time delta;
-        sf::Time elapsed;
-        bool loop{false};   //! loop the animation
-        int repeat{0}; //! repeat the animation x times.
-        status current_status; //! status of the animation
-        size_t current_frame;
-        std::vector<sf::IntRect> frames;
+        sf::Time delta; //!< delta time
+        sf::Time elapsed; //!< time elasped since last frame
+        bool loop{false};   //!< loop the animation
+        int repeat{0}; //!< repeat the animation x times.
+        status current_status; //!< status of the animation
+        size_t current_frame; //!< current frame of the animation
+        std::vector<sf::IntRect> frames; //!< array of frames.
     };
 }

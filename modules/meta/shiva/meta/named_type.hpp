@@ -1,5 +1,6 @@
 //
-// Created by roman on 07/06/2018.
+// Created by roman on 07/06/2018. (file)
+// Author Jonathan Boccara
 //
 
 #pragma once

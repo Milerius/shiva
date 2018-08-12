@@ -31,10 +31,6 @@ namespace shiva::ecs
         virtual const std::string &get_name() const noexcept = 0;
         virtual system_type get_system_type_RTTI() const noexcept = 0;
 
-        //! virtual functions
-        virtual void on_set_user_data() noexcept
-        {}
-
         //! Public member functions
 
         /**
@@ -98,6 +94,9 @@ namespace shiva::ecs
         inline void set_user_data(void *data) noexcept;
 
     protected:
+        //! Protected virtual functions
+        virtual void on_set_user_data_() noexcept
+        {}
         //! Protected data members
         [[maybe_unused]] entt::dispatcher &dispatcher_;
         [[maybe_unused]] entt::entity_registry &entity_registry_;
@@ -173,6 +172,6 @@ namespace shiva::ecs
     void base_system::set_user_data(void *data) noexcept
     {
         user_data_ = data;
-        on_set_user_data();
+        on_set_user_data_();
     }
 }

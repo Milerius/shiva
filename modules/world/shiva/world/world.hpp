@@ -12,8 +12,10 @@ namespace shiva
     class world
     {
     public:
+        //! Destructor
         ~world() noexcept = default;
 
+        //! Constructors
 #if defined(DEBUG)
 
         world(fs::path plugin_path = fs::current_path() /= "Debug/systems",
@@ -38,6 +40,7 @@ namespace shiva
                 }
 #endif
 
+        //! Public member functions
         int run() noexcept
         {
             if (!system_manager_.nb_systems() || init_corrupted) {
@@ -59,13 +62,26 @@ namespace shiva
             game_return_value_ = evt.return_value_;
         }
 
-    protected:
+        //! Order declaration here is very important.
+        //! Sorry for the spamming of private/protected
+    private:
+        //! Private typedefs
         using plugins_registry_t = shiva::helpers::plugins_registry<shiva::ecs::system_manager::pluginapi_create_t>;
+
+        //! Private data members (prologue)
         plugins_registry_t plugins_registry_;
+    protected:
+        //! Protected data members (prologue)
         shiva::entt::dispatcher dispatcher_;
         shiva::entt::entity_registry entity_registry_;
+    private:
+        //! Private data members (part2)
         shiva::error::general_handler error_handler{dispatcher_, entity_registry_};
+    protected:
+        //! Protected data members (epilogue)
         shiva::ecs::system_manager system_manager_{dispatcher_, entity_registry_, plugins_registry_};
+    private:
+        //! Private data members (epilogue)
         bool is_running{false};
         bool init_corrupted{false};
         int game_return_value_{0};

@@ -11,41 +11,36 @@
 
 namespace shiva::plugins
 {
-    class input_system : public shiva::ecs::pre_update_system<input_system>
+    class input_system final : public shiva::ecs::pre_update_system<input_system>
     {
     public:
-        void on_set_user_data() noexcept final
-        {
-            win_ = static_cast<sf::RenderWindow *>(user_data_);
-        }
+        //! Destructor
+        ~input_system() noexcept final = default;
 
-        ~input_system() noexcept override = default;
-
+        //! Constructor
         input_system(shiva::entt::dispatcher &dispatcher, shiva::entt::entity_registry &registry,
-                     const float &fixed_delta_time) noexcept :
-            system(dispatcher, registry, fixed_delta_time, true)
-        {
-        }
+                     const float &fixed_delta_time) noexcept;
 
+        //! Public static functions
         static std::unique_ptr<shiva::ecs::base_system> system_creator(entt::dispatcher &dispatcher,
                                                                        entt::entity_registry &registry,
                                                                        const float &fixed_delta_time) noexcept;
+
+        //! Public member functions overriden
         void update() noexcept final;
 
-    public:
+        //! Reflection
         reflect_class(input_system)
 
-        static constexpr auto reflected_functions() noexcept
-        {
-            return meta::makeMap(reflect_function(&input_system::update));
-        }
+        static constexpr auto reflected_functions() noexcept;
 
-        static constexpr auto reflected_members() noexcept
-        {
-            return meta::makeMap();
-        }
+        static constexpr auto reflected_members() noexcept;
 
     private:
+        //! Private member functions overriden
+        void on_set_user_data_() noexcept final;
+
+        //! Private data members
         sf::RenderWindow *win_{nullptr};
     };
 }

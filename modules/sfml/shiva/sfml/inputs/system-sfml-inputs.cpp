@@ -8,6 +8,20 @@
 
 namespace shiva::plugins
 {
+    //! Constructor
+    input_system::input_system(shiva::entt::dispatcher &dispatcher, shiva::entt::entity_registry &registry,
+                               const float &fixed_delta_time) noexcept :
+        system(dispatcher, registry, fixed_delta_time, true)
+    {
+    }
+
+    //! Private member functions overriden
+    void input_system::on_set_user_data_() noexcept
+    {
+        win_ = static_cast<sf::RenderWindow *>(user_data_);
+    }
+
+    //! Public member functions overriden
     void input_system::update() noexcept
     {
         sf::Event evt{};
@@ -72,6 +86,7 @@ namespace shiva::plugins
         }
     }
 
+    //! Public static functions
     std::unique_ptr<shiva::ecs::base_system>
     input_system::system_creator(entt::dispatcher &dispatcher,
                                  entt::entity_registry &registry,
@@ -79,8 +94,19 @@ namespace shiva::plugins
     {
         return std::make_unique<shiva::plugins::input_system>(dispatcher, registry, fixed_delta_time);
     }
+
+    constexpr auto input_system::reflected_functions() noexcept
+    {
+        return meta::makeMap(reflect_function(&input_system::update));
+    }
+
+    constexpr auto input_system::reflected_members() noexcept
+    {
+        return meta::makeMap();
+    }
 }
 
+//! DLL Initialization
 BOOST_DLL_ALIAS(
     shiva::plugins::input_system::system_creator, // <-- this function is exported with...
     create_plugin                               // <-- ...this alias name

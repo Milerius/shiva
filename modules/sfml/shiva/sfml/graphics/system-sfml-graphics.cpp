@@ -7,7 +7,15 @@
 
 namespace shiva::plugins
 {
+    //! Constructor
+    render_system::render_system(shiva::entt::dispatcher &dispatcher, shiva::entt::entity_registry &registry,
+                                 const float &fixed_delta_time) noexcept :
+        system(dispatcher, registry, fixed_delta_time, true)
+    {
+        user_data_ = &win_;
+    }
 
+    //! Public static functions
     std::unique_ptr<shiva::ecs::base_system> render_system::system_creator(shiva::entt::dispatcher &dispatcher,
                                                                            shiva::entt::entity_registry &registry,
                                                                            const float &fixed_delta_time) noexcept
@@ -15,6 +23,7 @@ namespace shiva::plugins
         return std::make_unique<shiva::plugins::render_system>(dispatcher, registry, fixed_delta_time);
     }
 
+    //! Public member functions overriden
     void render_system::update() noexcept
     {
         auto draw = [this]([[maybe_unused]] auto entity, [[maybe_unused]] auto &&layer, auto &&drawable) {
@@ -31,6 +40,17 @@ namespace shiva::plugins
         entity_registry_.view<shiva::ecs::layer_7, shiva::ecs::drawable>().each(draw);
         entity_registry_.view<shiva::ecs::layer_8, shiva::ecs::drawable>().each(draw);
         win_.display();
+    }
+
+    //! Reflection
+    constexpr auto render_system::reflected_functions() noexcept
+    {
+        return meta::makeMap(reflect_function(&render_system::update));
+    }
+
+    constexpr auto render_system::reflected_members() noexcept
+    {
+        return meta::makeMap();
     }
 }
 
