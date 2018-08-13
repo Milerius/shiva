@@ -1,5 +1,5 @@
-**Documentation / Information / Installation / Building **
+**Documentation / Information / Installation / Building**
 
 https://shiva.gitbook.io/project/shiva/
 
-** Gallery **
+**Gallery**
