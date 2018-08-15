@@ -2,11 +2,9 @@
 
 https://shiva.gitbook.io/project/shiva/
 
+**Quick Start**
+https://shiva.gitbook.io/project/shiva/tutorial/how-to-create-a-project-through-the-cli-tools-and-build-it
+
 **Gallery**
 
-***rtype***
-
-Made with a old version of the engine
-
-[![rtype](http://img.youtube.com/vi/SnQ3Jh0vudg/maxresdefault.jpg
-)](https://www.youtube.com/watch?v=SnQ3Jh0vudg)
+https://shiva.gitbook.io/project/shiva/gallery
