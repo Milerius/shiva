@@ -71,6 +71,7 @@ namespace shiva::plugins
         return meta::makeMap();
     }
 
+    //! Private member functions
     void render_system::reload_json_configuration_() noexcept
     {
         std::string cfg_str = (shiva::fs::current_path() / "assets/cfg/sfml_config.json").string();
@@ -95,6 +96,7 @@ namespace shiva::plugins
                 win_.create(sf::VideoMode{cfg_.size[0], cfg_.size[1]}, cfg_.name,
                             (cfg_.fullscreen) ? sf::Style::Fullscreen : sf::Style::Default);
                 win_.setVerticalSyncEnabled(cfg_.vsync);
+                i.close();
             }
         }
     }

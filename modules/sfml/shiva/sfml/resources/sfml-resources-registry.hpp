@@ -43,6 +43,7 @@ namespace shiva::sfml
         using musics_cache = ::entt::ResourceCache<sf::Music>;
         using sounds_cache = ::entt::ResourceCache<sf::SoundBuffer>;
         using fonts_cache = ::entt::ResourceCache<sf::Font>;
+        using anim_cfg_cache = ::entt::ResourceCache<animation_config>;
 
     private:
         //! Privata data members
@@ -52,10 +53,12 @@ namespace shiva::sfml
         musics_cache musics_{};
         sounds_cache sounds_{};
         fonts_cache fonts_{};
+        anim_cfg_cache anim_cfgs_{};
         shiva::fs::path textures_path_;
         shiva::fs::path sounds_path_;
         shiva::fs::path musics_path_;
         shiva::fs::path fonts_path_;
+        shiva::fs::path anim_cfg_path_;
         std::atomic_uint32_t current_files_loaded_{0u};
         std::atomic_uint32_t nb_files_{0u};
         std::atomic_bool working_{false};
@@ -67,12 +70,15 @@ namespace shiva::sfml
                            shiva::fs::path textures_path = shiva::fs::current_path() /= "assets/textures",
                            shiva::fs::path sounds_path = shiva::fs::current_path() /= "assets/sounds",
                            shiva::fs::path musics_path = shiva::fs::current_path() /= "assets/musics",
-                           shiva::fs::path fonts_path = shiva::fs::current_path() /= "assets/fonts") noexcept :
+                           shiva::fs::path fonts_path = shiva::fs::current_path() /= "assets/fonts",
+                           shiva::fs::path anim_cfg_path = shiva::fs::current_path() /= "assets/cfg/anim_cfg") noexcept
+            :
             dispatcher_(dispatcher),
             textures_path_(std::move(textures_path)),
             sounds_path_(std::move(sounds_path)),
             musics_path_(std::move(musics_path)),
-            fonts_path_(std::move(fonts_path))
+            fonts_path_(std::move(fonts_path)),
+            anim_cfg_path_(std::move(anim_cfg_path))
         {
         }
 
@@ -122,6 +128,19 @@ namespace shiva::sfml
         bool unload_texture(Identifier id, const std::string &original_path) noexcept
         {
             return unload_resource<textures_cache>(textures_, id, original_path);
+        }
+
+        template <typename Identifier = const char *>
+        bool unload_anim_cfg(Identifier id, const std::string &original_path) noexcept
+        {
+            return unload_resource<anim_cfg_cache>(anim_cfgs_, id, original_path);
+        }
+
+        template <typename Identifier = const char *, typename ... Args>
+        bool load_anim_cfg(Identifier id, Args &&...args)
+        {
+            const auto identifier = anim_cfg_cache::resource_type{id};
+            return anim_cfgs_.load<loader<animation_config>>(identifier, std::forward<Args>(args)...);;
         }
 
         template <typename Identifier = const char *, typename ... Args>
@@ -235,6 +254,17 @@ namespace shiva::sfml
         }
 
         template <typename Functor>
+        bool work_on_anim_cfg(Functor &&functor, const shiva::fs::path &additional_path = "") noexcept
+        {
+
+            return work_on_resources(anim_cfg_path_,
+                                     "anim_cfgs",
+                                     "anim_cfg",
+                                     std::forward<Functor>(functor),
+                                     additional_path);
+        }
+
+        template <typename Functor>
         bool work_on_musics(Functor &&functor, const shiva::fs::path &additional_path = "") noexcept
         {
             return work_on_resources(musics_path_,
@@ -274,7 +304,7 @@ namespace shiva::sfml
             nb_files_ = static_cast<unsigned int>(count_all_resources(additional_path));
             this->log_->info("nb_resources: {0}", nb_files_);
 
-            auto[texture_task, music_task, sound_task, font_task, epilogue_task] = tf_.silent_emplace(
+            auto[texture_task, music_task, sound_task, font_task, anim_cfg_task, epilogue_task] = tf_.silent_emplace(
                 [this, additional_path]() {
                     auto loader_functor = [this](auto &&...params) {
                         return this->load_texture(std::forward<decltype(params)>(params)...);
@@ -325,6 +355,18 @@ namespace shiva::sfml
                            this->work_on_fonts(loader_functor, additional_path) :
                            this->work_on_fonts(unloader_functor, additional_path);
                 },
+                [this, additional_path]() {
+                    auto loader_functor = [this](auto &&...params) {
+                        return this->load_anim_cfg(std::forward<decltype(params)>(params)...);
+                    };
+
+                    auto unloader_functor = [this](auto &&...params) {
+                        return this->unload_anim_cfg(std::forward<decltype(params)>(params)...);
+                    };
+                    return (current_working_type_ == work_type::loading) ?
+                           this->work_on_anim_cfg(loader_functor, additional_path) :
+                           this->work_on_anim_cfg(unloader_functor, additional_path);
+                },
                 [this, type]() {
                     this->log_->info("all resources have been {0}",
                                      (type == work_type::loading) ? "loaded" : "unloaded");
@@ -336,7 +378,7 @@ namespace shiva::sfml
                         this->dispatcher_.trigger<shiva::event::after_load_resources>();
                 });
 
-            epilogue_task.gather(texture_task, music_task, sound_task, font_task);
+            epilogue_task.gather(texture_task, music_task, sound_task, font_task, anim_cfg_task);
             tf_.wait_for_all();
             return true;
         }
@@ -369,7 +411,8 @@ namespace shiva::sfml
             return nb_resources(textures_path_ / additional_path) +
                    nb_resources(sounds_path_ / additional_path) +
                    nb_resources(musics_path_ / additional_path) +
-                   nb_resources(fonts_path_ / additional_path);
+                   nb_resources(fonts_path_ / additional_path) +
+                   nb_resources(anim_cfg_path_ / additional_path);
         }
 
         template <typename ResourceType, typename ResourceCache>
@@ -416,6 +459,16 @@ namespace shiva::sfml
             return get_resource<sf::Font, fonts_cache>(fonts_, id);
         }
 
+        animation_config &get_anim_cfg(const char *id) noexcept
+        {
+            return get_resource<animation_config, anim_cfg_cache>(anim_cfgs_, id);
+        }
+
+        const animation_config &get_anim_cfg(const char *id) const noexcept
+        {
+            return get_resource<animation_config, anim_cfg_cache>(anim_cfgs_, id);
+        }
+
         reflect_class(resources_registry)
 
         static constexpr auto reflected_functions() noexcept
@@ -434,6 +487,10 @@ namespace shiva::sfml
                 sol::resolve<sf::Font &(const char *)>(&resources_registry::get_font),
                 "get_font_c",
                 sol::resolve<const sf::Font &(const char *) const>(&resources_registry::get_font),
+                "get_anim_cfg",
+                sol::resolve<animation_config &(const char *)>(&resources_registry::get_anim_cfg),
+                "get_anim_cfg_c",
+                sol::resolve<const animation_config &(const char *) const>(&resources_registry::get_anim_cfg),
                 "load_all_resources",
                 sol::resolve<bool(std::string)>(&resources_registry::load_all_resources),
                 reflect_function(&resources_registry::unload_all_resources)
