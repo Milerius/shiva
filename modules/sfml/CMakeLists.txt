@@ -13,10 +13,10 @@ if (SHIVA_USE_SFML_AS_RENDERER)
 
     include(shiva/sfml/common/CMakeSources.cmake)
     CREATE_MODULE(shiva::sfml-common "${MODULE_SOURCES}" ${MODULE_PATH})
-    target_link_libraries(sfml-common INTERFACE sfml-graphics)
+    target_link_libraries(sfml-common INTERFACE sfml-graphics shiva::json)
     AUTO_TARGETS_PLUGINS_INSTALL(sfml-common shiva-sfml)
 
-    mini_module(resources "sfml-graphics;sfml-audio;shiva::lua")
+    mini_module(resources "sfml-graphics;sfml-audio;shiva::lua;sfml-common")
     mini_module(animation "sfml-graphics;sfml-common;shiva::lua")
     mini_module(graphics "sfml-graphics;shiva::json")
     mini_module(inputs sfml-graphics)

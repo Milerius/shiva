@@ -4,6 +4,7 @@
 
 #include <boost/dll.hpp>
 #include <shiva/sfml/animation/system-sfml-animation.hpp>
+#include <shiva/sfml/common/animation_config.hpp>
 
 namespace shiva::plugins
 {
@@ -25,6 +26,21 @@ namespace shiva::plugins
                                        {"paused",  status_t::paused},
                                        {"stopped", status_t::stopped}
                                    });
+        (*state_)[animation_system::class_name()]["create_animated_game_object_from_json"] = [](animation_system &self,
+                                                                                                const char *json_id) {
+            self.log_->info("json_id is {}", json_id);
+            sol::table table = (*self.state_)["shiva"]["resource_registry"];
+            const shiva::sfml::animation_config &cfg = table["get_anim_cfg_c"](table, json_id);
+            auto entity_id = self.create_game_object_with_animated_sprite(cfg.status,
+                static_cast<double>(cfg.speed),
+                cfg.loop,
+                cfg.repeat,
+                cfg.columns,
+                cfg.lines,
+                cfg.nb_anims,
+                cfg.texture.c_str());
+            return entity_id;
+        };
         (*state_)["shiva"]["anim"] = std::ref(*this);
     }
 

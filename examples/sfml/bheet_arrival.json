@@ -1,0 +1,10 @@
+{
+  "status": "playing",
+  "speed": 0.09,
+  "loop": true,
+  "repeat": 1,
+  "nb_columns": 12,
+  "nb_lines": 7,
+  "nb_anims": 80,
+  "texture": "game_scene/bheet_arrival"
+}

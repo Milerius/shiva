@@ -26,4 +26,8 @@ if (SHIVA_USE_SFML_AS_RENDERER)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sfml_config.json
             ${CMAKE_SOURCE_DIR}/bin/assets/cfg/sfml_config.json
             COPYONLY)
+
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/bheet_arrival.json
+            ${CMAKE_SOURCE_DIR}/bin/assets/cfg/anim_cfg/game_scene/bheet_arrival.json
+            COPYONLY)
 endif()

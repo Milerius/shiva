@@ -8,17 +8,16 @@
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/System/Time.hpp>
+#include <shiva/enums/enums.hpp>
 
 namespace shiva::sfml
 {
     struct animation_component_impl
     {
-        enum status
-        {
-            stopped, //!< animation is stopped
-            paused, //!< animation is paused
-            playing //!< animation is playing.
-        };
+        ENUM(status,
+             stopped, //!< animation is stopped
+             paused,  //!< animation is paused
+             playing) //!< animation is playing
 
         sf::Time delta; //!< delta time
         sf::Time elapsed; //!< time elasped since last frame
