@@ -1,6 +1,6 @@
 **Introduction**
 
-shiva is an engine programmed in C++ 17 that aims to be very fast in runtime by using the maximum of features at the compilation while remaining extensible to the runtime.
+shiva is an engine programmed in C++ 17 that aims to be very fast in runtime by using the maximum of features at the compilation while remaining extensible at runtime.
 
 It is based on an architecture of modules that can be used separately or together.
 
