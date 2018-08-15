@@ -1,0 +1,9 @@
+{
+    "fullscreen": false,
+    "name": "sfml window",
+    "size": [
+        1920,
+        1080
+    ],
+    "vsync": false
+}

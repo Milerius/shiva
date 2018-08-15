@@ -8,6 +8,7 @@ set(MODULE_PUBLIC_SOURCES
 
 set(MODULE_PUBLIC_HEADERS
         "${MODULE_PATH}/system-sfml-graphics.hpp"
+        "${MODULE_PATH}/window_config.hpp"
         )
 
 set(MODULE_PRIVATE_HEADERS

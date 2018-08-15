@@ -2,17 +2,35 @@
 // Created by roman Sztergbaum on 15/06/2018.
 //
 
+#include <fstream>
 #include <boost/dll.hpp>
 #include <shiva/sfml/graphics/system-sfml-graphics.hpp>
+#include <shiva/filesystem/filesystem.hpp>
 
 namespace shiva::plugins
 {
+    //! Destructor
+    render_system::~render_system() noexcept
+    {
+        std::string cfg_str = (shiva::fs::current_path() / "assets/cfg/sfml_config.json").string();
+        std::ofstream o(cfg_str, std::ofstream::trunc);
+        if (o.is_open()) {
+            shiva::json::json j;
+            j = cfg_;
+            o << std::setw(4) << j << std::endl;
+            o.close();
+        }
+    }
+
     //! Constructor
     render_system::render_system(shiva::entt::dispatcher &dispatcher, shiva::entt::entity_registry &registry,
                                  const float &fixed_delta_time) noexcept :
         system(dispatcher, registry, fixed_delta_time, true)
     {
         user_data_ = &win_;
+
+        //! Json config
+        reload_json_configuration_();
     }
 
     //! Public static functions
@@ -51,6 +69,34 @@ namespace shiva::plugins
     constexpr auto render_system::reflected_members() noexcept
     {
         return meta::makeMap();
+    }
+
+    void render_system::reload_json_configuration_() noexcept
+    {
+        std::string cfg_str = (shiva::fs::current_path() / "assets/cfg/sfml_config.json").string();
+        shiva::json::json j;
+        if (!shiva::fs::exists(cfg_str)) {
+            std::error_code ec;
+            shiva::fs::create_directories(shiva::fs::current_path() / "assets/cfg", ec);
+            if (!ec) {
+                log_->warn("create_directory fail -> {}", ec.message());
+            }
+            std::ofstream o(cfg_str);
+            if (o.is_open()) {
+                j = cfg_;
+                o << std::setw(4) << j << std::endl;
+                o.close();
+            }
+        } else {
+            std::ifstream i(cfg_str);
+            if (i.is_open()) {
+                i >> j;
+                cfg_ = j;
+                win_.create(sf::VideoMode{cfg_.size[0], cfg_.size[1]}, cfg_.name,
+                            (cfg_.fullscreen) ? sf::Style::Fullscreen : sf::Style::Default);
+                win_.setVerticalSyncEnabled(cfg_.vsync);
+            }
+        }
     }
 }
 

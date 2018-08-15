@@ -7,6 +7,7 @@
 #include <SFML/Graphics.hpp>
 #include <shiva/entt/entt.hpp>
 #include <shiva/ecs/system.hpp>
+#include <shiva/sfml/graphics/window_config.hpp>
 
 namespace shiva::plugins
 {
@@ -14,7 +15,7 @@ namespace shiva::plugins
     {
     public:
         //! Destructor
-        ~render_system() noexcept final = default;
+        ~render_system() noexcept final;
 
         //! Constructor
         render_system(shiva::entt::dispatcher &dispatcher, shiva::entt::entity_registry &registry,
@@ -36,8 +37,12 @@ namespace shiva::plugins
         static constexpr auto reflected_members() noexcept;
 
     private:
+        //! Private member function
+        void reload_json_configuration_() noexcept;
+
         //! Private data members
-        //TODO: Parse a config file
-        sf::RenderWindow win_{sf::VideoMode(1920, 1080), "SFML window"};
+        shiva::sfml::window_config cfg_;
+        sf::RenderWindow win_{sf::VideoMode(cfg_.size[0], cfg_.size[1]), cfg_.name};
+
     };
 }

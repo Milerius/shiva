@@ -1,0 +1,9 @@
+{
+    "fullscreen": false,
+    "name": "<project_name>",
+    "size": [
+        1920,
+        1080
+    ],
+    "vsync": false
+}
