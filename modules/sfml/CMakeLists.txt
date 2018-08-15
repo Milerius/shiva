@@ -18,7 +18,7 @@ if (SHIVA_USE_SFML_AS_RENDERER)
 
     mini_module(resources "sfml-graphics;sfml-audio;shiva::lua")
     mini_module(animation "sfml-graphics;sfml-common;shiva::lua")
-    mini_module(graphics sfml-graphics)
+    mini_module(graphics "sfml-graphics;shiva::json")
     mini_module(inputs sfml-graphics)
     PREPARE_MODULE_INSTALLATION(shiva-sfml)
 endif ()

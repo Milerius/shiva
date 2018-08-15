@@ -37,3 +37,7 @@ set_target_properties(<project_name>
         PDB_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin"
         PDB_OUTPUT_DIRECTORY_RELEASE "${CMAKE_SOURCE_DIR}/bin"
         PDB_OUTPUT_DIRECTORY_DEBUG "${CMAKE_SOURCE_DIR}/bin")
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config/sfml_config.json
+        ${CMAKE_SOURCE_DIR}/bin/assets/cfg/sfml_config.json
+        COPYONLY)

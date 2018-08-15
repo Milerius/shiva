@@ -52,6 +52,7 @@ target_link_libraries(shiva INTERFACE
         shiva::event
         shiva::filesystem
         shiva::input
+        shiva::json
         shiva::lua
         shiva::meta
         shiva::pp
