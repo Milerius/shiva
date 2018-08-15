@@ -9,7 +9,7 @@ if (WIN32)
 endif ()
 
 ##! Project
-project(shiva VERSION 0.2)
+project(shiva VERSION 1.0)
 
 ##! Prerequisites CTEST
 enable_testing()
@@ -73,7 +73,7 @@ if (NOT DISABLE_INSTALL_SHIVA_CORE)
 
         write_basic_package_version_file(
                 "${PROJECT_BINARY_DIR}/shiva-version-config.cmake"
-                VERSION 0.2
+                VERSION 1.0
                 COMPATIBILITY AnyNewerVersion
         )
 
