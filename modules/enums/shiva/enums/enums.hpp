@@ -1,5 +1,6 @@
 //
-// Created by roman Sztergbaum on 15/06/2018.
+// Created by doom on 15/06/2018.
+// Maintained by doom and Milerius.
 //
 
 #pragma once
@@ -37,15 +38,15 @@
  * \endcode
  */
 
-#define __SIZEOF_TAB(tab)       (sizeof(tab) / sizeof((tab)[0]))
+#define SIZEOF_TAB(tab)       (sizeof(tab) / sizeof((tab)[0]))
 
-#define __DO_CASE_STR(value)                                                \
+#define DO_CASE_STR(value)                                                \
     case value:                                                             \
         return #value;                                                      \
 
-#define __STRINGIFY_ELEM(v)       pp_stringviewify(v),
+#define STRINGIFY_ELEM(v)       pp_stringviewify(v),
 
-# define __ENUM_MAKE(name, decl_kw, super_expr, ...)                        \
+# define ENUM_MAKE(name, decl_kw, super_expr, ...)                        \
     class name                                                              \
     {                                                                       \
     public:                                                                 \
@@ -95,11 +96,11 @@
         enum_##name _stringToValue(const std::string_view v)                \
         {                                                                   \
             static constexpr const std::string_view strTab[] = {            \
-                pp_for_each(__STRINGIFY_ELEM, __VA_ARGS__)                  \
+                pp_for_each(STRINGIFY_ELEM, __VA_ARGS__)                  \
             };                                                              \
             static constexpr const auto vals = values();                    \
                                                                             \
-            for (size_t i = 0; i < __SIZEOF_TAB(strTab); ++i) {             \
+            for (size_t i = 0; i < SIZEOF_TAB(strTab); ++i) {             \
                 if (strTab[i] == v) {                                       \
                     return vals[i];                                         \
                 }                                                           \
@@ -126,7 +127,7 @@
         [[maybe_unused]] std::string toString() const noexcept              \
         {                                                                   \
             switch (_value) {                                               \
-                pp_for_each(__DO_CASE_STR, __VA_ARGS__)                     \
+                pp_for_each(DO_CASE_STR, __VA_ARGS__)                     \
                 default:                                                    \
                     return "";                                              \
             }                                                               \
@@ -141,4 +142,4 @@
         EnumType _value;                                                    \
     };
 
-#define ENUM(name, ...) __ENUM_MAKE(name, enum, , __VA_ARGS__)
+#define ENUM(name, ...) ENUM_MAKE(name, enum, , __VA_ARGS__)

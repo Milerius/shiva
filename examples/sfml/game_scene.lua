@@ -15,6 +15,10 @@ function update()
 end
 
 function on_key_pressed(evt)
+    print("shift: " .. (evt.shift and 'true' or 'false'))
+    print("system: " .. (evt.system and 'true' or 'false'))
+    print("alt: " .. (evt.alt and 'true' or 'false'))
+    print("ctrl: " .. (evt.control and 'true' or 'false'))
     if (evt.keycode == Keyboard.Escape) then
         print("should quit_game")
         shiva.dispatcher:trigger_quit_game_event(1)

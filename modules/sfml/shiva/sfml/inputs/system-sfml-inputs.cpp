@@ -42,7 +42,8 @@ namespace shiva::plugins
                     break;
                 case sf::Event::KeyPressed:
                     dispatcher_.trigger<shiva::event::key_pressed>(
-                        static_cast<shiva::input::keyboard::TKey >(evt.key.code));
+                        static_cast<shiva::input::keyboard::TKey>(evt.key.code),
+                        evt.key.alt, evt.key.control, evt.key.shift, evt.key.system);
                     break;
                 case sf::Event::KeyReleased:
                     dispatcher_.trigger<shiva::event::key_released>(
