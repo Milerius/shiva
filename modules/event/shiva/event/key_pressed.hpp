@@ -13,9 +13,13 @@ namespace shiva::event
     {
         key_pressed() noexcept = default;
 
-        key_pressed(shiva::input::keyboard::TKey key) noexcept : keycode(key)
+        key_pressed(shiva::input::keyboard::TKey key,
+            bool alt_,
+            bool control_,
+            bool shift_,
+            bool system_) noexcept
+            : keycode(key), alt(alt_), control(control_), shift(shift_), system(system_)
         {
-
         }
 
         reflect_class(key_pressed)
@@ -27,9 +31,17 @@ namespace shiva::event
 
         static constexpr auto reflected_members() noexcept
         {
-            return meta::makeMap(reflect_member(&key_pressed::keycode));
+            return meta::makeMap(reflect_member(&key_pressed::keycode),
+                                 reflect_member(&key_pressed::alt),
+                                 reflect_member(&key_pressed::control),
+                                 reflect_member(&key_pressed::shift),
+                                 reflect_member(&key_pressed::system));
         }
 
         shiva::input::keyboard::TKey keycode{shiva::input::keyboard::Key::A};
+        bool alt{false};
+        bool control{false};
+        bool shift{false};
+        bool system{false};
     };
 }

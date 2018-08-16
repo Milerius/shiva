@@ -7,6 +7,8 @@ if (SHIVA_USE_SFML_AS_RENDERER AND SHIVA_USE_BOX2D)
             shiva::shiva-system-sfml-animation
             shiva::shiva-system-box2d)
     target_link_libraries(sfml-example shiva::shiva)
+    ## uncomment to get templated generated
+    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Xclang -ast-print -fsyntax-only")
     set_target_properties(sfml-example
             PROPERTIES
             ARCHIVE_OUTPUT_DIRECTORY  "${CMAKE_SOURCE_DIR}/bin"
