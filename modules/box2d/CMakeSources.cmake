@@ -8,6 +8,7 @@ set(MODULE_PUBLIC_SOURCES
 
 set(MODULE_PUBLIC_HEADERS
         "${MODULE_PATH}/system-box2d.hpp"
+        "${MODULE_PATH}/box2d_component.hpp"
         )
 
 set(MODULE_PRIVATE_HEADERS

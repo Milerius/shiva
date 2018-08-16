@@ -11,8 +11,10 @@ namespace shiva::plugins
     //! Constructor
     box2d_system::box2d_system(shiva::entt::dispatcher &dispatcher, shiva::entt::entity_registry &registry,
                                const float &fixed_delta_time) noexcept :
-        system(dispatcher, registry, fixed_delta_time, true)
+        system(dispatcher, registry, fixed_delta_time, true),
+        listener_(dispatcher)
     {
+        world_.SetContactListener(&listener_);
     }
 
     //! Public static functions

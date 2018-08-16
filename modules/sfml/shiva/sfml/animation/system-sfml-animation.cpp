@@ -5,6 +5,7 @@
 #include <boost/dll.hpp>
 #include <shiva/sfml/animation/system-sfml-animation.hpp>
 #include <shiva/sfml/common/animation_config.hpp>
+#include "system-sfml-animation.hpp"
 
 namespace shiva::plugins
 {
@@ -32,14 +33,31 @@ namespace shiva::plugins
             sol::table table = (*self.state_)["shiva"]["resource_registry"];
             const shiva::sfml::animation_config &cfg = table["get_anim_cfg_c"](table, json_id);
             auto entity_id = self.create_game_object_with_animated_sprite(cfg.status,
-                static_cast<double>(cfg.speed),
-                cfg.loop,
-                cfg.repeat,
-                cfg.columns,
-                cfg.lines,
-                cfg.nb_anims,
-                cfg.texture.c_str());
+                                                                          static_cast<double>(cfg.speed),
+                                                                          cfg.loop,
+                                                                          cfg.repeat,
+                                                                          cfg.columns,
+                                                                          cfg.lines,
+                                                                          cfg.nb_anims,
+                                                                          cfg.texture.c_str());
             return entity_id;
+        };
+
+        (*state_)[animation_system::class_name()]["add_animated_game_object_from_json"] = [](animation_system &self,
+                                                                                             const char *json_id,
+                                                                                             entt::entity_registry::entity_type entity) {
+            self.log_->info("json_id is {}", json_id);
+            sol::table table = (*self.state_)["shiva"]["resource_registry"];
+            const shiva::sfml::animation_config &cfg = table["get_anim_cfg_c"](table, json_id);
+            self.add_animated_sprite_(entity,
+                                      cfg.status,
+                                      static_cast<double>(cfg.speed),
+                                      cfg.loop,
+                                      cfg.repeat,
+                                      cfg.columns,
+                                      cfg.lines,
+                                      cfg.nb_anims,
+                                      cfg.texture.c_str());
         };
         (*state_)["shiva"]["anim"] = std::ref(*this);
     }
@@ -106,30 +124,7 @@ namespace shiva::plugins
                                                                                                  const char *texture_name) noexcept
     {
         auto entity_id = this->entity_registry_.create();
-
-        //! Drawable
-        auto &drawable_component = entity_registry_.assign<shiva::ecs::drawable>(entity_id,
-                                                                                 std::make_shared<sf::Sprite>());
-
-        sol::table
-        self = (*state_)["shiva"]["resource_registry"];
-        const sf::Texture &texture = self["get_texture_c"](self, texture_name);
-
-        std::static_pointer_cast<sf::Sprite>(drawable_component.drawable_)->setTexture(texture);
-
-        //! Animation
-        entity_registry_.assign<shiva::ecs::animation>(entity_id,
-                                                       std::make_shared<shiva::sfml::animation_component_impl>());
-        auto animation_ptr = get_animation_ptr_(entity_id);
-        sf::Time delta_time_sfml = sf::seconds(static_cast<float>(delta_time));
-        animation_ptr->current_status = status;
-        animation_ptr->delta = delta_time_sfml;
-        animation_ptr->loop = loop;
-        animation_ptr->repeat = repeat;
-        animation_ptr->elapsed = sf::Time::Zero;
-        animation_ptr->current_frame = 0;
-        add_one_shot_animation(entity_id, nb_columns, nb_lines, nb_anims);
-        set_frame(entity_id, 0);
+        add_animated_sprite_(entity_id, status, delta_time, loop, repeat, nb_columns, nb_lines, nb_anims, texture_name);
         return entity_id;
     }
 
@@ -239,6 +234,41 @@ namespace shiva::plugins
     constexpr auto animation_system::reflected_members() noexcept
     {
         return meta::makeMap();
+    }
+
+    void animation_system::add_animated_sprite_(entt::entity_registry::entity_type entity_id,
+                                                status_t status,
+                                                double delta_time,
+                                                bool loop,
+                                                int repeat,
+                                                unsigned int nb_columns,
+                                                unsigned int nb_lines,
+                                                unsigned int nb_anims,
+                                                const char *texture_name) noexcept
+    {
+        //! Drawable
+        auto &drawable_component = entity_registry_.assign<shiva::ecs::drawable>(entity_id,
+                                                                                 std::make_shared<sf::Sprite>());
+
+        sol::table
+        self = (*state_)["shiva"]["resource_registry"];
+        const sf::Texture &texture = self["get_texture_c"](self, texture_name);
+
+        std::static_pointer_cast<sf::Sprite>(drawable_component.drawable_)->setTexture(texture);
+
+        //! Animation
+        entity_registry_.assign<shiva::ecs::animation>(entity_id,
+                                                       std::make_shared<shiva::sfml::animation_component_impl>());
+        auto animation_ptr = get_animation_ptr_(entity_id);
+        sf::Time delta_time_sfml = sf::seconds(static_cast<float>(delta_time));
+        animation_ptr->current_status = status;
+        animation_ptr->delta = delta_time_sfml;
+        animation_ptr->loop = loop;
+        animation_ptr->repeat = repeat;
+        animation_ptr->elapsed = sf::Time::Zero;
+        animation_ptr->current_frame = 0;
+        add_one_shot_animation(entity_id, nb_columns, nb_lines, nb_anims);
+        set_frame(entity_id, 0);
     }
 }
 

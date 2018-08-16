@@ -8,6 +8,7 @@
 #include <shiva/ecs/components/layer.hpp>
 #include <shiva/ecs/components/drawable.hpp>
 #include <shiva/ecs/components/animation.hpp>
+#include <shiva/ecs/components/lua_script.hpp>
 
 namespace shiva::ecs
 {
@@ -20,5 +21,6 @@ namespace shiva::ecs
         layer_7,
         layer_8,
         drawable,
-        animation>;
+        animation,
+        lua_script>;
 }
