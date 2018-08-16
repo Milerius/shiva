@@ -21,7 +21,6 @@ function on_key_pressed(evt)
     elseif (evt.keycode == Keyboard.Right) then
         shiva.dispatcher:trigger_change_scene_event("sprite_scene")
     end
-
 end
 
 function on_key_released(evt)
@@ -36,17 +35,18 @@ function leave()
     print("leaving game scene, nb entities: " .. shiva.entity_registry:nb_entities())
 end
 
+function prepare_scripted_entities()
+    entities[#entities + 1] = shiva.entity_registry:create_scripted_game_object("player.lua", "player_table")
+end
+
 function on_after_load_resources(evt)
+    prepare_scripted_entities()
+
     --local id = shiva.anim:create_game_object_with_animated_sprite(anim_status.playing,
     --    0.12, true, 1, 1, 1, 9, "game_scene/mage_idle_dir_1")
 
-    local id = shiva.anim:create_animated_game_object_from_json("game_scene/bheet_arrival");
-
-   -- local id = shiva.anim:create_game_object_with_animated_sprite(anim_status.playing,
-   --     0.09, true, 1, 12, 7, 80, "game_scene/bheet_arrival")
-    shiva.entity_registry:add_layer_1_component(id)
-
-    entities[#entities + 1] = id
+    -- local id = shiva.anim:create_game_object_with_animated_sprite(anim_status.playing,
+    --     0.09, true, 1, 12, 7, 80, "game_scene/bheet_arrival")
 
     local other_id = shiva.entity_registry:create_text("Hello from game_scene", "game_scene/kenney_future", 24)
     shiva.entity_registry:add_layer_1_component(other_id)

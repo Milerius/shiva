@@ -61,6 +61,8 @@ namespace shiva::scripting
 
         inline bool load_script(const std::string &file_name) noexcept;
 
+        inline bool load_script_from_entities() noexcept;
+
         template <typename ...Types>
         void register_types_list(meta::type_list<Types...>) noexcept;
 
@@ -80,6 +82,20 @@ namespace shiva::scripting
         static inline constexpr auto reflected_members() noexcept;
 
     private:
+        template <typename ...Args>
+        void execute_safe_function_(const std::string &table_name, std::string function_name, Args &&...args)
+        {
+            try {
+                sol::optional<sol::function> f = (*state_)[table_name][std::move(function_name)];
+                if (f) {
+                    f.value()(std::forward<Args>(args)...);
+                }
+            }
+            catch (const std::exception &error) {
+                this->log_->error("lua error: {}", error.what());
+            }
+        }
+
         std::shared_ptr<sol::state> state_{std::make_shared<sol::state>()};
         shiva::fs::path script_directory_;
         shiva::fs::path systems_scripts_directory_;
@@ -185,6 +201,16 @@ namespace shiva::scripting
 
     void lua_system::register_world_() noexcept
     {
+        (*state_)[entity_registry_.class_name()]["create_scripted_game_object"] = [this](
+            shiva::entt::entity_registry &self, std::string script_name, std::string table_name) {
+            auto entity_id = self.create();
+            self.assign<shiva::ecs::lua_script>(entity_id, script_name, table_name);
+            bool res = this->load_script(script_name);
+            if (res) {
+                execute_safe_function_(table_name, "on_init", entity_id);
+            }
+            return entity_id;
+        };
         (*state_)["shiva"] = state_->create_table_with("entity_registry", std::ref(entity_registry_),
                                                        "dispatcher", std::ref(dispatcher_),
                                                        "fixed_delta_time", fixed_delta_time_);
@@ -209,12 +235,15 @@ namespace shiva::scripting
         (*state_)["load_script"] = [this](std::string filename, std::string path) {
             return this->load_script(std::move(filename), fs::path(std::move(path)));
         };
+
+        (*state_)["load_all_scripted_entities"] = [this]() {
+            return this->load_script_from_entities();
+        };
         register_entity_registry_();
         register_components_(shiva::ecs::common_components{});
         this->state_->new_usertype<shiva::entt::dispatcher>("dispatcher");
         register_events_(shiva::event::common_events_list{});
         register_world_();
-        disable();
     }
 
     //! Public member functions
@@ -244,6 +273,10 @@ namespace shiva::scripting
 
     void lua_system::update() noexcept
     {
+        this->entity_registry_.view<shiva::ecs::lua_script>().each([this](auto entity_id,
+                                                                          auto &&comp) {
+            execute_safe_function_(comp.table_name, "on_update", entity_id);
+        });
     }
 
     bool lua_system::create_scripted_system(const shiva::fs::path &script_name)
@@ -312,5 +345,18 @@ namespace shiva::scripting
     constexpr auto lua_system::reflected_members() noexcept
     {
         return meta::makeMap();
+    }
+
+    inline bool lua_system::load_script_from_entities() noexcept
+    {
+        bool res = true;
+        this->entity_registry_.view<shiva::ecs::lua_script>().each([this, &res]([[maybe_unused]] auto entity_id,
+                                                                                auto &&comp) {
+            res &= this->load_script(comp.script);
+            if (res) {
+                execute_safe_function_(comp.table_name, "on_init", entity_id);
+            }
+        });
+        return res;
     }
 }

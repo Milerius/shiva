@@ -35,4 +35,9 @@ if (SHIVA_USE_SFML_AS_RENDERER AND SHIVA_USE_BOX2D)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/bheet_arrival.json
             ${CMAKE_SOURCE_DIR}/bin/assets/cfg/anim_cfg/game_scene/bheet_arrival.json
             COPYONLY)
+
+
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/player.lua
+            ${CMAKE_SOURCE_DIR}/bin/assets/scripts/lua/player.lua
+            COPYONLY)
 endif()

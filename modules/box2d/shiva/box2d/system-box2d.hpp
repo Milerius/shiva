@@ -12,6 +12,27 @@ namespace shiva::plugins
     class box2d_system final : public shiva::ecs::logic_update_system<box2d_system>
     {
     public:
+        class ContactListener final : public b2ContactListener
+        {
+        public:
+            ContactListener(const shiva::entt::dispatcher &dispatcher) : dispatcher_(dispatcher)
+            {
+            }
+
+        private:
+            void BeginContact(b2Contact *contact) noexcept final
+            {
+                const auto first = contact->GetFixtureA()->GetBody()->GetUserData();
+                const auto second = contact->GetFixtureB()->GetBody()->GetUserData();
+                (void)dispatcher_;
+                (void)first;
+                (void)second;
+            }
+
+            const shiva::entt::dispatcher &dispatcher_;
+        };
+
+    public:
         //! Destructor
         ~box2d_system() noexcept final = default;
 
@@ -35,6 +56,7 @@ namespace shiva::plugins
 
         static constexpr auto reflected_members() noexcept;
     private:
+        ContactListener listener_;
         b2World world_{{0.f, 0.f}};
     };
 }
