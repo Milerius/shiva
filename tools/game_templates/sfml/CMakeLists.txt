@@ -10,6 +10,7 @@ include(library)
 ##! Shiva
 find_package(shiva CONFIG REQUIRED)
 find_package(shiva-sfml CONFIG REQUIRED)
+find_package(shiva-box2d CONFIG REQUIRED)
 
 ##! Sources
 file(GLOB_RECURSE <PROJECT_NAME>_SOURCES <project_name>/*.cpp prerequisites/*.cpp)

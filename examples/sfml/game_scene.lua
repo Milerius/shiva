@@ -42,8 +42,8 @@ function on_after_load_resources(evt)
 
     local id = shiva.anim:create_animated_game_object_from_json("game_scene/bheet_arrival");
 
-    --local id = shiva.anim:create_game_object_with_animated_sprite(anim_status.playing,
-    --    0.09, true, 1, 12, 7, 80, "game_scene/bheet_arrival")
+   -- local id = shiva.anim:create_game_object_with_animated_sprite(anim_status.playing,
+   --     0.09, true, 1, 12, 7, 80, "game_scene/bheet_arrival")
     shiva.entity_registry:add_layer_1_component(id)
 
     entities[#entities + 1] = id

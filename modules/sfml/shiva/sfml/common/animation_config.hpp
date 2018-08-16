@@ -25,14 +25,14 @@ namespace shiva::sfml
 
     inline void to_json(shiva::json::json &j, const animation_config &cfg)
     {
-        j = shiva::json::json{{"status",   cfg.status.toString()},
-                              {"speed",    cfg.speed},
-                              {"loop",     cfg.loop},
-                              {"repeat",   cfg.repeat},
-                              {"nb_columns",  cfg.columns},
-                              {"nb_lines",    cfg.lines},
-                              {"nb_anims", cfg.nb_anims},
-                              {"texture",  cfg.texture}};
+        j = shiva::json::json{{"status",     cfg.status.toString()},
+                              {"speed",      cfg.speed},
+                              {"loop",       cfg.loop},
+                              {"repeat",     cfg.repeat},
+                              {"nb_columns", cfg.columns},
+                              {"nb_lines",   cfg.lines},
+                              {"nb_anims",   cfg.nb_anims},
+                              {"texture",    cfg.texture}};
     }
 
     inline void from_json(const shiva::json::json &j, animation_config &cfg)
