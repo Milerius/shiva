@@ -1,14 +1,9 @@
 @PACKAGE_INIT@
 
 MESSAGE(STATUS ${CMAKE_CURRENT_LIST_DIR})
-find_package(shiva CONFIG REQUIRED)
-include("${CMAKE_CURRENT_LIST_DIR}/shiva-sfml-common-targets.cmake")
-include("${CMAKE_CURRENT_LIST_DIR}/shiva-shiva-system-sfml-resources-targets.cmake")
-include("${CMAKE_CURRENT_LIST_DIR}/shiva-shiva-system-sfml-graphics-targets.cmake")
-include("${CMAKE_CURRENT_LIST_DIR}/shiva-shiva-system-sfml-inputs-targets.cmake")
-include("${CMAKE_CURRENT_LIST_DIR}/shiva-shiva-system-sfml-animation-targets.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/shiva-shiva-system-box2d-targets.cmake")
 
-macro(import_plugins plugin_name)
+macro(import_plugins_box2d plugin_name)
     if(CMAKE_BUILD_TYPE MATCHES Debug)
         get_property(result TARGET ${plugin_name} PROPERTY IMPORTED_LOCATION_DEBUG)
     else()
@@ -28,15 +23,10 @@ endmacro()
 set(SAVE_OUTPUT_DIRECTORY "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE}/systems)
 
-import_plugins(shiva::shiva-system-sfml-resources)
+import_plugins_box2d(shiva::shiva-system-box2d)
 
 ##! restore output plugins
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${SAVE_OUTPUT_DIRECTORY}")
 
 ##! check components
-check_required_components("sfml-common")
-check_required_components("shiva-system-sfml-resources")
-check_required_components("shiva-system-sfml-graphics")
-check_required_components("shiva-system-sfml-input")
-check_required_components("shiva-system-sfml-animation")
-
+check_required_components("shiva-system-box2d")

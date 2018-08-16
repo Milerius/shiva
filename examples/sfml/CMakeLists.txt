@@ -1,6 +1,11 @@
-if (SHIVA_USE_SFML_AS_RENDERER)
+if (SHIVA_USE_SFML_AS_RENDERER AND SHIVA_USE_BOX2D)
     add_executable(sfml-example sfml-example.cpp sfml-example.hpp)
-    add_dependencies(sfml-example shiva::shiva-system-sfml-graphics shiva::shiva-system-sfml-inputs shiva::shiva-system-sfml-resources shiva::shiva-system-sfml-animation)
+    add_dependencies(sfml-example
+            shiva::shiva-system-sfml-graphics
+            shiva::shiva-system-sfml-inputs
+            shiva::shiva-system-sfml-resources
+            shiva::shiva-system-sfml-animation
+            shiva::shiva-system-box2d)
     target_link_libraries(sfml-example shiva::shiva)
     set_target_properties(sfml-example
             PROPERTIES
