@@ -21,11 +21,11 @@ namespace shiva::plugins
     {
         state_ = static_cast<sol::state *>(user_data_);
         shiva::lua::register_type<animation_system>(*state_, log_);
-        state_->new_enum<status_t>("anim_status",
+        state_->new_enum<status_t::EnumType>("anim_status",
                                    {
-                                       {"playing", status_t::playing},
-                                       {"paused",  status_t::paused},
-                                       {"stopped", status_t::stopped}
+                                       {"playing", static_cast<status_t::EnumType>(status_t::playing)},
+                                       {"paused",  static_cast<status_t::EnumType>(status_t::paused)},
+                                       {"stopped", static_cast<status_t::EnumType>(status_t::stopped)}
                                    });
         (*state_)[animation_system::class_name()]["create_animated_game_object_from_json"] = [](animation_system &self,
                                                                                                 const char *json_id) {
