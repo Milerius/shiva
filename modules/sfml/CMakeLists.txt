@@ -23,7 +23,7 @@ if (SHIVA_USE_SFML_AS_RENDERER)
 
     ##! Plugins
     mini_module(resources "sfml-graphics;sfml-audio;shiva::lua;sfml-common")
-    mini_module(animation "sfml-graphics;sfml-common;shiva::lua;sfml-imgui::sfml-imgui")
+    mini_module(animation "sfml-graphics;sfml-common;shiva::lua")
     mini_module(graphics "sfml-graphics;shiva::json;sfml-imgui::sfml-imgui;shiva::lua")
     mini_module(inputs "sfml-graphics;sfml-imgui::sfml-imgui")
     PREPARE_MODULE_INSTALLATION(shiva-sfml)
