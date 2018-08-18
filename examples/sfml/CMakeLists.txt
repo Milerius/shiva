@@ -1,11 +1,12 @@
-if (SHIVA_USE_SFML_AS_RENDERER AND SHIVA_USE_BOX2D)
+if (SHIVA_USE_SFML_AS_RENDERER AND SHIVA_USE_BOX2D AND SHIVA_USE_IMGUI)
     add_executable(sfml-example sfml-example.cpp sfml-example.hpp)
     add_dependencies(sfml-example
             shiva::shiva-system-sfml-graphics
             shiva::shiva-system-sfml-inputs
             shiva::shiva-system-sfml-resources
             shiva::shiva-system-sfml-animation
-            shiva::shiva-system-box2d)
+            shiva::shiva-system-box2d
+            shiva::shiva-system-imgui)
     target_link_libraries(sfml-example shiva::shiva)
     ## uncomment to get templated generated
     #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Xclang -ast-print -fsyntax-only")

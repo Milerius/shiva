@@ -29,13 +29,17 @@ namespace shiva::examples::sfml
                                                                            shiva::ecs::system_type::pre_update);
                 auto animation_system = system_manager_.get_system_by_name("animation_system",
                                                                            shiva::ecs::system_type::logic_update);
+                auto imgui_system = system_manager_.get_system_by_name("imgui_system",
+                                                                       shiva::ecs::system_type::post_update);
                 if (render_system != nullptr &&
                     animation_system != nullptr &&
                     resources_system != nullptr &&
-                    input_system != nullptr) {
+                    input_system != nullptr &&
+                    imgui_system != nullptr) {
                     resources_system->set_user_data(&lua_system.get_state());
                     animation_system->set_user_data(&lua_system.get_state());
                     input_system->set_user_data(render_system->get_user_data());
+                    imgui_system->set_user_data(&lua_system.get_state());
                     lua_system.load_all_scripted_systems();
                 }
             }
