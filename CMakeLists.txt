@@ -18,10 +18,12 @@ enable_testing()
 option(SHIVA_BUILD_TESTS "Build tests of shiva C++ engine" OFF)
 option(SHIVA_BUILD_EXAMPLES "Build examples of shiva C++ engine" OFF)
 option(SHIVA_USE_BOX2D "Build shiva with box2d plugin" OFF)
+option(SHIVA_USE_IMGUI "Build shiva with imgui plugin" OFF)
 option(SHIVA_USE_SFML_AS_RENDERER "Build shiva with SFML rendering" OFF)
 option(SHIVA_INSTALL_PLUGINS "Build shiva with SFML rendering" OFF)
 option(DISABLE_INSTALL_SHIVA_CORE "Disable install main targets" OFF)
 option(USE_PROJECT_IN_AN_IDE "Workaround for install header only library option, put it to ON if u use CLION" OFF)
+
 
 ##! CMake Path
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)

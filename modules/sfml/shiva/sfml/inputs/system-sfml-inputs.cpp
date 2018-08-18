@@ -3,6 +3,7 @@
 //
 
 #include <boost/dll.hpp>
+#include <sfml-imgui/imgui-SFML.hpp>
 #include <shiva/sfml/inputs/system-sfml-inputs.hpp>
 #include <shiva/event/quit_game.hpp>
 
@@ -28,6 +29,7 @@ namespace shiva::plugins
         if (win_ == nullptr)
             return;
         while (win_->pollEvent(evt)) {
+            ImGui::SFML::ProcessEvent(evt);
             switch (evt.type) {
                 case sf::Event::Closed:
                     dispatcher_.trigger<shiva::event::quit_game>(0);
@@ -85,6 +87,8 @@ namespace shiva::plugins
                     break;
             }
         }
+        sf::Time delta_time = sf::seconds(static_cast<float>(fixed_delta_time_));
+        ImGui::SFML::Update(*win_, delta_time);
     }
 
     //! Public static functions

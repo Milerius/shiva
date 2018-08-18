@@ -2,6 +2,7 @@
 // Created by roman Sztergbaum on 15/06/2018.
 //
 
+#include <imgui.h>
 #include <fstream>
 #include <boost/dll.hpp>
 #include <shiva/sfml/graphics/system-sfml-graphics.hpp>
@@ -20,6 +21,7 @@ namespace shiva::plugins
             o << std::setw(4) << j << std::endl;
             o.close();
         }
+        ImGui::SFML::Shutdown();
     }
 
     //! Constructor
@@ -48,6 +50,7 @@ namespace shiva::plugins
             this->win_.draw(*std::static_pointer_cast<sf::Drawable>(drawable.drawable_));
         };
 
+        //ImGui::ShowTestWindow();
         win_.clear();
         entity_registry_.view<shiva::ecs::layer_1, shiva::ecs::drawable>().each(draw);
         entity_registry_.view<shiva::ecs::layer_2, shiva::ecs::drawable>().each(draw);
@@ -57,6 +60,7 @@ namespace shiva::plugins
         entity_registry_.view<shiva::ecs::layer_6, shiva::ecs::drawable>().each(draw);
         entity_registry_.view<shiva::ecs::layer_7, shiva::ecs::drawable>().each(draw);
         entity_registry_.view<shiva::ecs::layer_8, shiva::ecs::drawable>().each(draw);
+        ImGui::SFML::Render(win_);
         win_.display();
     }
 
@@ -96,6 +100,10 @@ namespace shiva::plugins
                 win_.create(sf::VideoMode{cfg_.size[0], cfg_.size[1]}, cfg_.name,
                             (cfg_.fullscreen) ? sf::Style::Fullscreen : sf::Style::Default);
                 win_.setVerticalSyncEnabled(cfg_.vsync);
+                if (!cfg_.vsync) {
+                    win_.setFramerateLimit(60);
+                }
+                ImGui::SFML::Init(win_);
                 i.close();
             }
         }
