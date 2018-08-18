@@ -20,6 +20,7 @@ namespace shiva::examples::sfml
             if (!res) {
                 std::cerr << "error loading plugins" << std::endl;
             } else {
+                system_manager_.prioritize_system("imgui_system", "render_system", shiva::ecs::system_type::post_update);
                 auto &lua_system = system_manager_.create_system<shiva::scripting::lua_system>();
                 auto render_system = system_manager_.get_system_by_name("render_system",
                                                                         shiva::ecs::system_type::post_update);

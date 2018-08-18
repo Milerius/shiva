@@ -98,7 +98,7 @@ class fourth_test_system : public shiva::ecs::pre_update_system<fourth_test_syst
 {
 
 public:
-    reflect_class(four_test_system)
+    reflect_class(fourth_test_system)
 
     fourth_test_system(shiva::entt::dispatcher &dispatcher,
                        shiva::entt::entity_registry &registry,
@@ -351,4 +351,13 @@ TEST_F(fixture_system, logic_system)
         accumulator += system_manager_.update();
     }
     ASSERT_GE(accumulator, 0u);
+}
+
+TEST_F(fixture_system, prioritize_systems)
+{
+    system_manager_.load_systems<another_test_system, fourth_test_system>();
+    ASSERT_TRUE(system_manager_.prioritize_system(fourth_test_system::class_name(),
+        another_test_system::class_name(),
+        another_test_system::get_system_type()));
+
 }

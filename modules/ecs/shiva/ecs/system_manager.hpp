@@ -69,10 +69,12 @@ namespace shiva::ecs
          * \see plugins_registry
          */
         inline explicit system_manager(entt::dispatcher &dispatcher,
-                                entt::entity_registry &registry,
-                                plugins_registry_t &plugins_registry) noexcept;
+                                       entt::entity_registry &registry,
+                                       plugins_registry_t &plugins_registry) noexcept;
 
         //! Public member functions
+        inline bool prioritize_system(const std::string &system_to_swap, const std::string &system_b,
+                                      shiva::ecs::system_type sys_type) noexcept;
 
         /**
          * \return number of systems successfully updated
@@ -568,5 +570,27 @@ namespace shiva::ecs
                 return sys->is_marked();
             }), std::end(vec_system));
         });
+    }
+
+    bool system_manager::prioritize_system(const std::string &system_to_swap, const std::string &system_b,
+                                           shiva::ecs::system_type sys_type) noexcept
+    {
+        auto &&system_collection = systems_[sys_type];
+        auto it_system_to_swap = shiva::ranges::find_if(system_collection, [name = system_to_swap](auto &&sys) {
+            return sys->get_name() == name;
+        });
+        auto it_system_b = shiva::ranges::find_if(system_collection, [name = system_b](auto &&sys) {
+            return sys->get_name() == name;
+        });
+        if (it_system_to_swap != systems_[sys_type].end() && it_system_b != systems_[sys_type].end()) {
+            auto pos_system_to_swap = std::distance(systems_[sys_type].begin(), it_system_to_swap);
+            auto pos_system_b = std::distance(systems_[sys_type].begin(), it_system_b);
+            if (pos_system_to_swap > pos_system_b) {
+                this->log_->info("{} > {}: swapp position", system_to_swap, system_b);
+                std::iter_swap(it_system_to_swap, it_system_b);
+            }
+            return true;
+        }
+        return false;
     }
 }

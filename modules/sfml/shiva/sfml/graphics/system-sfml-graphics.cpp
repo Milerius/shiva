@@ -50,7 +50,6 @@ namespace shiva::plugins
             this->win_.draw(*std::static_pointer_cast<sf::Drawable>(drawable.drawable_));
         };
 
-        //ImGui::ShowTestWindow();
         win_.clear();
         entity_registry_.view<shiva::ecs::layer_1, shiva::ecs::drawable>().each(draw);
         entity_registry_.view<shiva::ecs::layer_2, shiva::ecs::drawable>().each(draw);
