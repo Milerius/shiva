@@ -20,5 +20,6 @@ endif ()
 CREATE_MODULE(shiva::pyscripting "${MODULE_SOURCES}" ${MODULE_PATH} "python")
 
 target_link_libraries(pyscripting INTERFACE shiva::ecs shiva::input pybind11::embed pybind11::module)
-
+target_compile_options(pyscripting INTERFACE $<$<AND:$<CONFIG:Release>,$<CXX_COMPILER_ID:MSVC>>:/bigobj>
+        INTERFACE $<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:MSVC>>:/bigobj>)
 AUTO_TARGETS_MODULE_INSTALL(pyscripting)
