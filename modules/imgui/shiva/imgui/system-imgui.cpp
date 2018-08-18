@@ -26,7 +26,7 @@ namespace shiva::plugins
 
     void imgui_system::update() noexcept
     {
-        ImGui::ShowTestWindow();
+      ImGui::ShowTestWindow();
     }
 
     constexpr auto imgui_system::reflected_functions() noexcept

@@ -96,7 +96,8 @@ namespace shiva::plugins
             if (i.is_open()) {
                 i >> j;
                 cfg_ = j;
-                win_.create(sf::VideoMode{cfg_.size[0], cfg_.size[1]}, cfg_.name,
+                win_.create((!cfg_.native_resolution) ? sf::VideoMode{cfg_.size[0], cfg_.size[1]}
+                                                      : sf::VideoMode{sf::VideoMode::getDesktopMode()}, cfg_.name,
                             (cfg_.fullscreen) ? sf::Style::Fullscreen : sf::Style::Default);
                 win_.setVerticalSyncEnabled(cfg_.vsync);
                 if (!cfg_.vsync) {
