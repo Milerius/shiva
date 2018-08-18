@@ -583,9 +583,7 @@ namespace shiva::ecs
             return sys->get_name() == name;
         });
         if (it_system_to_swap != systems_[sys_type].end() && it_system_b != systems_[sys_type].end()) {
-            auto pos_system_to_swap = std::distance(systems_[sys_type].begin(), it_system_to_swap);
-            auto pos_system_b = std::distance(systems_[sys_type].begin(), it_system_b);
-            if (pos_system_to_swap > pos_system_b) {
+            if (it_system_to_swap > it_system_b) {
                 this->log_->info("{} > {}: swapp position", system_to_swap, system_b);
                 std::iter_swap(it_system_to_swap, it_system_b);
             }
