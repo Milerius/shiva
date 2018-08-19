@@ -103,10 +103,10 @@ namespace shiva::plugins
                 if (!cfg_.vsync) {
                     win_.setFramerateLimit(60);
                 }
-                ImGui::SFML::Init(win_);
                 i.close();
             }
         }
+        ImGui::SFML::Init(win_);
     }
 }
 

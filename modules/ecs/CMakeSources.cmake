@@ -9,6 +9,7 @@ set(MODULE_PUBLIC_HEADERS
         "${MODULE_PATH}/base_system.hpp"
         "${MODULE_PATH}/opaque_data.hpp"
         "${MODULE_PATH}/components/all.hpp"
+        "${MODULE_PATH}/components/video.hpp"
         "${MODULE_PATH}/components/layer.hpp"
         "${MODULE_PATH}/components/lua_script.hpp"
         "${MODULE_PATH}/components/drawable.hpp"

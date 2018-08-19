@@ -72,5 +72,5 @@ return {
     leave = leave,
     enter = enter,
     update = update,
-    scene_active = true
+    scene_active = false
 }

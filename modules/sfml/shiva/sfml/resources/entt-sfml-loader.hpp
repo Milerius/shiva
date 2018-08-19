@@ -6,6 +6,7 @@
 
 #include <fstream>
 #include <SFML/Audio.hpp>
+#include <sfeMovie/Movie.hpp>
 #include <entt/resource/loader.hpp>
 #include <shiva/sfml/common/animation_config.hpp>
 
@@ -32,6 +33,20 @@ namespace shiva::sfml
         std::shared_ptr<sf::Music> load(Args &&...args) const
         {
             auto resource_ptr = std::make_shared<sf::Music>();
+            if (!resource_ptr->openFromFile(std::forward<Args>(args)...)) {
+                throw std::runtime_error("Impossible to load file");
+            }
+            return resource_ptr;
+        }
+    };
+
+    template <>
+    struct loader<sfe::Movie> final : ::entt::ResourceLoader<loader<sfe::Movie>, sfe::Movie>
+    {
+        template <typename ... Args>
+        std::shared_ptr<sfe::Movie> load(Args &&...args) const
+        {
+            auto resource_ptr = std::make_shared<sfe::Movie>();
             if (!resource_ptr->openFromFile(std::forward<Args>(args)...)) {
                 throw std::runtime_error("Impossible to load file");
             }
