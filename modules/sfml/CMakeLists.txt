@@ -28,11 +28,11 @@ if (SHIVA_USE_SFML_AS_RENDERER)
     mini_module(inputs "sfml-graphics;sfml-imgui::sfml-imgui")
 
     ##! SFEMOVIE
-    if (APPLE)
+    if (APPLE OR LINUX)
         find_library(SFEMOVIE_LIBRARY sfeMovie)
         MARK_AS_ADVANCED(SFEMOVIE_LIBRARY)
         message("sfeMovie library -> ${SFEMOVIE_LIBRARY}")
-        FIND_PATH(SFEMOVIE_INCLUDE_DIR Movie.hpp)
+        FIND_PATH(SFEMOVIE_INCLUDE_DIR sfeMovie/Movie.hpp)
         message("sfeMovie header -> ${SFEMOVIE_INCLUDE_DIR}")
         mini_module(video "sfml-graphics;shiva::lua")
         target_include_directories(shiva-system-sfml-video PUBLIC ${SFEMOVIE_INCLUDE_DIR})
