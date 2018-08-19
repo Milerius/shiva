@@ -40,6 +40,11 @@ namespace shiva::plugins
         //! Private member functions
         void on_set_user_data_() noexcept final;
 
+        void set_white_windows_theme() noexcept;
+
+        void set_monochrome_windows_theme() noexcept;
+
+        void set_darcula_windows_theme() noexcept;
         sol::state* state_{nullptr};
     };
 }

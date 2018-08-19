@@ -26,5 +26,22 @@ if (SHIVA_USE_SFML_AS_RENDERER)
     mini_module(animation "sfml-graphics;sfml-common;shiva::lua")
     mini_module(graphics "sfml-graphics;shiva::json;sfml-imgui::sfml-imgui;shiva::lua")
     mini_module(inputs "sfml-graphics;sfml-imgui::sfml-imgui")
+
+    ##! SFEMOVIE
+    if (APPLE)
+        find_library(SFEMOVIE_LIBRARY sfeMovie)
+        MARK_AS_ADVANCED(SFEMOVIE_LIBRARY)
+        message("sfeMovie library -> ${SFEMOVIE_LIBRARY}")
+        FIND_PATH(SFEMOVIE_INCLUDE_DIR Movie.hpp)
+        message("sfeMovie header -> ${SFEMOVIE_INCLUDE_DIR}")
+        mini_module(video "sfml-graphics;shiva::lua")
+        target_include_directories(shiva-system-sfml-video PUBLIC ${SFEMOVIE_INCLUDE_DIR})
+        target_link_libraries(shiva-system-sfml-video PUBLIC ${SFEMOVIE_LIBRARY})
+
+        target_include_directories(shiva-system-sfml-resources PUBLIC ${SFEMOVIE_INCLUDE_DIR})
+        target_link_libraries(shiva-system-sfml-resources PUBLIC ${SFEMOVIE_LIBRARY})
+    endif ()
+
+
     PREPARE_MODULE_INSTALLATION(shiva-sfml)
 endif ()

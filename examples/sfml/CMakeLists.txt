@@ -6,7 +6,8 @@ if (SHIVA_USE_SFML_AS_RENDERER AND SHIVA_USE_BOX2D AND SHIVA_USE_IMGUI)
             shiva::shiva-system-sfml-resources
             shiva::shiva-system-sfml-animation
             shiva::shiva-system-box2d
-            shiva::shiva-system-imgui)
+            shiva::shiva-system-imgui
+            shiva::shiva-system-sfml-video)
     target_link_libraries(sfml-example shiva::shiva)
     ## uncomment to get templated generated
     #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Xclang -ast-print -fsyntax-only")
@@ -42,5 +43,13 @@ if (SHIVA_USE_SFML_AS_RENDERER AND SHIVA_USE_BOX2D AND SHIVA_USE_IMGUI)
 
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/player.lua
             ${CMAKE_SOURCE_DIR}/bin/assets/scripts/lua/player.lua
+            COPYONLY)
+
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/intro_scene.lua
+            ${CMAKE_SOURCE_DIR}/bin/assets/scripts/scenes/lua/intro_scene.lua
+            COPYONLY)
+
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/intro.avi
+            ${CMAKE_SOURCE_DIR}/bin/assets/videos/intro_scene/intro.avi
             COPYONLY)
 endif()
