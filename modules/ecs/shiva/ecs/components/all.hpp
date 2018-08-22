@@ -10,6 +10,7 @@
 #include <shiva/ecs/components/animation.hpp>
 #include <shiva/ecs/components/lua_script.hpp>
 #include <shiva/ecs/components/video.hpp>
+#include <shiva/ecs/components/transform_2d.hpp>
 
 namespace shiva::ecs
 {
@@ -24,5 +25,6 @@ namespace shiva::ecs
         drawable,
         animation,
         lua_script,
-        video>;
+        video,
+        transform_2d>;
 }

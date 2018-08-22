@@ -131,8 +131,14 @@ namespace shiva::ecs
                                                                              log_{shiva::log::stdout_color_mt(
                                                                                  TSystemDerived::class_name())}
     {
-        if (this->is_a_plugin())
+        if (this->is_a_plugin()) {
+#if defined(DEBUG)
+            spdlog::set_level(spdlog::level::debug);
+#endif
+            spdlog::set_pattern("[%n][%r][pid: %P][%^%l%$]: %v");
+
             shiva::entt::details::init_library(entity_registry_, dispatcher_);
+        }
     }
 
     template <typename TSystemDerived, typename TSystemType>
@@ -148,7 +154,7 @@ namespace shiva::ecs
     template <typename TSystemDerived, typename TSystemType>
     system<TSystemDerived, TSystemType>::~system() noexcept
     {
-        log_->info("dropping {} logger", log_->name());
+        log_->debug("dropping {} logger", log_->name());
         spdlog::drop(log_->name());
     }
 

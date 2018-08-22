@@ -133,7 +133,7 @@ namespace shiva::helpers
                 continue;
             }
             try {
-                log_->info("path -> {}", it->path().string());
+                log_->debug("path -> {}", it->path().string());
                 symbols.emplace_back(
                     boost::dll::import_alias<CreatorSignature>(
                         boost::filesystem::path(it->path().string()),

@@ -6,5 +6,7 @@
   "nb_columns": 12,
   "nb_lines": 7,
   "nb_anims": 80,
-  "texture": "game_scene/bheet_arrival"
+  "texture": "game_scene/bheet_arrival",
+  "pos_x": 500.0,
+  "pos_y": 500.0
 }

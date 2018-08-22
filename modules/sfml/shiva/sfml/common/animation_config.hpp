@@ -21,6 +21,8 @@ namespace shiva::sfml
         unsigned int lines{0};
         unsigned int nb_anims{0};
         std::string texture{"none"};
+        float pos_x{0.0f};
+        float pos_y{0.0f};
     };
 
     inline void to_json(shiva::json::json &j, const animation_config &cfg)
@@ -32,7 +34,9 @@ namespace shiva::sfml
                               {"nb_columns", cfg.columns},
                               {"nb_lines",   cfg.lines},
                               {"nb_anims",   cfg.nb_anims},
-                              {"texture",    cfg.texture}};
+                              {"texture",    cfg.texture},
+                              {"pos_x",      cfg.pos_x},
+                              {"pos_y",      cfg.pos_y}};
     }
 
     inline void from_json(const shiva::json::json &j, animation_config &cfg)
@@ -45,5 +49,7 @@ namespace shiva::sfml
         cfg.lines = j.at("nb_lines").get<unsigned int>();
         cfg.nb_anims = j.at("nb_anims");
         cfg.texture = j.at("texture").get<std::string>();
+        cfg.pos_x = j.at("pos_x").get<float>();
+        cfg.pos_y = j.at("pos_y").get<float>();
     }
 }

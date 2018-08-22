@@ -3,6 +3,7 @@ set(MODULE_PATH
 
 set(MODULE_PUBLIC_HEADERS
         "${MODULE_PATH}/animation_component_impl.hpp"
+        "${MODULE_PATH}/drawable_component_impl.hpp"
         "${MODULE_PATH}/animation_config.hpp"
         )
 

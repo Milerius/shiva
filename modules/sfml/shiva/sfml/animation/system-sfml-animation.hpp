@@ -89,6 +89,9 @@ namespace shiva::plugins
         const std::shared_ptr<shiva::sfml::animation_component_impl>
         get_animation_ptr_(entt::entity_registry::entity_type entity) const noexcept;
 
+        const sf::Sprite& get_sprite_(entt::entity_registry::entity_type entity) const noexcept;
+        sf::Sprite& get_sprite_(entt::entity_registry::entity_type entity) noexcept;
+
         void add_animated_sprite_(entt::entity_registry::entity_type entity,
                                     status_t status,
                                   double delta_time,
@@ -97,7 +100,9 @@ namespace shiva::plugins
                                   unsigned int nb_columns,
                                   unsigned int nb_lines,
                                   unsigned int nb_anims,
-                                  const char *texture_name) noexcept;
+                                  const char *texture_name,
+                                  float pos_x = 0.0f,
+                                  float pos_y = 0.0f) noexcept;
 
         //! Private data members
         sol::state *state_{nullptr};
