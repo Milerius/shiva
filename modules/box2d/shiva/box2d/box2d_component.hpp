@@ -10,6 +10,13 @@ namespace shiva::box2d
 {
     struct box2d_component
     {
+        ~box2d_component() noexcept
+        {
+            if (body != nullptr) {
+                body->GetWorld()->DestroyBody(body);
+            }
+        }
+
         b2Body *body{nullptr};
     };
 }

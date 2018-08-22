@@ -47,7 +47,7 @@ namespace shiva::plugins
     //! Public member functions overriden
     void render_system::update() noexcept
     {
-        auto update_transform = [this]([[maybe_unused]] auto entity, auto &&transform, auto &&drawable) {
+        auto update_transform = []([[maybe_unused]] auto entity, auto &&transform, auto &&drawable) {
             auto transform_ptr = std::static_pointer_cast<shiva::sfml::drawable_component_impl>(
                 drawable.drawable_)->transformable;
             if (transform_ptr != nullptr) {

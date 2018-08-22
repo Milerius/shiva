@@ -25,7 +25,7 @@ namespace shiva::ecs
         float width{0.0f};
         float height{0.0f};
 
-        reflect_class(transform_2d);
+        reflect_class(transform_2d)
 
         static constexpr auto reflected_functions() noexcept
         {
