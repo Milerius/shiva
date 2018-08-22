@@ -44,7 +44,7 @@ namespace shiva::examples::sfml
                     shiva::ecs::opaque_data full_data;
                     full_data.data_1 = &lua_system.get_state();
                     full_data.data_2 = render_system->get_user_data();
-                    resources_system->set_user_data(&lua_system.get_state());
+                    resources_system->set_user_data(&full_data);
                     animation_system->set_user_data(&lua_system.get_state());
                     input_system->set_user_data(render_system->get_user_data());
                     imgui_system->set_user_data(&lua_system.get_state());

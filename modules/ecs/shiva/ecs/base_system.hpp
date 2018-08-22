@@ -98,10 +98,10 @@ namespace shiva::ecs
         virtual void on_set_user_data_() noexcept
         {}
         //! Protected data members
-        [[maybe_unused]] entt::dispatcher &dispatcher_;
-        [[maybe_unused]] entt::entity_registry &entity_registry_;
-        [[maybe_unused]] const float &fixed_delta_time_;
-        [[maybe_unused]] void *user_data_{nullptr};
+        entt::dispatcher &dispatcher_;
+        entt::entity_registry &entity_registry_;
+        const float &fixed_delta_time_;
+        void *user_data_{nullptr};
 
     private:
         //! Private data members

@@ -217,9 +217,9 @@ namespace shiva::sfml
             }
 
             if (!shiva::fs::exists(directory_path)) {
-                this->log_->error("trying to {0} resources from a non existent directory: {1}",
-                                  (current_working_type_ == work_type::loading) ? "load" : "unload",
-                                  directory_path.string());
+                this->log_->warn("trying to {0} resources from a non existent directory: {1}",
+                                 (current_working_type_ == work_type::loading) ? "load" : "unload",
+                                 directory_path.string());
                 return false;
             }
 
@@ -242,14 +242,14 @@ namespace shiva::sfml
                     }
                     current_files_loaded_++;
                     res &= loader_functor(id.c_str(), it->path().string());
-                    log_->info("{0} {1}: [ filename: {2}, id: {3}, path: {4} ]\nremaining file: {5} / {6}",
-                               (current_working_type_ == work_type::loading) ? "loaded" : "unloaded",
-                               resource_type_singular,
-                               filename,
-                               id,
-                               it->path().string(),
-                               current_files_loaded_,
-                               nb_files_);
+                    log_->debug("{0} {1}: [ filename: {2}, id: {3}, path: {4} ]\nremaining file: {5} / {6}",
+                                (current_working_type_ == work_type::loading) ? "loaded" : "unloaded",
+                                resource_type_singular,
+                                filename,
+                                id,
+                                it->path().string(),
+                                current_files_loaded_,
+                                nb_files_);
                     id = save;
                 }
                 catch (const shiva::fs::filesystem_error &error) {

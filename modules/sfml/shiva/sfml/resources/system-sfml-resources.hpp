@@ -45,5 +45,6 @@ namespace shiva::plugins
         sfml::resources_registry resources_registry_;
         float progress_{0.0f};
         sol::state *state_{nullptr};
+        sf::RenderWindow *win_{nullptr};
     };
 }

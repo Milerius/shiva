@@ -4,6 +4,7 @@
 
 #include <boost/dll.hpp>
 #include <shiva/ecs/opaque_data.hpp>
+#include <shiva/sfml/common/drawable_component_impl.hpp>
 #include "system-sfml-video.hpp"
 
 namespace shiva::plugins
@@ -27,10 +28,11 @@ namespace shiva::plugins
     void video_system::update() noexcept
     {
         entity_registry_.view<shiva::ecs::video, shiva::ecs::drawable>().each([this]([[maybe_unused]] auto entity,
-            auto&& video,
-            auto&& drawable)
-        {
-            auto video_ptr = std::static_pointer_cast<sfe::Movie>(drawable.drawable_);
+                                                                                     auto &&video,
+                                                                                     auto &&drawable) {
+
+            auto video_ptr = std::static_pointer_cast<sfe::Movie>(
+                std::static_pointer_cast<shiva::sfml::drawable_component_impl>(drawable.drawable_)->concrete);
             auto video_info_ptr = std::static_pointer_cast<shiva::sfml::video_component_impl>(video.video_);
 
             //! I'm playing the video
@@ -50,7 +52,7 @@ namespace shiva::plugins
 
     entt::entity_registry::entity_type
     video_system::create_game_object_with_video(video_system::status_t::EnumType status, const char *video_id,
-        sol::function func) noexcept
+                                                sol::function func) noexcept
     {
         auto entity_id = this->entity_registry_.create();
         add_video_(entity_id, status, video_id, func);
@@ -89,12 +91,16 @@ namespace shiva::plugins
                                   const char *video_id,
                                   sol::function func) noexcept
     {
-        sol::table self = (*state_)["shiva"]["resource_registry"];
+        sol::table
+            self = (*state_)["shiva"]["resource_registry"];
         const sfe::Movie &movie = self["get_video_c"](self, video_id);
         //! Drawable
-        auto &drawable_component = entity_registry_.assign<shiva::ecs::drawable>(entity,
-                                                                                 std::make_shared<sfe::Movie>(movie));
-        auto movie_ptr = std::static_pointer_cast<sfe::Movie>(drawable_component.drawable_);
+        auto movie_ptr = std::make_shared<sfe::Movie>(movie);
+        entity_registry_.assign<shiva::ecs::drawable>(entity,
+                                                      std::make_shared<shiva::sfml::drawable_component_impl>(
+                                                          movie_ptr,
+                                                          std::static_pointer_cast<sf::Drawable>(movie_ptr),
+                                                          std::static_pointer_cast<sf::Transformable>(movie_ptr)));
 
         auto &video_component = entity_registry_.assign<shiva::ecs::video>(entity,
                                                                            std::make_shared<shiva::sfml::video_component_impl>());

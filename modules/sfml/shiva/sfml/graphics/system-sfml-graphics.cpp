@@ -7,6 +7,7 @@
 #include <boost/dll.hpp>
 #include <shiva/sfml/graphics/system-sfml-graphics.hpp>
 #include <shiva/filesystem/filesystem.hpp>
+#include <shiva/sfml/common/drawable_component_impl.hpp>
 
 namespace shiva::plugins
 {
@@ -46,10 +47,21 @@ namespace shiva::plugins
     //! Public member functions overriden
     void render_system::update() noexcept
     {
-        auto draw = [this]([[maybe_unused]] auto entity, [[maybe_unused]] auto &&layer, auto &&drawable) {
-            this->win_.draw(*std::static_pointer_cast<sf::Drawable>(drawable.drawable_));
+        auto update_transform = [this]([[maybe_unused]] auto entity, auto &&transform, auto &&drawable) {
+            auto transform_ptr = std::static_pointer_cast<shiva::sfml::drawable_component_impl>(
+                drawable.drawable_)->transformable;
+            if (transform_ptr != nullptr) {
+                transform_ptr->setPosition(transform.top, transform.left);
+            }
         };
 
+        auto draw = [this]([[maybe_unused]] auto entity, [[maybe_unused]] auto &&layer, auto &&drawable) {
+            auto drawable_ptr = std::static_pointer_cast<shiva::sfml::drawable_component_impl>(drawable.drawable_);
+            if (drawable_ptr != nullptr && drawable_ptr->drawable != nullptr)
+                this->win_.draw(*drawable_ptr->drawable);
+        };
+
+        entity_registry_.view<shiva::ecs::transform_2d, shiva::ecs::drawable>().each(update_transform);
         win_.clear();
         entity_registry_.view<shiva::ecs::layer_1, shiva::ecs::drawable>().each(draw);
         entity_registry_.view<shiva::ecs::layer_2, shiva::ecs::drawable>().each(draw);
@@ -96,10 +108,21 @@ namespace shiva::plugins
             if (i.is_open()) {
                 i >> j;
                 cfg_ = j;
+
+                //! Reset window
                 win_.create((!cfg_.native_resolution) ? sf::VideoMode{cfg_.size[0], cfg_.size[1]}
                                                       : sf::VideoMode{sf::VideoMode::getDesktopMode()}, cfg_.name,
                             (cfg_.fullscreen) ? sf::Style::Fullscreen : sf::Style::Default);
+
+                //! VSync
                 win_.setVerticalSyncEnabled(cfg_.vsync);
+
+                //! Center Window
+                int x = (sf::VideoMode::getDesktopMode().width / 2) - (win_.getSize().x / 2);
+                int y = (sf::VideoMode::getDesktopMode().height / 2) - (win_.getSize().y / 2);
+                win_.setPosition(sf::Vector2i(x, y));
+
+                //! Frame Limit
                 if (!cfg_.vsync) {
                     win_.setFramerateLimit(60);
                 }

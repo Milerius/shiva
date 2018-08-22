@@ -5,6 +5,7 @@
 #include <boost/dll.hpp>
 #include <shiva/sfml/animation/system-sfml-animation.hpp>
 #include <shiva/sfml/common/animation_config.hpp>
+#include <shiva/sfml/common/drawable_component_impl.hpp>
 #include "system-sfml-animation.hpp"
 
 namespace shiva::plugins
@@ -22,15 +23,16 @@ namespace shiva::plugins
         state_ = static_cast<sol::state *>(user_data_);
         shiva::lua::register_type<animation_system>(*state_, log_);
         state_->new_enum<status_t::EnumType>("anim_status",
-                                   {
-                                       {"playing", static_cast<status_t::EnumType>(status_t::playing)},
-                                       {"paused",  static_cast<status_t::EnumType>(status_t::paused)},
-                                       {"stopped", static_cast<status_t::EnumType>(status_t::stopped)}
-                                   });
+                                             {
+                                                 {"playing", static_cast<status_t::EnumType>(status_t::playing)},
+                                                 {"paused",  static_cast<status_t::EnumType>(status_t::paused)},
+                                                 {"stopped", static_cast<status_t::EnumType>(status_t::stopped)}
+                                             });
         (*state_)[animation_system::class_name()]["create_animated_game_object_from_json"] = [](animation_system &self,
                                                                                                 const char *json_id) {
             self.log_->info("json_id is {}", json_id);
-            sol::table table = (*self.state_)["shiva"]["resource_registry"];
+            sol::table
+                table = (*self.state_)["shiva"]["resource_registry"];
             const shiva::sfml::animation_config &cfg = table["get_anim_cfg_c"](table, json_id);
             auto entity_id = self.create_game_object_with_animated_sprite(cfg.status,
                                                                           static_cast<double>(cfg.speed),
@@ -57,7 +59,9 @@ namespace shiva::plugins
                                       cfg.columns,
                                       cfg.lines,
                                       cfg.nb_anims,
-                                      cfg.texture.c_str());
+                                      cfg.texture.c_str(),
+                                      cfg.pos_x,
+                                      cfg.pos_y);
         };
         (*state_)["shiva"]["anim"] = std::ref(*this);
     }
@@ -139,8 +143,7 @@ namespace shiva::plugins
                                            unsigned int numberY, unsigned int line, unsigned int columns) noexcept
     {
 
-        const sf::Vector2u size = std::static_pointer_cast<sf::Sprite>(
-            entity_registry_.get<shiva::ecs::drawable>(entity).drawable_)->getTexture()->getSize();
+        const sf::Vector2u size = get_sprite_(entity).getTexture()->getSize();
         const float delta_x = (numberY == 1) ? (size.x / float(columns * numberX)) : (size.x / float(columns));
         const float delta_y = size.y / float(numberY);
 
@@ -154,8 +157,7 @@ namespace shiva::plugins
     void animation_system::add_frames_column(entt::entity_registry::entity_type entity, int numberX, int numberY,
                                              int column) noexcept
     {
-        const sf::Vector2u size = std::static_pointer_cast<sf::Sprite>(
-            entity_registry_.get<shiva::ecs::drawable>(entity).drawable_)->getTexture()->getSize();
+        const sf::Vector2u size = get_sprite_(entity).getTexture()->getSize();
         const float delta_x = size.x / float(numberX);
         const float delta_y = size.y / float(numberY);
 
@@ -218,8 +220,7 @@ namespace shiva::plugins
     {
         auto animation_ptr = get_animation_ptr_(entity);
         sf::IntRect rect = get_rect(entity, animation_ptr->current_frame);
-        std::static_pointer_cast<sf::Sprite>(
-            entity_registry_.get<shiva::ecs::drawable>(entity).drawable_)->setTextureRect(rect);
+        get_sprite_(entity).setTextureRect(rect);
         if (reset_time)
             animation_ptr->elapsed = sf::Time::Zero;
     }
@@ -244,18 +245,26 @@ namespace shiva::plugins
                                                 unsigned int nb_columns,
                                                 unsigned int nb_lines,
                                                 unsigned int nb_anims,
-                                                const char *texture_name) noexcept
+                                                const char *texture_name,
+                                                float pos_x,
+                                                float pos_y) noexcept
     {
         //! Drawable
-        auto &drawable_component = entity_registry_.assign<shiva::ecs::drawable>(entity_id,
-                                                                                 std::make_shared<sf::Sprite>());
+        auto sprite_ptr = std::make_shared<sf::Sprite>();
+        entity_registry_.assign<shiva::ecs::drawable>(entity_id, std::make_shared<shiva::sfml::drawable_component_impl>(
+            sprite_ptr,
+            std::static_pointer_cast<sf::Drawable>(sprite_ptr),
+            std::static_pointer_cast<sf::Transformable>(sprite_ptr)));
 
-        sol::table
-        self = (*state_)["shiva"]["resource_registry"];
+        sol::table self = (*state_)["shiva"]["resource_registry"];
         const sf::Texture &texture = self["get_texture_c"](self, texture_name);
+        sprite_ptr->setTexture(texture);
 
-        std::static_pointer_cast<sf::Sprite>(drawable_component.drawable_)->setTexture(texture);
+        //! Position
+        entity_registry_.assign<shiva::ecs::transform_2d>(entity_id, pos_x, pos_y, sprite_ptr->getGlobalBounds().width,
+                                                          sprite_ptr->getGlobalBounds().height);
 
+        sprite_ptr->setPosition(pos_x, pos_y);
         //! Animation
         entity_registry_.assign<shiva::ecs::animation>(entity_id,
                                                        std::make_shared<shiva::sfml::animation_component_impl>());
@@ -269,6 +278,20 @@ namespace shiva::plugins
         animation_ptr->current_frame = 0;
         add_one_shot_animation(entity_id, nb_columns, nb_lines, nb_anims);
         set_frame(entity_id, 0);
+    }
+
+    const sf::Sprite &animation_system::get_sprite_(entt::entity_registry::entity_type entity) const noexcept
+    {
+        auto drawable_ptr = std::static_pointer_cast<shiva::sfml::drawable_component_impl>(
+            entity_registry_.get<shiva::ecs::drawable>(entity).drawable_);
+        return *std::static_pointer_cast<sf::Sprite>(drawable_ptr->concrete);
+    }
+
+    sf::Sprite &animation_system::get_sprite_(entt::entity_registry::entity_type entity) noexcept
+    {
+        auto drawable_ptr = std::static_pointer_cast<shiva::sfml::drawable_component_impl>(
+            entity_registry_.get<shiva::ecs::drawable>(entity).drawable_);
+        return *std::static_pointer_cast<sf::Sprite>(drawable_ptr->concrete);
     }
 }
 

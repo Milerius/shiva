@@ -9,8 +9,22 @@
 local entities = {}
 
 function update()
+    local transform = shiva.entity_registry:get_transform_2d_component(other_id)
+
+    if (shiva.is_key_pressed(Keyboard.D) == true) then
+        transform.top = transform.top + 10
+    end
+
+    if (shiva.is_key_pressed(Keyboard.Q) == true) then
+        transform.top = transform.top - 10
+    end
+
     if (shiva.is_key_pressed(Keyboard.Z) == true) then
-        print("Z pressed")
+        transform.left = transform.left - 10
+    end
+
+    if (shiva.is_key_pressed(Keyboard.S) == true) then
+        transform.left = transform.left + 10
     end
 end
 
@@ -52,7 +66,7 @@ function on_after_load_resources(evt)
     -- local id = shiva.anim:create_game_object_with_animated_sprite(anim_status.playing,
     --     0.09, true, 1, 12, 7, 80, "game_scene/bheet_arrival")
 
-    local other_id = shiva.entity_registry:create_text("Hello from game_scene", "game_scene/kenney_future", 24)
+    other_id = shiva.entity_registry:create_text("Hello from game_scene", "game_scene/kenney_future", 24)
     shiva.entity_registry:add_layer_1_component(other_id)
 
     entities[#entities + 1] = other_id
