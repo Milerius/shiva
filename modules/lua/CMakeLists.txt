@@ -19,8 +19,7 @@ endif()
 find_package(sol2 CONFIG REQUIRED)
 
 target_link_libraries(lua INTERFACE shiva::ecs shiva::input ${LUA_LIBRARIES} sol2)
-target_compile_options(lua INTERFACE $<$<AND:$<CONFIG:Release>,$<CXX_COMPILER_ID:MSVC>>:/bigobj>
-        INTERFACE $<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:MSVC>>:/bigobj>)
+target_compile_options(lua INTERFACE $<$<CXX_COMPILER_ID:MSVC>:/bigobj /wd4324>)
 if (NOT EMSCRIPTEN)
     target_include_directories(lua INTERFACE ${LUA_INCLUDE_DIR})
 endif()

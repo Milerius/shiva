@@ -52,4 +52,13 @@ if (SHIVA_USE_SFML_AS_RENDERER AND SHIVA_USE_BOX2D AND SHIVA_USE_IMGUI)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/intro.avi
             ${CMAKE_SOURCE_DIR}/bin/assets/videos/intro_scene/intro.avi
             COPYONLY)
+			
+	magic_source_group(sfml-example)
+	magic_source_group(shiva::shiva-system-sfml-graphics)
+	magic_source_group(shiva::shiva-system-sfml-inputs)
+	magic_source_group(shiva::shiva-system-sfml-resources)
+	magic_source_group(shiva::shiva-system-sfml-animation)
+	magic_source_group(shiva::shiva-system-box2d)
+	magic_source_group(shiva::shiva-system-imgui)
+	magic_source_group(shiva::shiva-system-sfml-video)
 endif()
