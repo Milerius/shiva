@@ -20,11 +20,11 @@ namespace shiva::ecs::details
 
         //! Constructors
         inline lua_scripted_system(shiva::entt::dispatcher &dispatcher,
-                            shiva::entt::entity_registry &entity_registry,
-                            const float &fixed_delta_time,
-                            std::shared_ptr<sol::state> state,
-                            std::string table_name,
-                            std::string class_name) noexcept;
+                                   shiva::entt::entity_registry &entity_registry,
+                                   const float &fixed_delta_time,
+                                   std::shared_ptr<sol::state> state,
+                                   std::string table_name,
+                                   std::string class_name) noexcept;
 
         //! Destructor
         inline ~lua_scripted_system() noexcept override;
@@ -148,12 +148,12 @@ namespace shiva::ecs::details
     {
         try {
             sol::optional<sol::function> f = (*state_)[table_name_][function];
-            if (f) {
+            if (f && f.value() != sol::lua_nil) {
                 f.value()(std::forward<Args>(args)...);
             }
         }
         catch (const std::exception &error) {
-            this->log_->error("lua error: {}", error.what());
+            this->log_->error("lua error: [function: {0}, err: {1}]", function, error.what());
         }
     }
 }

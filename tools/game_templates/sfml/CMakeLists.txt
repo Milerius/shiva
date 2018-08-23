@@ -40,6 +40,30 @@ set_target_properties(<project_name>
         PDB_OUTPUT_DIRECTORY_RELEASE "${CMAKE_SOURCE_DIR}/bin"
         PDB_OUTPUT_DIRECTORY_DEBUG "${CMAKE_SOURCE_DIR}/bin")
 
+##! Helpers
+macro(add_scene scene_name)
+    configure_file(assets/scripts/scenes/lua/${scene_name}
+            ${CMAKE_SOURCE_DIR}/bin/assets/scripts/scenes/lua/${scene_name}
+            COPYONLY)
+endmacro()
+
+macro(add_resource resource_name resource_type scene_name)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/assets/${resource_type}/${scene_name}/${resource_name}
+            ${CMAKE_SOURCE_DIR}/bin/assets/${resource_type}/${scene_name}/${resource_name}
+            COPYONLY)
+endmacro()
+
+
+##! Scenes
+add_scene(game_scene.lua)
+add_scene(intro_scene.lua)
+
+##! Resources
+add_resource(intro.avi videos intro_scene)
+
+
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config/sfml_config.json
         ${CMAKE_SOURCE_DIR}/bin/assets/cfg/sfml_config.json
         COPYONLY)
+
+
