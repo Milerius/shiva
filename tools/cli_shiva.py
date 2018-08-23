@@ -57,6 +57,9 @@ def replace_occurences():
     for root, dirs, files in os.walk(args.output_directory):
         for file in files:
             print(os.path.join(root, file))
+            extension = os.path.splitext(file)[1]
+            if extension == ".avi":
+                continue
             replace_in_files(replacements, os.path.join(root, file))
 
 print_option()
