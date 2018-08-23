@@ -1,0 +1,32 @@
+@PACKAGE_INIT@
+
+MESSAGE(STATUS ${CMAKE_CURRENT_LIST_DIR})
+include("${CMAKE_CURRENT_LIST_DIR}/shiva-shiva-system-imgui-targets.cmake")
+
+macro(import_plugins_imgui plugin_name)
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+get_property(result TARGET ${plugin_name} PROPERTY IMPORTED_LOCATION_DEBUG)
+else()
+get_property(result TARGET ${plugin_name} PROPERTY IMPORTED_LOCATION_RELEASE)
+endif()
+
+message(STATUS "initial directory -> ${result}")
+get_filename_component(result_directory ${result} DIRECTORY)
+file(GLOB_RECURSE PLUGINS ${result_directory}/*)
+message(STATUS "plugin directory to copy -> ${result_directory}")
+message(STATUS "plugins -> ${PLUGINS}")
+
+file(COPY ${PLUGINS} DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+endmacro()
+
+##! directory output plugins
+set(SAVE_OUTPUT_DIRECTORY "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE}/systems)
+
+import_plugins_box2d(shiva::shiva-system-imgui)
+
+##! restore output plugins
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${SAVE_OUTPUT_DIRECTORY}")
+
+##! check components
+check_required_components("shiva-system-imgui")
