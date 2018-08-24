@@ -5,6 +5,7 @@
 #pragma once
 
 #include <Box2D/Box2D.h>
+#include <shiva/lua/lua_helpers.hpp>
 #include <shiva/ecs/system.hpp>
 
 namespace shiva::plugins
@@ -56,7 +57,11 @@ namespace shiva::plugins
 
         static constexpr auto reflected_members() noexcept;
     private:
+        //! Private member functions overriden
+        void on_set_user_data_() noexcept final;
+
         ContactListener listener_;
         b2World world_{{0.f, 0.f}};
+        sol::state* state_{nullptr};
     };
 }

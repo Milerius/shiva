@@ -13,6 +13,7 @@ set(MODULE_PUBLIC_HEADERS
         "${MODULE_PATH}/components/layer.hpp"
         "${MODULE_PATH}/components/lua_script.hpp"
         "${MODULE_PATH}/components/transform_2d.hpp"
+        "${MODULE_PATH}/components/physics_2d.hpp"
         "${MODULE_PATH}/components/drawable.hpp"
         )
 

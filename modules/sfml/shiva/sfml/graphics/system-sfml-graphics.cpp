@@ -9,6 +9,7 @@
 #include <shiva/sfml/graphics/system-sfml-graphics.hpp>
 #include <shiva/filesystem/filesystem.hpp>
 #include <shiva/sfml/common/drawable_component_impl.hpp>
+#include "system-sfml-graphics.hpp"
 
 namespace shiva::plugins
 {
@@ -35,6 +36,7 @@ namespace shiva::plugins
 
         //! Json config
         reload_json_configuration_();
+        this->dispatcher_.sink<shiva::event::key_pressed>().connect(this);
     }
 
     //! Public static functions
@@ -52,14 +54,48 @@ namespace shiva::plugins
             auto transform_ptr = std::static_pointer_cast<shiva::sfml::drawable_component_impl>(
                 drawable.drawable_)->transformable;
             if (transform_ptr != nullptr) {
-                transform_ptr->setPosition(transform.top, transform.left);
+                //! Angle
+                if (transform_ptr->getScale() != sf::Vector2f(transform.scale_x, transform.scale_y)) {
+                    transform_ptr->setScale(sf::Vector2f(transform.scale_x, transform.scale_y));
+                    transform.width = transform.original_width * transform.scale_x;
+                    transform.height = transform.original_height * transform.scale_y;
+                }
+
+                //! Rotation
+                if (static_cast<unsigned int>(transform_ptr->getRotation()) !=
+                    static_cast<unsigned int>(transform.angle)) {
+                    transform_ptr->setRotation(transform.angle);
+                    auto rect = transform_ptr->getTransform().transformRect(
+                        sf::FloatRect(0.f, 0.f, transform.original_width,
+                                      transform.original_height));
+                    transform.width = rect.width;
+                    transform.height = rect.height;
+                    transform.x = rect.left;
+                    transform.y = rect.top;
+
+                } else {
+                    //! Position
+                    transform_ptr->setPosition(transform.x, transform.y);
+                }
             }
         };
 
         auto draw = [this]([[maybe_unused]] auto entity, [[maybe_unused]] auto &&layer, auto &&drawable) {
             auto drawable_ptr = std::static_pointer_cast<shiva::sfml::drawable_component_impl>(drawable.drawable_);
-            if (drawable_ptr != nullptr && drawable_ptr->drawable != nullptr)
+            if (drawable_ptr != nullptr && drawable_ptr->drawable != nullptr) {
                 this->win_.draw(*drawable_ptr->drawable);
+                if (debug_draw_ &&
+                    this->entity_registry_.has<shiva::ecs::transform_2d>(entity)) {
+                    const auto &box = entity_registry_.get<shiva::ecs::transform_2d>(entity);
+                    sf::RectangleShape shape_debug(sf::Vector2f(box.width, box.height));
+                    //shape_debug.setRotation(box.angle);
+                    shape_debug.setFillColor(sf::Color(0, 0, 0, 0));
+                    shape_debug.setOutlineThickness(1.0f);
+                    shape_debug.setOutlineColor(sf::Color::Red);
+                    shape_debug.setPosition(box.x, box.y);
+                    this->win_.draw(shape_debug);
+                }
+            }
         };
 
         entity_registry_.view<shiva::ecs::transform_2d, shiva::ecs::drawable>().each(update_transform);
@@ -131,6 +167,14 @@ namespace shiva::plugins
             }
         }
         ImGui::SFML::Init(win_);
+    }
+
+    //! Callbacks
+    void render_system::receive(const shiva::event::key_pressed &evt)
+    {
+        if (evt.keycode == shiva::input::keyboard::Key::F2) {
+            debug_draw_ = !debug_draw_;
+        }
     }
 }
 

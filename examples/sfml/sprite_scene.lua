@@ -19,7 +19,7 @@ function on_key_pressed(evt)
         print("should quit_game")
         shiva.dispatcher:trigger_quit_game_event(1)
     elseif (evt.keycode == Keyboard.Left) then
-        shiva.dispatcher:trigger_change_scene_event( "game_scene")
+        shiva.dispatcher:trigger_change_scene_event("game_scene")
     end
 end
 
@@ -37,8 +37,7 @@ function leave()
 end
 
 function on_after_load_resources(evt)
-    local id, sprite = shiva.entity_registry:create_game_object_with_sprite()
-    sprite:set_texture(shiva.resource_registry:get_texture("sprite_scene/toto"), false)
+    local id = shiva.entity_registry:create_game_object_with_sprite("sprite_scene/toto", 250, 250)
     entities[#entities + 1] = id
     shiva.entity_registry:add_layer_1_component(id)
 
