@@ -4,13 +4,15 @@
 
 #pragma once
 
+#include <shiva/meta/list.hpp>
 #include <shiva/reflection/reflection.hpp>
 
 namespace shiva::event
 {
     struct change_scene
     {
-        using constructor_arg_type_t = const char*;
+        using constructor_list_type_t = shiva::meta::type_list<const char *>;
+        static constexpr const unsigned int nb_args = shiva::meta::list::Length<constructor_list_type_t>::value;
 
         reflect_class(change_scene)
 

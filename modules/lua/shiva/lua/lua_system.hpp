@@ -155,11 +155,23 @@ namespace shiva::scripting
         using namespace std::string_literals;
 
         if constexpr (std::is_default_constructible_v<Event> && shiva::refl::has_constructor_arg_type_v<Event>) {
-            (*state_)["dispatcher"]["trigger_"s + Event::class_name() + "_event"s] = [](
-                shiva::entt::dispatcher &self,
-                typename Event::constructor_arg_type_t arg) {
-                return self.trigger<Event>(arg);
-            };
+            if constexpr (Event::nb_args == 1u) {
+                using arg_type = shiva::meta::list::At<typename Event::constructor_list_type_t, 0u>;
+                (*state_)["dispatcher"]["trigger_"s + Event::class_name() + "_event"s] = [](
+                    shiva::entt::dispatcher &self,
+                    arg_type arg) {
+                    return self.trigger<Event>(arg);
+                };
+            } else if constexpr (Event::nb_args == 2u) {
+                using arg_type = shiva::meta::list::At<typename Event::constructor_list_type_t, 0u>;
+                using second_arg_type = shiva::meta::list::At<typename Event::constructor_list_type_t, 1u>;
+                (*state_)["dispatcher"]["trigger_"s + Event::class_name() + "_event"s] = [](
+                    shiva::entt::dispatcher &self,
+                    arg_type arg,
+                    second_arg_type second_arg) {
+                    return self.trigger<Event>(arg, second_arg);
+                };
+            }
         } else {
             (*state_)["dispatcher"]["trigger_"s + Event::class_name() + "_event"s] = [](
                 shiva::entt::dispatcher &self) {

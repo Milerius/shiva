@@ -13,6 +13,8 @@
 #include <shiva/event/key_pressed.hpp>
 #include <shiva/event/after_load_resources.hpp>
 #include <shiva/event/change_scene.hpp>
+#include <shiva/event/enable_system.hpp>
+#include <shiva/event/disable_system.hpp>
 
 #include <shiva/meta/list.hpp>
 
@@ -27,6 +29,8 @@ namespace shiva::event
         key_pressed,
         key_released,
         after_load_resources,
-        change_scene>;
+        change_scene,
+        enable_system,
+        disable_system>;
 }
 

@@ -62,7 +62,7 @@ namespace shiva::plugins
                                            {"kinematic", b2BodyType::b2_kinematicBody}
                                        });
 
-        (*state_)[box2d_system::class_name()]["add_physics"] = [this](box2d_system &self,
+        (*state_)[box2d_system::class_name()]["add_physics"] = [this]([[maybe_unused]] box2d_system &self,
                                                                       shiva::entt::entity_registry::entity_type entity,
                                                                       b2BodyType body_type) {
             if (!entity_registry_.has<shiva::ecs::transform_2d>(entity))

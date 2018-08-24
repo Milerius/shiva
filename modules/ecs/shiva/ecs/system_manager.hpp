@@ -14,6 +14,8 @@
 #include <shiva/event/start_game.hpp>
 #include <shiva/event/after_load_systems_plugins.hpp>
 #include <shiva/event/add_base_system.hpp>
+#include <shiva/event/enable_system.hpp>
+#include <shiva/event/disable_system.hpp>
 #include <shiva/dll/plugins_registry.hpp>
 #include <shiva/timer/timestep.hpp>
 #include <shiva/spdlog/spdlog.hpp>
@@ -58,6 +60,20 @@ namespace shiva::ecs
          * \param evt the current event
          */
         inline void receive(const shiva::event::add_base_system &evt);
+
+        /**
+         * \note this callback is called if the event enable_system is triggered by the program.
+         * \note internally, the content of the event which is a string will be used to retrieve the system and enable it.
+         * \param evt the current event
+         */
+        inline void receive(const shiva::event::enable_system &evt);
+
+        /**
+         * \note this callback is called if the event disable_system is triggered by the program.
+         * \note internally, the content of the event which is a string will be used to retrieve the system and disable it.
+         * \param evt the current event
+         */
+        inline void receive(const shiva::event::disable_system &evt);
 
         //! Constructors
 
@@ -286,6 +302,20 @@ namespace shiva::ecs
                     evt.system_ptr->get_system_type_RTTI());
     }
 
+    void system_manager::receive(const shiva::event::enable_system &evt)
+    {
+        auto system_ptr = this->get_system_by_name(evt.system_name, evt.sys_type);
+        if (system_ptr)
+            system_ptr->enable();
+    }
+
+    void system_manager::receive(const shiva::event::disable_system &evt)
+    {
+        auto system_ptr = this->get_system_by_name(evt.system_name, evt.sys_type);
+        if (system_ptr)
+            system_ptr->disable();
+    }
+
     //! Constructor
     system_manager::system_manager(entt::dispatcher &dispatcher, entt::entity_registry &registry,
                                    system_manager::plugins_registry_t &plugins_registry) noexcept :
@@ -296,6 +326,8 @@ namespace shiva::ecs
         dispatcher_.sink<shiva::event::start_game>().connect(this);
         dispatcher_.sink<shiva::event::quit_game>().connect(this);
         dispatcher_.sink<shiva::event::add_base_system>().connect(this);
+        dispatcher_.sink<shiva::event::enable_system>().connect(this);
+        dispatcher_.sink<shiva::event::disable_system>().connect(this);
         log_->info("system_manager successfully created");
     }
 
