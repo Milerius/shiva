@@ -49,7 +49,8 @@ namespace shiva::plugins
                                                                                              const char *json_id,
                                                                                              entt::entity_registry::entity_type entity) {
             self.log_->info("json_id is {}", json_id);
-            sol::table table = (*self.state_)["shiva"]["resource_registry"];
+            sol::table
+                table = (*self.state_)["shiva"]["resource_registry"];
             const shiva::sfml::animation_config &cfg = table["get_anim_cfg_c"](table, json_id);
             self.add_animated_sprite_(entity,
                                       cfg.status,
@@ -260,10 +261,6 @@ namespace shiva::plugins
         const sf::Texture &texture = self["get_texture_c"](self, texture_name);
         sprite_ptr->setTexture(texture);
 
-        //! Position
-        entity_registry_.assign<shiva::ecs::transform_2d>(entity_id, pos_x, pos_y, sprite_ptr->getGlobalBounds().width,
-                                                          sprite_ptr->getGlobalBounds().height);
-
         sprite_ptr->setPosition(pos_x, pos_y);
         //! Animation
         entity_registry_.assign<shiva::ecs::animation>(entity_id,
@@ -278,6 +275,12 @@ namespace shiva::plugins
         animation_ptr->current_frame = 0;
         add_one_shot_animation(entity_id, nb_columns, nb_lines, nb_anims);
         set_frame(entity_id, 0);
+
+        //! Position
+        entity_registry_.assign<shiva::ecs::transform_2d>(entity_id, pos_x, pos_y, sprite_ptr->getTextureRect().width,
+                                                          sprite_ptr->getTextureRect().height, sprite_ptr->getScale().x,
+                                                          sprite_ptr->getScale().y,
+                                                          sprite_ptr->getRotation());
     }
 
     const sf::Sprite &animation_system::get_sprite_(entt::entity_registry::entity_type entity) const noexcept

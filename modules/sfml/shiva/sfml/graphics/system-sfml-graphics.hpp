@@ -22,6 +22,9 @@ namespace shiva::plugins
         render_system(shiva::entt::dispatcher &dispatcher, shiva::entt::entity_registry &registry,
                       const float &fixed_delta_time) noexcept;
 
+        //! Callbacks
+        void receive(const shiva::event::key_pressed& evt);
+
         //! Public static functions
         static std::unique_ptr<shiva::ecs::base_system> system_creator(entt::dispatcher &dispatcher,
                                                                        entt::entity_registry &registry,
@@ -44,5 +47,7 @@ namespace shiva::plugins
         //! Private data members
         shiva::sfml::window_config cfg_;
         sf::RenderWindow win_{sf::VideoMode(cfg_.size[0], cfg_.size[1]), cfg_.name};
+
+        bool debug_draw_{false};
     };
 }

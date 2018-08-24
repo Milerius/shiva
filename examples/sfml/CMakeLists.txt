@@ -13,7 +13,7 @@ if (SHIVA_USE_SFML_AS_RENDERER AND SHIVA_USE_BOX2D AND SHIVA_USE_IMGUI)
     #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Xclang -ast-print -fsyntax-only")
     set_target_properties(sfml-example
             PROPERTIES
-            ARCHIVE_OUTPUT_DIRECTORY  "${CMAKE_SOURCE_DIR}/bin"
+            ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin"
             LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin"
             RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin"
             LIBRARY_OUTPUT_DIRECTORY_DEBUG "${CMAKE_SOURCE_DIR}/bin"
@@ -52,13 +52,17 @@ if (SHIVA_USE_SFML_AS_RENDERER AND SHIVA_USE_BOX2D AND SHIVA_USE_IMGUI)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/intro.avi
             ${CMAKE_SOURCE_DIR}/bin/assets/videos/intro_scene/intro.avi
             COPYONLY)
-			
-	magic_source_group(sfml-example)
-	magic_source_group(shiva::shiva-system-sfml-graphics)
-	magic_source_group(shiva::shiva-system-sfml-inputs)
-	magic_source_group(shiva::shiva-system-sfml-resources)
-	magic_source_group(shiva::shiva-system-sfml-animation)
-	magic_source_group(shiva::shiva-system-box2d)
-	magic_source_group(shiva::shiva-system-imgui)
-	magic_source_group(shiva::shiva-system-sfml-video)
-endif()
+
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/kirito.png
+            ${CMAKE_SOURCE_DIR}/bin/assets/textures/game_scene/kirito.png
+            COPYONLY)
+
+    magic_source_group(sfml-example)
+    magic_source_group(shiva::shiva-system-sfml-graphics)
+    magic_source_group(shiva::shiva-system-sfml-inputs)
+    magic_source_group(shiva::shiva-system-sfml-resources)
+    magic_source_group(shiva::shiva-system-sfml-animation)
+    magic_source_group(shiva::shiva-system-box2d)
+    magic_source_group(shiva::shiva-system-imgui)
+    magic_source_group(shiva::shiva-system-sfml-video)
+endif ()

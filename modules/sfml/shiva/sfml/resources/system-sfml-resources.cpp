@@ -72,7 +72,10 @@ namespace shiva::plugins
             return sf::Keyboard::isKeyPressed(static_cast<sf::Keyboard::Key>(key));
         };
 
-        (*state_)[entity_registry_.class_name()]["create_game_object_with_sprite"] = [this]() {
+        (*state_)[entity_registry_.class_name()]["create_game_object_with_sprite"] = [this](
+            [[maybe_unused]] shiva::entt::entity_registry &self_registry,
+            const char *texture_name,
+            float pos_x, float pos_y) {
             auto entity_id = this->entity_registry_.create();
             auto sprite_ptr = std::make_shared<sf::Sprite>();
             entity_registry_.assign<shiva::ecs::drawable>(entity_id,
@@ -80,7 +83,19 @@ namespace shiva::plugins
                                                               sprite_ptr,
                                                               std::static_pointer_cast<sf::Drawable>(sprite_ptr),
                                                               std::static_pointer_cast<sf::Transformable>(sprite_ptr)));
-            return std::make_tuple(entity_id, sprite_ptr);
+            sol::table self = (*state_)["shiva"]["resource_registry"];
+            const sf::Texture &texture = self["get_texture_c"](self, texture_name);
+            sprite_ptr->setTexture(texture);
+            sprite_ptr->setPosition(pos_x, pos_y);
+
+            //! Position
+            entity_registry_.assign<shiva::ecs::transform_2d>(entity_id, pos_x, pos_y,
+                                                              sprite_ptr->getTextureRect().width,
+                                                              sprite_ptr->getTextureRect().height,
+                                                              sprite_ptr->getScale().x,
+                                                              sprite_ptr->getScale().y,
+                                                              sprite_ptr->getRotation());
+            return entity_id;
         };
 
         (*state_)[entity_registry_.class_name()]["create_text"] = [this](
@@ -100,16 +115,17 @@ namespace shiva::plugins
             text_ptr->setString(sf::String(text));
             text_ptr->setCharacterSize(size);
 
-            transformable.top = win_->getSize().x / 2.f;
-            transformable.left = win_->getSize().y / 2.f;
+            transformable.y = win_->getSize().x / 2.f;
+            transformable.x = win_->getSize().y / 2.f;
             transformable.width = text_ptr->getGlobalBounds().width;
             transformable.height = text_ptr->getGlobalBounds().height;
-            this->log_->info("Text created -> [top: {0}, left: {1}, width: {2}, height: {3}]",
-                             transformable.top,
-                             transformable.left,
+            this->log_->info("Text created -> [y: {0}, x: {1}, width: {2}, height: {3}]",
+                             transformable.y,
+                             transformable.x,
                              transformable.width,
                              transformable.height);
-            text_ptr->setPosition(transformable.top, transformable.left);
+
+            text_ptr->setPosition(transformable.x, transformable.y);
             return entity_id;
         };
         (*state_)["shiva"]["resource_registry"] = std::ref(resources_registry_);

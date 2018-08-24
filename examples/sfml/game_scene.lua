@@ -9,22 +9,22 @@
 local entities = {}
 
 function update()
-    local transform = shiva.entity_registry:get_transform_2d_component(other_id)
+    local transform = shiva.entity_registry:get_transform_2d_component(kirito_id)
 
     if (shiva.is_key_pressed(Keyboard.D) == true) then
-        transform.top = transform.top + 10
+        transform.x = transform.x + 10
     end
 
     if (shiva.is_key_pressed(Keyboard.Q) == true) then
-        transform.top = transform.top - 10
+        transform.x = transform.x - 10
     end
 
     if (shiva.is_key_pressed(Keyboard.Z) == true) then
-        transform.left = transform.left - 10
+        transform.y = transform.y - 10
     end
 
     if (shiva.is_key_pressed(Keyboard.S) == true) then
-        transform.left = transform.left + 10
+        transform.y = transform.y + 10
     end
 end
 
@@ -70,6 +70,14 @@ function on_after_load_resources(evt)
     shiva.entity_registry:add_layer_1_component(other_id)
 
     entities[#entities + 1] = other_id
+
+    kirito_id = shiva.entity_registry:create_game_object_with_sprite("game_scene/kirito", 450, 150)
+    local transform = shiva.entity_registry:get_transform_2d_component(kirito_id)
+    transform.scale_x = 0.3
+    transform.scale_y = 0.3
+    shiva.entity_registry:add_layer_1_component(kirito_id)
+
+    entities[#entities + 1] = kirito_id
 
     print("after_loading_resources game scene, nb entities: " .. shiva.entity_registry:nb_entities())
 end

@@ -17,6 +17,10 @@ namespace shiva::box2d
             }
         }
 
+        box2d_component(b2Body *body_) noexcept : body(body_)
+        {
+        }
+
         b2Body *body{nullptr};
     };
 }
