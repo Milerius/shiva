@@ -11,6 +11,7 @@ set(MODULE_PUBLIC_HEADERS
         "${MODULE_PATH}/after_load_resources.hpp"
         "${MODULE_PATH}/change_scene.hpp"
         "${MODULE_PATH}/enable_system.hpp"
+        "${MODULE_PATH}/invoker.hpp"
         "${MODULE_PATH}/disable_system.hpp"
         "${MODULE_PATH}/all.hpp"
         )

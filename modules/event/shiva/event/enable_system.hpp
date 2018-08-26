@@ -7,7 +7,7 @@
 #include <string>
 #include <shiva/reflection/reflection.hpp>
 #include <shiva/ecs/system_type.hpp>
-#include <shiva/meta/list.hpp>
+#include <shiva/event/invoker.hpp>
 
 namespace shiva::event
 {
@@ -16,8 +16,7 @@ namespace shiva::event
     {
         enable_system() = default;
 
-        using constructor_list_type_t = shiva::meta::type_list<std::string, shiva::ecs::system_type>;
-        static constexpr const unsigned int nb_args = shiva::meta::list::Length<constructor_list_type_t>::value;
+        static constexpr const shiva::event::invoker_dispatcher<enable_system, std::string, shiva::ecs::system_type> invoker{};
 
         enable_system(std::string system_name_, shiva::ecs::system_type sys_type_) noexcept :
             system_name(std::move(system_name_)),

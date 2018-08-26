@@ -538,6 +538,7 @@ namespace shiva::ecs
     {
         auto &&system_collection = systems_[type];
         auto it = shiva::ranges::find_if(system_collection, [name = std::move(system_name)](auto &&sys) {
+
             return sys->get_name() == name;
         });
         return (it != system_collection.end()) ? (*it).get() : nullptr;

@@ -4,19 +4,18 @@
 
 #pragma once
 
-#include <shiva/meta/list.hpp>
 #include <shiva/reflection/reflection.hpp>
+#include <shiva/event/invoker.hpp>
 
 namespace shiva::event
 {
     struct change_scene
     {
-        using constructor_list_type_t = shiva::meta::type_list<const char *>;
-        static constexpr const unsigned int nb_args = shiva::meta::list::Length<constructor_list_type_t>::value;
+        static constexpr const shiva::event::invoker_dispatcher<change_scene, const char *> invoker{};
 
         reflect_class(change_scene)
 
-        change_scene(const char* scene_name_ = nullptr) noexcept : scene_name(scene_name_)
+        change_scene(const char *scene_name_ = nullptr) noexcept : scene_name(scene_name_)
         {
         }
 
@@ -30,6 +29,6 @@ namespace shiva::event
             return meta::makeMap(reflect_member(&change_scene::scene_name));
         }
 
-        const char* scene_name{nullptr};
+        const char *scene_name{nullptr};
     };
 }
