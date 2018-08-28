@@ -155,11 +155,7 @@ namespace shiva::scripting
         using namespace std::string_literals;
 
         if constexpr (std::is_default_constructible_v<Event> && shiva::refl::has_constructor_arg_type_v<Event>) {
-            (*state_)["dispatcher"]["trigger_"s + Event::class_name() + "_event"s] = [](
-                shiva::entt::dispatcher &self,
-                typename Event::constructor_arg_type_t arg) {
-                return self.trigger<Event>(arg);
-            };
+            (*state_)["dispatcher"]["trigger_"s + Event::class_name() + "_event"s] = Event::invoker;
         } else {
             (*state_)["dispatcher"]["trigger_"s + Event::class_name() + "_event"s] = [](
                 shiva::entt::dispatcher &self) {

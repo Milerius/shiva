@@ -51,6 +51,7 @@ end
 function enter()
     print("enter intro scene")
     shiva.resource_registry:load_all_resources("intro_scene")
+    shiva.dispatcher:trigger_disable_system_event("imgui_system", system_type.post_update)
 end
 
 return {

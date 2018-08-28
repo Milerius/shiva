@@ -85,6 +85,7 @@ end
 function enter()
     print("enter game scene")
     shiva.resource_registry:load_all_resources("game_scene")
+    shiva.dispatcher:trigger_enable_system_event("imgui_system", system_type.post_update)
 end
 
 return {

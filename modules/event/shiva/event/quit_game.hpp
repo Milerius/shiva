@@ -5,12 +5,13 @@
 #pragma once
 
 #include <shiva/reflection/reflection.hpp>
+#include <shiva/event/invoker.hpp>
 
 namespace shiva::event
 {
     struct quit_game
     {
-        using constructor_arg_type_t = int;
+        static constexpr const shiva::event::invoker_dispatcher<quit_game, int> invoker{};
 
         quit_game(int return_value) noexcept : return_value_(return_value) //NOLINT
         {
@@ -18,7 +19,6 @@ namespace shiva::event
 
         quit_game() noexcept : return_value_(0)
         {
-
         }
 
         reflect_class(quit_game)
