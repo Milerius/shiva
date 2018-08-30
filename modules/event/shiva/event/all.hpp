@@ -15,6 +15,7 @@
 #include <shiva/event/change_scene.hpp>
 #include <shiva/event/enable_system.hpp>
 #include <shiva/event/disable_system.hpp>
+#include <shiva/event/window_config_update.hpp>
 
 #include <shiva/meta/list.hpp>
 
@@ -31,6 +32,7 @@ namespace shiva::event
         after_load_resources,
         change_scene,
         enable_system,
-        disable_system>;
+        disable_system,
+        window_config_update>;
 }
 

@@ -219,8 +219,8 @@ namespace shiva::ecs
          * \return Tuple of systems loaded
          * \see create_system
          */
-        template <typename ...TSystems>
-        auto load_systems() noexcept;
+        template <typename ...TSystems, typename ...TArgs>
+        auto load_systems(TArgs &&...args) noexcept;
 
         /**
          * \return number of systems
@@ -491,10 +491,10 @@ namespace shiva::ecs
         return static_cast<TSystem &>(add_system_(std::move(sys), TSystem::get_system_type()));
     }
 
-    template <typename... TSystems>
-    auto system_manager::load_systems() noexcept
+    template <typename... TSystems, typename... TArgs>
+    auto system_manager::load_systems(TArgs &&...args) noexcept
     {
-        (create_system<TSystems>(), ...);
+        (create_system<TSystems>(std::forward<TArgs>(args)...), ...);
         return get_systems<TSystems ...>();
     }
 
@@ -603,6 +603,7 @@ namespace shiva::ecs
                 return sys->is_marked();
             }), std::end(vec_system));
         });
+        this->need_to_sweep_systems_ = false;
     }
 
     bool system_manager::prioritize_system(const std::string &system_to_swap, const std::string &system_b,

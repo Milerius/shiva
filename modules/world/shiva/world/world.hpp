@@ -6,6 +6,7 @@
 
 #include <shiva/ecs/system_manager.hpp>
 #include <shiva/error/general_error_handler.hpp>
+#include "window_config.hpp"
 
 namespace shiva
 {
@@ -26,6 +27,7 @@ namespace shiva
             SetDllDirectoryA(plugin_path.string().c_str());
 #endif
             dispatcher_.sink<shiva::event::quit_game>().connect(this);
+            dispatcher_.sink<shiva::event::window_config_update>().connect(this);
         }
 
 #elif defined(RELEASE)
@@ -37,6 +39,8 @@ namespace shiva
                         SetDllDirectoryA(plugin_path.string().c_str());
 #endif
                     dispatcher_.sink<shiva::event::quit_game>().connect(this);
+                    dispatcher_.sink<shiva::event::window_config_update>().connect(this);
+
                 }
 #endif
 
@@ -62,6 +66,16 @@ namespace shiva
             game_return_value_ = evt.return_value_;
         }
 
+        void receive(const shiva::event::window_config_update &evt) noexcept
+        {
+            auto[name, size, vsync, fullscreen, native_resolution] = evt.cfg;
+            window_cfg_.name = std::move(name);
+            window_cfg_.size = std::move(size);
+            window_cfg_.vsync = vsync;
+            window_cfg_.fullscreen = fullscreen;
+            window_cfg_.native_resolution = native_resolution;
+        }
+
         //! Order declaration here is very important.
         //! Sorry for the spamming of private/protected
     private:
@@ -72,6 +86,7 @@ namespace shiva
         plugins_registry_t plugins_registry_;
     protected:
         //! Protected data members (prologue)
+        shiva::windows_config window_cfg_;
         shiva::entt::dispatcher dispatcher_;
         shiva::entt::entity_registry entity_registry_;
     private:

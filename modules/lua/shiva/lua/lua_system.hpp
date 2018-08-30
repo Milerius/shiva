@@ -317,6 +317,11 @@ namespace shiva::scripting
     inline bool lua_system::load_all_scripted_systems() noexcept
     {
         bool res = true;
+        if (!shiva::fs::exists(systems_scripts_directory_)) {
+            this->log_->warn("{0} directory doesn't exist cannot load scripted systems",
+                             systems_scripts_directory_.string());
+            return false;
+        }
         fs::recursive_directory_iterator endit;
         for (fs::recursive_directory_iterator it(systems_scripts_directory_); it != endit; ++it) {
             if (!fs::is_regular_file(*it)) {

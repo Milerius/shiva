@@ -23,6 +23,7 @@ option(SHIVA_USE_SFML_AS_RENDERER "Build shiva with SFML rendering" OFF)
 option(SHIVA_INSTALL_PLUGINS "Build shiva with SFML rendering" OFF)
 option(DISABLE_INSTALL_SHIVA_CORE "Disable install main targets" OFF)
 option(USE_PROJECT_IN_AN_IDE "Workaround for install header only library option, put it to ON if u use CLION" OFF)
+option(SHIVA_BUILD_EDITOR "Shiva build editor" OFF)
 
 
 ##! CMake Path
@@ -41,6 +42,10 @@ endif ()
 if (SHIVA_BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif ()
+
+if (SHIVA_BUILD_EDITOR AND SHIVA_USE_IMGUI)
+    add_subdirectory(editor)
+endif()
 
 ##! main library
 add_library(shiva INTERFACE)

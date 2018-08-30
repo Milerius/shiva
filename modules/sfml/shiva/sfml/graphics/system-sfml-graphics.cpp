@@ -72,7 +72,6 @@ namespace shiva::plugins
                     transform.height = rect.height;
                     transform.x = rect.left;
                     transform.y = rect.top;
-
                 } else {
                     //! Position
                     transform_ptr->setPosition(transform.x, transform.y);
@@ -163,6 +162,13 @@ namespace shiva::plugins
                 if (!cfg_.vsync) {
                     win_.setFramerateLimit(60);
                 }
+
+                if (cfg_.native_resolution) {
+                    cfg_.size[0] = sf::VideoMode::getDesktopMode().width;
+                    cfg_.size[1] = sf::VideoMode::getDesktopMode().height;
+                }
+                this->dispatcher_.trigger<shiva::event::window_config_update>(
+                    std::make_tuple(cfg_.name, cfg_.size, cfg_.vsync, cfg_.fullscreen, cfg_.native_resolution));
                 i.close();
             }
         }
