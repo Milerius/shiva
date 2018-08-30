@@ -59,14 +59,14 @@ namespace shiva
         }
 
         //! Callbacks
-        void receive(const shiva::event::quit_game &evt) noexcept
+        void receive(const shiva::event::quit_game &evt)
         {
             is_running = false;
             init_corrupted = true;
             game_return_value_ = evt.return_value_;
         }
 
-        void receive(const shiva::event::window_config_update &evt) noexcept
+        void receive(const shiva::event::window_config_update &evt)
         {
             auto[name, size, vsync, fullscreen, native_resolution] = evt.cfg;
             window_cfg_.name = std::move(name);
