@@ -31,8 +31,7 @@ namespace shiva::plugins
         (*state_)[animation_system::class_name()]["create_animated_game_object_from_json"] = [](animation_system &self,
                                                                                                 const char *json_id) {
             self.log_->info("json_id is {}", json_id);
-            sol::table
-                table = (*self.state_)["shiva"]["resource_registry"];
+            sol::table table = (*self.state_)["shiva"]["resource_registry"];
             const shiva::sfml::animation_config &cfg = table["get_anim_cfg_c"](table, json_id);
             auto entity_id = self.create_game_object_with_animated_sprite(cfg.status,
                                                                           static_cast<double>(cfg.speed),
@@ -49,8 +48,7 @@ namespace shiva::plugins
                                                                                              const char *json_id,
                                                                                              entt::entity_registry::entity_type entity) {
             self.log_->info("json_id is {}", json_id);
-            sol::table
-                table = (*self.state_)["shiva"]["resource_registry"];
+            sol::table table = (*self.state_)["shiva"]["resource_registry"];
             const shiva::sfml::animation_config &cfg = table["get_anim_cfg_c"](table, json_id);
             self.add_animated_sprite_(entity,
                                       cfg.status,

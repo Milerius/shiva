@@ -298,8 +298,13 @@ namespace shiva::ecs
 
     void system_manager::receive(const shiva::event::add_base_system &evt)
     {
-        add_system_(std::move(const_cast<shiva::event::add_base_system &>(evt).system_ptr),
-                    evt.system_ptr->get_system_type_RTTI());
+        auto sys_type = evt.system_ptr->get_system_type_RTTI();
+        [[maybe_unused]] auto &system = add_system_(
+            std::move(const_cast<shiva::event::add_base_system &>(evt).system_ptr),
+            sys_type);
+        if (evt.prioritize) {
+            prioritize_system(system.get_name(), evt.system_name, sys_type);
+        }
     }
 
     void system_manager::receive(const shiva::event::enable_system &evt)

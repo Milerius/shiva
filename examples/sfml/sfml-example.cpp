@@ -16,7 +16,6 @@ int main()
         res = world.run();
     }
     catch (...) {
-
     }
     return res;
 }

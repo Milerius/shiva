@@ -50,6 +50,7 @@ namespace shiva::common
                 imgui_system->set_user_data(&lua_system.get_state());
                 video_system->set_user_data(&full_data);
                 box2d_system->set_user_data(&lua_system.get_state());
+                render_system->set_user_data(&lua_system.get_state());
                 lua_system.load_all_scripted_systems();
             }
         }

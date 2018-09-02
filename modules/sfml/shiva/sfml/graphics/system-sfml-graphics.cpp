@@ -146,9 +146,16 @@ namespace shiva::plugins
                 cfg_ = j;
 
                 //! Reset window
+                unsigned int style = sf::Style::Default;
+
+                if (cfg_.borderless) {
+                    style = sf::Style::None;
+                } else if (cfg_.fullscreen) {
+                    style = sf::Style::Fullscreen;
+                }
                 win_.create((!cfg_.native_resolution) ? sf::VideoMode{cfg_.size[0], cfg_.size[1]}
                                                       : sf::VideoMode{sf::VideoMode::getDesktopMode()}, cfg_.name,
-                            (cfg_.fullscreen) ? sf::Style::Fullscreen : sf::Style::Default);
+                            style);
 
                 //! VSync
                 win_.setVerticalSyncEnabled(cfg_.vsync);
@@ -181,6 +188,32 @@ namespace shiva::plugins
         if (evt.keycode == shiva::input::keyboard::Key::F2) {
             debug_draw_ = !debug_draw_;
         }
+    }
+
+    void render_system::on_set_user_data_() noexcept
+    {
+        state_ = static_cast<sol::state *>(user_data_);
+        assert(state_);
+        shiva::lua::register_type<render_system>(*state_, log_);
+        (*state_)[render_system::class_name()]["imgui_image_button"] = []([[maybe_unused]] render_system &self,
+                                                                          const char *texture_id) {
+            sol::table table = (*self.state_)["shiva"]["resource_registry"];
+            const sf::Texture &texture = table["get_texture_c"](table, texture_id);
+            return ImGui::ImageButton(texture);
+        };
+
+        (*state_)[render_system::class_name()]["get_texture_size"] = []([[maybe_unused]] render_system &self,
+                                                                        const char *texture_id) {
+            sol::table table = (*self.state_)["shiva"]["resource_registry"];
+            const sf::Texture &texture = table["get_texture_c"](table, texture_id);
+            return std::make_pair(texture.getSize().x, texture.getSize().y);
+        };
+
+        (*state_)[render_system::class_name()]["update_font"] = []([[maybe_unused]] render_system &self) {
+            ImGui::SFML::UpdateFontTexture();
+        };
+
+        (*state_)["shiva"]["render"] = this;
     }
 }
 
