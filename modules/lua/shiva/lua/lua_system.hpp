@@ -284,27 +284,43 @@ namespace shiva::scripting
         log_->info("table: {}", table_name);
         shiva::ecs::system_type sys_type = (*state_)[table_name]["current_system_type"];
         log_->info("system_type: {}", sys_type);
+        bool prioritize = false;
+        std::string system_to_swap;
+        try {
+            sol::optional<std::string> f = (*state_)[table_name]["prioritize_system"];
+            if (f) {
+                this->log_->debug("prioritize -> {0}", f.value());
+                prioritize = true;
+                system_to_swap = f.value();
+            }
+        }
+        catch (const std::exception &error) {
+            this->log_->error("lua error: {}", error.what());
+        }
         switch (sys_type) {
             case shiva::ecs::post_update:
                 dispatcher_.trigger<shiva::event::add_base_system>(
                     std::make_unique<shiva::ecs::details::lua_post_scripted_system>(dispatcher_, entity_registry_,
                                                                                     fixed_delta_time_, state_,
                                                                                     table_name,
-                                                                                    script_name.filename().stem().string()));
+                                                                                    script_name.filename().stem().string()),
+                    prioritize, system_to_swap);
                 break;
             case shiva::ecs::pre_update:
                 dispatcher_.trigger<shiva::event::add_base_system>(
                     std::make_unique<shiva::ecs::details::lua_pre_scripted_system>(dispatcher_, entity_registry_,
                                                                                    fixed_delta_time_, state_,
                                                                                    table_name,
-                                                                                   script_name.filename().stem().string()));
+                                                                                   script_name.filename().stem().string()),
+                    prioritize, system_to_swap);
                 break;
             case shiva::ecs::logic_update:
                 dispatcher_.trigger<shiva::event::add_base_system>(
                     std::make_unique<shiva::ecs::details::lua_logic_scripted_system>(dispatcher_, entity_registry_,
                                                                                      fixed_delta_time_, state_,
                                                                                      table_name,
-                                                                                     script_name.filename().stem().string()));
+                                                                                     script_name.filename().stem().string()),
+                    prioritize, system_to_swap);
                 break;
             case shiva::ecs::size:
                 break;
@@ -317,6 +333,11 @@ namespace shiva::scripting
     inline bool lua_system::load_all_scripted_systems() noexcept
     {
         bool res = true;
+        if (!shiva::fs::exists(systems_scripts_directory_)) {
+            this->log_->warn("{0} directory doesn't exist cannot load scripted systems",
+                             systems_scripts_directory_.string());
+            return false;
+        }
         fs::recursive_directory_iterator endit;
         for (fs::recursive_directory_iterator it(systems_scripts_directory_); it != endit; ++it) {
             if (!fs::is_regular_file(*it)) {

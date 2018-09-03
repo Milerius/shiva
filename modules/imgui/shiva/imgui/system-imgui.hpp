@@ -45,6 +45,8 @@ namespace shiva::plugins
         void set_monochrome_windows_theme() noexcept;
 
         void set_darcula_windows_theme() noexcept;
+
+        void set_directus_windows_theme() noexcept;
         sol::state* state_{nullptr};
     };
 }

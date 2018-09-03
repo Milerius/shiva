@@ -6,6 +6,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <sfml-imgui/imgui-SFML.hpp>
+#include <shiva/lua/lua_helpers.hpp>
 #include <shiva/entt/entt.hpp>
 #include <shiva/ecs/system.hpp>
 #include <shiva/sfml/graphics/window_config.hpp>
@@ -44,7 +45,11 @@ namespace shiva::plugins
         //! Private member function
         void reload_json_configuration_() noexcept;
 
+        //! Private member functions overriden
+        void on_set_user_data_() noexcept final;
+
         //! Private data members
+        sol::state* state_{nullptr};
         shiva::sfml::window_config cfg_;
         sf::RenderWindow win_{sf::VideoMode(cfg_.size[0], cfg_.size[1]), cfg_.name};
 
