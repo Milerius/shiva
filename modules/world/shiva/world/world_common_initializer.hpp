@@ -10,7 +10,7 @@
 
 namespace shiva::common
 {
-    static bool sfml_initializer(shiva::ecs::system_manager &system_manager_) noexcept
+    static inline bool sfml_initializer(shiva::ecs::system_manager &system_manager_) noexcept
     {
         bool res = system_manager_.load_plugins();
         if (!res) {

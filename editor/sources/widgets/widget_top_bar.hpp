@@ -108,16 +108,17 @@ namespace shiva::editor
             //TODO: move it elsewhere.
             //! Left panel
             ImGui::SetNextWindowPos(ImVec2{0, 0 + height});
-            ImGui::SetNextWindowSizeConstraints(ImVec2{0, 0},
-                                                ImVec2{(float)(win_cfg_.size[0]),
-                                                       win_cfg_.size[1] - win_cfg_.size[1] / 4.f});
+            ImGui::SetNextWindowSizeConstraints(ImVec2{win_cfg_.size[0] * 0.1f,
+                                                       win_cfg_.size[1] * 0.6f},
+                                                ImVec2{win_cfg_.size[0] * 0.7f,
+                                                       win_cfg_.size[1] * 0.8f});
             ImGui::Begin("Project", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse);
             static int selection_mask = (1 << 2);
             int node_clicked = -1;
             ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize());
-            unsigned int idx = 0;
-            std::function<void(const shiva::fs::path &, unsigned int)> functor = [&](const shiva::fs::path &path,
-                                                                                     unsigned int depth) {
+            std::function<void(const shiva::fs::path &, unsigned int, unsigned int &)> functor = [&](
+                const shiva::fs::path &path,
+                unsigned int depth, unsigned int &idx) {
                 for (auto &&p : shiva::fs::directory_iterator(path)) {
                     ImGuiTreeNodeFlags node_flags =
                         ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick |
@@ -125,10 +126,10 @@ namespace shiva::editor
                     if (shiva::fs::is_directory(p.path())) {
                         using namespace std::string_literals;
                         std::string s = ICON_FA_FOLDER + " "s + p.path().filename().string().c_str();
-                        if (ImGui::TreeNode(s.c_str())) {
-                            if (ImGui::IsItemClicked())
+                        if (ImGui::TreeNodeEx((void *)(intptr_t)idx, node_flags, "%s", s.c_str())) {
+                            if (ImGui::IsItemClicked() || ImGui::IsItemFocused())
                                 node_clicked = idx;
-                            functor(p, depth + 1);
+                            functor(p, depth + 1, ++idx);
                             ImGui::TreePop();
                         }
                     } else {
@@ -138,7 +139,7 @@ namespace shiva::editor
                         }
                         ImGui::TreeNodeEx((void *)(intptr_t)idx, node_flags, "%s",
                                           p.path().filename().string().c_str());
-                        if (ImGui::IsItemClicked())
+                        if (ImGui::IsItemClicked() || ImGui::IsItemFocused())
                             node_clicked = idx;
                         if (depth > 0) {
                             ImGui::Unindent();
@@ -148,7 +149,8 @@ namespace shiva::editor
                 }
                 depth -= 1;
             };
-            functor(shiva::fs::current_path(), 0);
+            unsigned int idx = 0u;
+            functor(shiva::fs::current_path(), 0u, idx);
             if (node_clicked != -1) {
                 // Update selection state. Process outside of tree loop to avoid visual inconsistencies during the clicking-frame.
                 if (ImGui::GetIO().KeyCtrl)

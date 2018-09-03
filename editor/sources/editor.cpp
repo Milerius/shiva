@@ -9,7 +9,8 @@ namespace shiva::editor
 {
     editor::editor() noexcept
     {
-        assert(shiva::common::sfml_initializer(this->system_manager_));
+        bool res = shiva::common::sfml_initializer(this->system_manager_);
+        assert(res);
         system_manager_.load_systems<shiva::editor::widget_top_bar>(window_cfg_,
                                                                     system_manager_.get_system<shiva::scripting::lua_system>().get_state());
         system_manager_.prioritize_system(shiva::editor::widget_top_bar::class_name(), "render_system",
