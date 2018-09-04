@@ -1,6 +1,8 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/b717c2a6e27890c8cab4/maintainability)](https://codeclimate.com/github/Milerius/shiva/maintainability)
 [![Loc](https://tokei.rs/b1/github/Milerius/shiva)](https://github.com/Milerius/shiva)
 [![HitCount](http://hits.dwyl.io/milerius/shiva.svg)](http://hits.dwyl.io/milerius/shiva)
+[![Build Status Windows](http://ci.slyris.eu/buildStatus/icon?job=shiva)](http://ci.slyris.eu/job/shiva/)
+[![Build Status Linux/OSX](http://ci.slyris.eu/buildStatus/icon?job=shiva-pipeline/master)](http://ci.slyris.eu
 
 **Introduction**
 
