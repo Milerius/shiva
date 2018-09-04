@@ -1,6 +1,6 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/b717c2a6e27890c8cab4/maintainability)](https://codeclimate.com/github/Milerius/shiva/maintainability)
 
-[![](https://tokei.rs/b1/github/Milerius/shiva)](https://github.com/Milerius/shiva)
+[![Loc](https://tokei.rs/b1/github/Milerius/shiva)](https://github.com/Milerius/shiva)
 [![HitCount](http://hits.dwyl.io/milerius/shiva.svg)](http://hits.dwyl.io/milerius/shiva)
 
 **Introduction**
