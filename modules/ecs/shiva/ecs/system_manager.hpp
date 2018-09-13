@@ -239,6 +239,7 @@ namespace shiva::ecs
          * \return true if all the plugins has been successfully loaded, false otherwise
          */
         inline bool load_plugins() noexcept;
+        inline bool hot_reload_plugins() noexcept;
 
         /**
          * \note This function allow you to get a system by his name, used for get a specific plugin for example.
@@ -267,6 +268,8 @@ namespace shiva::ecs
         inline void sweep_systems_() noexcept;
 
         //! Private data members
+        using clock = std::chrono::steady_clock;
+        clock::time_point start_{clock::now()};
         shiva::timer::time_step timestep_;
         entt::dispatcher &dispatcher_;
         entt::entity_registry &ett_registry_;
@@ -294,6 +297,7 @@ namespace shiva::ecs
     void system_manager::receive([[maybe_unused]] const shiva::event::start_game &evt)
     {
         timestep_.start();
+        start_ = clock::now();
     }
 
     void system_manager::receive(const shiva::event::add_base_system &evt)
@@ -373,6 +377,13 @@ namespace shiva::ecs
 
         if (need_to_sweep_systems_) {
             sweep_systems_();
+        }
+
+        auto end = clock::now();
+        std::chrono::duration<double> elapsed_seconds = end - start_;
+        if (elapsed_seconds.count() > 5) {
+            this->hot_reload_plugins();
+            start_ = clock::now();
         }
 
         return nb_systems_updated;
@@ -520,13 +531,37 @@ namespace shiva::ecs
     {
         auto res = plugins_registry_.load_all_symbols();
         auto functor = [this](auto &&dlls) {
-            system_ptr ptr = dlls(this->dispatcher_, this->ett_registry_, this->timestep_.get_fixed_delta_time());
+            system_ptr ptr = dlls.second.creator_function(this->dispatcher_, this->ett_registry_,
+                                                          this->timestep_.get_fixed_delta_time());
+            dlls.second.class_name = ptr->get_name();
+            dlls.second.type = static_cast<unsigned int>(ptr->get_system_type_RTTI());
             add_system_(std::move(ptr), ptr->get_system_type_RTTI()).im_a_plugin();
         };
 
         plugins_registry_.apply_on_each_symbols(functor);
         dispatcher_.trigger<shiva::event::after_load_systems_plugins>();
         return res;
+    }
+
+    bool system_manager::hot_reload_plugins() noexcept
+    {
+        plugins_registry_.apply_on_each_symbols([this](auto &&dlls) {
+            if (shiva::fs::last_write_time(dlls.first) != dlls.second.last_write_time) {
+                this->log_->info("{} -> need hot reload", dlls.first);
+                auto &&system_collection = systems_[static_cast<system_type>(dlls.second.type)];
+                auto it = shiva::ranges::find_if(system_collection, [&dlls](auto &&sys) {
+                    return sys->get_name() == dlls.second.class_name;
+                });
+                if (it != system_collection.end()) {
+                    it->reset(nullptr);
+                    *it = std::move(dlls.second.creator_function(this->dispatcher_, this->ett_registry_,
+                                                                 this->timestep_.get_fixed_delta_time()));
+                    this->dispatcher_.trigger<shiva::event::after_system_reload_plugins>((*it).get());
+                }
+                dlls.second.last_write_time = shiva::fs::last_write_time(dlls.first);
+            }
+        });
+        return true;
     }
 
     const base_system *

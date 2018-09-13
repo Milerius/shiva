@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <utility>
+#include <map>
 #include <functional>
 #include <boost/dll.hpp>
 #include <shiva/filesystem/filesystem.hpp>
@@ -37,7 +39,15 @@ namespace shiva::helpers
         /**
          * \typedef Shortcut representing a collection of shared library creator function.
          */
-        using symbols_container = std::vector<std::function<CreatorSignature>>;
+        using library_info = std::string;
+        struct library_contents
+        {
+            std::function<CreatorSignature> creator_function;
+            shiva::fs::file_time_type last_write_time;
+            std::string class_name{""};
+            unsigned int type{0};
+        };
+        using symbols_container = std::map<library_info, library_contents>;
 
         //! Constructors
 
@@ -134,12 +144,13 @@ namespace shiva::helpers
             }
             try {
                 log_->debug("path -> {}", it->path().string());
-                symbols.emplace_back(
-                    boost::dll::import_alias<CreatorSignature>(
-                        boost::filesystem::path(it->path().string()),
-                        "create_plugin",
-                        dll::load_mode::append_decorations
-                    ));
+                symbols.emplace(it->path().string(),
+                                library_contents{
+                                    boost::dll::import_alias<CreatorSignature>(
+                                        boost::filesystem::path(it->path().string()),
+                                        "create_plugin",
+                                        dll::load_mode::append_decorations
+                                    ), shiva::fs::last_write_time(it->path()), "", 0});
                 log_->info("Successfully loaded: {}", it->path().filename().string());
             }
             catch (const boost::system::system_error &error) {

@@ -16,7 +16,7 @@
 namespace shiva::lua
 {
     template <typename T>
-    void register_type(sol::state& state, shiva::logging::logger logger) noexcept
+    void register_type(sol::state &state, shiva::logging::logger logger) noexcept
     {
         const auto table = std::tuple_cat(
             std::make_tuple(T::class_name()),

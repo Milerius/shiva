@@ -197,6 +197,7 @@ namespace shiva::plugins
         shiva::lua::register_type<render_system>(*state_, log_);
         (*state_)[render_system::class_name()]["imgui_image_button"] = []([[maybe_unused]] render_system &self,
                                                                           const char *texture_id) {
+            //toto
             sol::table table = (*self.state_)["shiva"]["resource_registry"];
             const sf::Texture &texture = table["get_texture_c"](table, texture_id);
             return ImGui::ImageButton(texture);
@@ -209,9 +210,10 @@ namespace shiva::plugins
             return std::make_pair(texture.getSize().x, texture.getSize().y);
         };
 
-        (*state_)[render_system::class_name()]["update_font"] = []([[maybe_unused]] render_system &self) {
-            ImGui::SFML::UpdateFontTexture();
-        };
+            (*state_)[render_system::class_name()]["update_font"] = [this]([[maybe_unused]] render_system &self) {
+                this->log_->debug("updating fonts");
+                ImGui::SFML::UpdateFontTexture();
+            };
 
         (*state_)["shiva"]["render"] = this;
     }
