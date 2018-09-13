@@ -10,12 +10,10 @@
 
 namespace shiva::common
 {
-    static inline bool sfml_initializer(shiva::ecs::system_manager &system_manager_) noexcept
+    namespace details
     {
-        bool res = system_manager_.load_plugins();
-        if (!res) {
-            std::cerr << "error loading plugins" << std::endl;
-        } else {
+        static inline bool sfml_set_user_data(shiva::ecs::system_manager &system_manager_)
+        {
             system_manager_.prioritize_system("imgui_system", "render_system",
                                               shiva::ecs::system_type::post_update);
             auto &lua_system = system_manager_.create_system<shiva::scripting::lua_system>();
@@ -51,6 +49,21 @@ namespace shiva::common
                 video_system->set_user_data(&full_data);
                 box2d_system->set_user_data(&lua_system.get_state());
                 render_system->set_user_data(&lua_system.get_state());
+                return true;
+            }
+            return false;
+        }
+    }
+
+    static inline bool sfml_initializer(shiva::ecs::system_manager &system_manager_) noexcept
+    {
+        bool res = system_manager_.load_plugins();
+        if (!res) {
+            std::cerr << "error loading plugins" << std::endl;
+        } else {
+            res = details::sfml_set_user_data(system_manager_);
+            if (res) {
+                auto &lua_system = system_manager_.get_system<shiva::scripting::lua_system>();
                 lua_system.load_all_scripted_systems();
             }
         }

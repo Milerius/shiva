@@ -6,6 +6,7 @@
 
 #include <shiva/event/add_base_system.hpp>
 #include <shiva/event/after_load_systems_plugins.hpp>
+#include <shiva/event/after_system_reload_plugins.hpp>
 #include <shiva/event/fatal_error_occured.hpp>
 #include <shiva/event/quit_game.hpp>
 #include <shiva/event/start_game.hpp>
@@ -33,6 +34,7 @@ namespace shiva::event
         change_scene,
         enable_system,
         disable_system,
-        window_config_update>;
+        window_config_update,
+        after_system_reload_plugins>;
 }
 
