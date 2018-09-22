@@ -177,7 +177,7 @@ namespace shiva::scripting
         };
 
         (*state_)[entity_registry_.class_name()]["nb_entities"] = [](shiva::entt::entity_registry &self) {
-            return self.size();
+            return self.alive();
         };
     }
 

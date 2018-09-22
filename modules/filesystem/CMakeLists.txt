@@ -10,7 +10,7 @@ if (LINUX AND NOT EMSCRIPTEN)
 endif(LINUX AND NOT EMSCRIPTEN)
 
 if(APPLE)
-    target_link_libraries(filesystem INTERFACE c++experimental)
+    target_link_libraries(filesystem INTERFACE c++fs)
 endif(APPLE)
 
 if (EMSCRIPTEN)
