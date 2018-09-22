@@ -30,10 +30,13 @@ namespace shiva::editor
 
         void load_editor_resources() noexcept;
     private:
+        //! Private data members
         bool resources_ready{false};
         shiva::windows_config &win_cfg_;
         sol::state &state_;
 
+
+        //! Private member functions
 
         //! Widgets
         float widget_main_menu_bar_() noexcept;
