@@ -203,7 +203,7 @@ namespace shiva::scripting
             py::class_<::entt::DefaultRegistry> base_type(*module_, "DefaultRegistry", py::dynamic_attr());
             auto type = register_type<shiva::entt::entity_registry>();
             type.def("nb_entities", [](shiva::entt::entity_registry &self) {
-                return self.size();
+                return self.alive();
             });
             using comp_type = shiva::entt::entity_registry::component_type;
             type.def("for_each_runtime",
