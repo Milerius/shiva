@@ -102,6 +102,8 @@ namespace shiva::ecs
          */
         inline size_t update() noexcept;
 
+        inline size_t update_systems(shiva::ecs::system_type system_type_to_update) noexcept;
+
         /**
          * \note This function allow you to get a system through a template parameter.
          * \tparam TSystem represents the system to get.
@@ -345,35 +347,17 @@ namespace shiva::ecs
     {
         if (!nb_systems())
             return 0u;
+
         size_t nb_systems_updated = 0u;
-
-        auto update_system_functor = [&nb_systems_updated](auto &&sys) {
-            if (sys->is_enabled()) {
-                sys->update();
-                nb_systems_updated++;
-            }
-        };
-
         timestep_.start_frame();
-        shiva::ranges::for_each(systems_, [this, update_system_functor](auto &&vec) {
-            if (!vec.empty()) {
-                system_type current_system_type = vec.front()->get_system_type_RTTI();
-                auto update_functor = [this, update_system_functor, current_system_type]() {
-                    shiva::ranges::for_each(this->systems_[current_system_type],
-                                            [update_system_functor](auto &&sys) {
-                                                update_system_functor(std::forward<decltype(sys)>(sys));
-                                            });
-                };
-                if (current_system_type != system_type::logic_update) {
-                    update_functor();
-                } else {
-                    while (timestep_.is_update_required()) {
-                        update_functor();
-                        timestep_.perform_update();
-                    }
-                }
-            };
-        });
+        nb_systems_updated += update_systems(shiva::ecs::system_type::pre_update);
+
+        while (timestep_.is_update_required()) {
+            nb_systems_updated += update_systems(shiva::ecs::system_type::logic_update);
+            timestep_.perform_update();
+        }
+
+        nb_systems_updated += update_systems(shiva::ecs::system_type::post_update);
 
         if (need_to_sweep_systems_) {
             sweep_systems_();
@@ -664,5 +648,18 @@ namespace shiva::ecs
             return true;
         }
         return false;
+    }
+
+    size_t system_manager::update_systems(shiva::ecs::system_type system_type_to_update) noexcept
+    {
+        size_t nb_systems_updated = 0u;
+        auto &&systems_collection_to_update = systems_[system_type_to_update];
+        for (auto &&sys : systems_collection_to_update) {
+            if (sys->is_enabled()) {
+                sys->update();
+                nb_systems_updated++;
+            }
+        }
+        return nb_systems_updated;
     }
 }
