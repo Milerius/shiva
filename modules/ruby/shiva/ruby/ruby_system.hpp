@@ -12,6 +12,6 @@ namespace shiva::ruby
     {
         private:
             template <typename Component>
-            void register_component_() noexcept:
+            void register_component_() noexcept;
     };
 }
