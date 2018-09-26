@@ -1,5 +1,5 @@
 set(MODULE_PATH
-        shiva/ruby)
+        ${CMAKE_CURRENT_SOURCE_DIR}/shiva/ruby)
 
 set(MODULE_PUBLIC_HEADERS
         "${MODULE_PATH}/ruby_system.hpp"
