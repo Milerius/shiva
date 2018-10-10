@@ -27,7 +27,7 @@ option(SHIVA_BUILD_EDITOR "Shiva build editor" OFF)
 
 
 ##! CMake Path
-set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include(library)
 
 ##! Project modules
