@@ -11,33 +11,12 @@
 
 namespace shiva::event
 {
-    enum class Modifers : unsigned char {
-        alt = 0,
-        control,
-        shift,
-        system
-    };
-
-    using T = std::underlying_type_t <Modifers>;
-
-    inline Modifers operator | (Modifers lhs, Modifers rhs)
-    {
-        return (Modifers)(static_cast<T>(lhs) | static_cast<T>(rhs));
-    }
-
-    inline Modifers& operator |= (Modifers& lhs, Modifers rhs)
-    {
-        lhs = (Modifers)(static_cast<T>(lhs) | static_cast<T>(rhs));
-        return lhs;
-    }
-
     struct key_pressed
     {
         key_pressed() noexcept = default;
 
-
-        key_pressed(shiva::input::keyboard::TKey key, Modifers modifers) noexcept
-                : keycode(key), modifers_(modifers)
+        key_pressed(shiva::input::keyboard::TKey key, shiva::input::keyboard::Modifers modifers) noexcept
+            : keycode(key), modifers_(modifers)
         {
         }
 
@@ -69,7 +48,7 @@ namespace shiva::event
         }
 
         shiva::input::keyboard::TKey keycode{shiva::input::keyboard::Key::A};
-        Modifers modifers_;
+        shiva::input::keyboard::Modifers modifers_;
         bool alt{false};
         bool control{false};
         bool shift{false};
