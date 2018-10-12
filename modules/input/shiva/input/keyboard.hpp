@@ -114,10 +114,10 @@ namespace shiva::input::keyboard
     using TKey = Key::EnumType;
 
     enum class Modifers : uint16_t {
-        alt = 0,
-        control,
-        shift,
-        system
+        alt = 1 << 0,
+        control = 1 << 1,
+        shift = 1 << 2,
+        system = 1 << 3
     };
 
     using T = std::underlying_type_t <Modifers>;

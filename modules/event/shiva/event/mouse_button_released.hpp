@@ -5,7 +5,7 @@
 #pragma once
 
 #include <shiva/reflection/reflection.hpp>
-#include <shiva/input/keyboard.hpp>
+#include <shiva/input/mouse.hpp>
 
 namespace shiva::event
 {
