@@ -54,7 +54,7 @@ macro(CREATE_MODULE_PLUGIN ModuleAlias LibSources BuildInterfaceDirectory Output
             LIBRARY_OUTPUT_DIRECTORY_RELEASE "${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE}/${OutputDirectory}"
             RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE}/${OutputDirectory}"
             RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE}/${OutputDirectory}")
-    MSG_CYAN_BOLD(STATUS "Module" "${ModuleAlias}" "successfully created.")
+    MSG_CYAN_BOLD(STATUS "Plugin module" "${ModuleAlias}" "successfully created.")
 endmacro()
 
 macro(AUTO_TARGETS_MODULE_INSTALL MODULE_NAME)

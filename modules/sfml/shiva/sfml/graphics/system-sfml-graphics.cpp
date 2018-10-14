@@ -50,6 +50,7 @@ namespace shiva::plugins
     //! Public member functions overriden
     void render_system::update() noexcept
     {
+		sf::Time delta_time = sf::seconds(static_cast<float>(fixed_delta_time_));
         auto update_transform = []([[maybe_unused]] auto entity, auto &&transform, auto &&drawable) {
             auto transform_ptr = std::static_pointer_cast<shiva::sfml::drawable_component_impl>(
                 drawable.drawable_)->transformable;
@@ -107,6 +108,7 @@ namespace shiva::plugins
         entity_registry_.view<shiva::ecs::layer_6, shiva::ecs::drawable>().each(draw);
         entity_registry_.view<shiva::ecs::layer_7, shiva::ecs::drawable>().each(draw);
         entity_registry_.view<shiva::ecs::layer_8, shiva::ecs::drawable>().each(draw);
+		ImGui::SFML::Update(win_, delta_time);
         ImGui::SFML::Render(win_);
         win_.display();
     }

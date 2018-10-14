@@ -4,6 +4,9 @@
 
 #pragma once
 
+#include <shiva/reflection/reflection.hpp>
+#include <shiva/input/mouse.hpp>
+
 namespace shiva::event
 {
     struct mouse_wheel_scrolled
@@ -11,7 +14,7 @@ namespace shiva::event
         mouse_wheel_scrolled() noexcept = default;
 
         mouse_wheel_scrolled(shiva::input::mouse::Wheel wheel, float delta, int x, int y) noexcept
-            : x(x), y(y),
+            : wheel(wheel), delta(delta), x(x), y(y)
         {
         }
 
@@ -25,9 +28,9 @@ namespace shiva::event
         static constexpr auto reflected_members() noexcept
         {
             return meta::makeMap(reflect_member(&mouse_wheel_scrolled::wheel),
-                                 reflect_member(&mouse_button_pressed::delta),
-                                 reflect_member(&mouse_button_pressed::x),
-                                 reflect_member(&mouse_button_pressed::y)););
+                                 reflect_member(&mouse_wheel_scrolled::delta),
+                                 reflect_member(&mouse_wheel_scrolled::x),
+                                 reflect_member(&mouse_wheel_scrolled::y));
         }
 
         shiva::input::mouse::Wheel wheel;

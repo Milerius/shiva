@@ -5,7 +5,7 @@
 #pragma once
 
 #include <shiva/reflection/reflection.hpp>
-#include <shiva/input/keyboard.hpp>
+#include <shiva/input/mouse.hpp>
 
 namespace shiva::event
 {
@@ -28,8 +28,8 @@ namespace shiva::event
         static constexpr auto reflected_members() noexcept
         {
             return meta::makeMap(reflect_member(&mouse_button_released::button),
-                                 reflect_member(&mouse_button_pressed::x),
-                                 reflect_member(&mouse_button_pressed::y));
+                                 reflect_member(&mouse_button_released::x),
+                                 reflect_member(&mouse_button_released::y));
         }
 
         shiva::input::mouse::Button button;

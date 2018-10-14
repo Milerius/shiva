@@ -4,6 +4,9 @@
 
 #pragma once
 
+#include <shiva/reflection/reflection.hpp>
+#include <shiva/input/mouse.hpp>
+
 namespace shiva::event
 {
     struct mouse_moved
