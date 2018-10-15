@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <chrono>
+
 #include <shiva/meta/named_type.hpp>
 
 namespace shiva::ecs
@@ -18,12 +20,12 @@ namespace shiva::ecs
      * \note - PostUpdate: These systems are the last to be updated in the game loop,
      * they are generally used for rendering or interpolation for example.
      */
-    enum system_type
+    enum system_type : uint8_t
     {
         pre_update = 0,
         logic_update = 1,
         post_update = 2,
-        size = 3,
+        size,
     };
 
     /**
@@ -42,4 +44,6 @@ namespace shiva::ecs
      * \typedef strong type of system_type::logic_update
      */
     using system_logic_update = fluent::NamedType<system_type, struct system_logic_update_tag>;
+
+    using delta_t = std::chrono::duration<float>;
 }

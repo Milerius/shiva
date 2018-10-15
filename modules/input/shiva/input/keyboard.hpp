@@ -112,6 +112,26 @@ namespace shiva::input::keyboard
          Pause);
 
     using TKey = Key::EnumType;
+
+    enum class Modifers : uint16_t {
+        alt = 1 << 0,
+        control = 1 << 1,
+        shift = 1 << 2,
+        system = 1 << 3
+    };
+
+    using T = std::underlying_type_t <Modifers>;
+
+    inline Modifers operator | (Modifers lhs, Modifers rhs)
+    {
+        return (Modifers)(static_cast<T>(lhs) | static_cast<T>(rhs));
+    }
+
+    inline Modifers& operator |= (Modifers& lhs, Modifers rhs)
+    {
+        lhs = (Modifers)(static_cast<T>(lhs) | static_cast<T>(rhs));
+        return lhs;
+    }
 }
 
 #define __PAIRIFY_ELEM(v)         {pp_stringviewify(v), shiva::input::keyboard::Key::v},

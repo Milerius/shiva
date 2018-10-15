@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <type_traits>
+
 #include <shiva/reflection/reflection.hpp>
 #include <shiva/input/keyboard.hpp>
 
@@ -13,6 +15,12 @@ namespace shiva::event
     {
         key_pressed() noexcept = default;
 
+        key_pressed(shiva::input::keyboard::TKey key, shiva::input::keyboard::Modifers modifers) noexcept
+            : keycode(key), modifers_(modifers)
+        {
+        }
+
+        [[deprecated]]
         key_pressed(shiva::input::keyboard::TKey key,
             bool alt_,
             bool control_,
@@ -32,6 +40,7 @@ namespace shiva::event
         static constexpr auto reflected_members() noexcept
         {
             return meta::makeMap(reflect_member(&key_pressed::keycode),
+                                 reflect_member(&key_pressed::modifers_),
                                  reflect_member(&key_pressed::alt),
                                  reflect_member(&key_pressed::control),
                                  reflect_member(&key_pressed::shift),
@@ -39,6 +48,7 @@ namespace shiva::event
         }
 
         shiva::input::keyboard::TKey keycode{shiva::input::keyboard::Key::A};
+        shiva::input::keyboard::Modifers modifers_;
         bool alt{false};
         bool control{false};
         bool shift{false};

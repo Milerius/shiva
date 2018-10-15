@@ -33,7 +33,7 @@ namespace shiva::ecs
         //! Public typedefs
         using system_ptr = std::unique_ptr<base_system>;
         using system_array = std::vector<system_ptr>;
-        using system_registry = std::array<system_array, size>;
+        using system_registry = std::array<system_array, system_type::size>;
         typedef system_ptr (pluginapi_create_t)(shiva::entt::dispatcher &, shiva::entt::entity_registry &,
                                                 const float &fixed_delta_time);
         using plugins_registry_t = shiva::helpers::plugins_registry<pluginapi_create_t>;

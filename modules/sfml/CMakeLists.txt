@@ -28,8 +28,16 @@ if (SHIVA_USE_SFML_AS_RENDERER)
     mini_module(inputs "sfml-graphics;sfml-imgui::sfml-imgui")
 
     ##! SFEMOVIE
-    find_library(SFEMOVIE_LIBRARY sfeMovie)
-    MARK_AS_ADVANCED(SFEMOVIE_LIBRARY)
+    if(NOT SFEMOVIE_LIBRARY)
+        find_library(SFEMOVIE_LIBRARY_RELEASE NAMES sfeMovie)
+        MARK_AS_ADVANCED(SFEMOVIE_LIBRARY_RELEASE)
+
+        find_library(SFEMOVIE_LIBRARY_DEBUG NAMES sfeMovie-d)
+        MARK_AS_ADVANCED(SFEMOVIE_LIBRARY_DEBUG)
+
+        include(SelectLibraryConfigurations)
+        select_library_configurations(SFEMOVIE)
+    endif()
     message("sfeMovie library -> ${SFEMOVIE_LIBRARY}")
     FIND_PATH(SFEMOVIE_INCLUDE_DIR sfeMovie/Movie.hpp)
     message("sfeMovie header -> ${SFEMOVIE_INCLUDE_DIR}")
