@@ -12,6 +12,10 @@
 #include <shiva/event/start_game.hpp>
 #include <shiva/event/key_released.hpp>
 #include <shiva/event/key_pressed.hpp>
+#include <shiva/event/mouse_moved.hpp>
+#include <shiva/event/mouse_button_pressed.hpp>
+#include <shiva/event/mouse_button_released.hpp>
+#include <shiva/event/mouse_wheel_scrolled.hpp>
 #include <shiva/event/after_load_resources.hpp>
 #include <shiva/event/change_scene.hpp>
 #include <shiva/event/enable_system.hpp>
@@ -30,6 +34,10 @@ namespace shiva::event
         start_game,
         key_pressed,
         key_released,
+        mouse_moved,
+        mouse_button_pressed,
+        mouse_button_released,
+        mouse_wheel_scrolled,
         after_load_resources,
         change_scene,
         enable_system,

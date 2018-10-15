@@ -166,12 +166,12 @@ namespace shiva::ecs
         static_assert(details::is_valid_system_v(is_same_list{}),
                       "valid_system_list is an invalid template parameter");
         if constexpr (std::is_same_v<TSystemType, system_logic_update>) {
-            return logic_update;
+            return system_type::logic_update;
         } else if constexpr (std::is_same_v<TSystemType, system_pre_update>)
-            return pre_update;
+            return system_type::pre_update;
         else if constexpr (std::is_same_v<TSystemType, system_post_update>)
-            return post_update;
-        return size;
+            return system_type::post_update;
+        return system_type::size;
     }
 
     //! Public member functions overriden

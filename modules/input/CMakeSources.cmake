@@ -4,6 +4,8 @@ set(MODULE_PATH
 set(MODULE_PUBLIC_HEADERS
         "${MODULE_PATH}/input.hpp"
         "${MODULE_PATH}/keyboard.hpp"
+        "${MODULE_PATH}/mouse.hpp"
+        "${MODULE_PATH}/gamepad.hpp"
         )
 
 set(MODULE_PRIVATE_HEADERS

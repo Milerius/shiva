@@ -54,12 +54,23 @@ namespace shiva::plugins
                 case sf::Event::MouseWheelMoved:
                     break;
                 case sf::Event::MouseWheelScrolled:
+                    dispatcher_.trigger<shiva::event::mouse_wheel_scrolled>(
+                            static_cast<shiva::input::mouse::Wheel>(evt.mouseWheelScroll.wheel),
+                            evt.mouseWheelScroll.delta, evt.mouseWheelScroll.x, evt.mouseWheelScroll.y);
                     break;
                 case sf::Event::MouseButtonPressed:
+                    dispatcher_.trigger<shiva::event::mouse_button_pressed>(
+                            static_cast<shiva::input::mouse::Button>(evt.mouseButton.button),
+                            evt.mouseButton.x, evt.mouseButton.y);
                     break;
                 case sf::Event::MouseButtonReleased:
+                    dispatcher_.trigger<shiva::event::mouse_button_released>(
+                            static_cast<shiva::input::mouse::Button>(evt.mouseButton.button),
+                            evt.mouseButton.x, evt.mouseButton.y);
                     break;
                 case sf::Event::MouseMoved:
+                    dispatcher_.trigger<shiva::event::mouse_moved>(
+                            evt.mouseMove.x, evt.mouseMove.y);
                     break;
                 case sf::Event::MouseEntered:
                     break;

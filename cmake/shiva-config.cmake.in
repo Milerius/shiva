@@ -32,7 +32,8 @@ find_package(sol2 CONFIG REQUIRED)
 find_package(Lua 5.3)
 if (MSVC)
 find_file(LFSDLL lfs.dll PATH_SUFFIXES bin)
-configure_file(${LFSDLL} ${CMAKE_SOURCE_DIR}/bin COPYONLY)
+file(COPY ${LFSDLL}
+     DESTINATION ${CMAKE_SOURCE_DIR}/bin)
 endif()
 include("${CMAKE_CURRENT_LIST_DIR}/shiva-lua-targets.cmake")
 
