@@ -108,7 +108,6 @@ namespace shiva::plugins
         entity_registry_.view<shiva::ecs::layer_6, shiva::ecs::drawable>().each(draw);
         entity_registry_.view<shiva::ecs::layer_7, shiva::ecs::drawable>().each(draw);
         entity_registry_.view<shiva::ecs::layer_8, shiva::ecs::drawable>().each(draw);
-		ImGui::SFML::Update(win_, delta_time);
         ImGui::SFML::Render(win_);
         win_.display();
     }
