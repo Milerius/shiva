@@ -24,3 +24,8 @@ https://shiva.gitbook.io/project/shiva/tutorial/how-to-create-a-project-through-
 **Gallery**
 
 https://shiva.gitbook.io/project/shiva/gallery
+
+**Video**
+French presentation of the engine:
+
+https://youtu.be/hCohvMHv014
