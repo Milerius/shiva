@@ -19,6 +19,7 @@
 #include <shiva/dll/plugins_registry.hpp>
 #include <shiva/timer/timestep.hpp>
 #include <shiva/spdlog/spdlog.hpp>
+#include <entt/core/utility.hpp>
 
 namespace shiva::ecs
 {
@@ -288,43 +289,43 @@ namespace shiva::ecs
     //! Public callbacks
     void system_manager::receive([[maybe_unused]] const shiva::event::quit_game &evt)
     {
-        log_->debug("quit_game event received");
-        shiva::ranges::for_each(systems_, [](auto &&vec) {
-            shiva::ranges::for_each(vec, [](auto &&sys) {
-                sys->disable();
-            });
-        });
+      log_->debug("quit_game event received");
+      shiva::ranges::for_each(systems_, [](auto &&vec) {
+          shiva::ranges::for_each(vec, [](auto &&sys) {
+              sys->disable();
+          });
+      });
     }
 
     void system_manager::receive([[maybe_unused]] const shiva::event::start_game &evt)
     {
-        timestep_.start();
-        start_ = clock::now();
+      timestep_.start();
+      start_ = clock::now();
     }
 
     void system_manager::receive(const shiva::event::add_base_system &evt)
     {
-        auto sys_type = evt.system_ptr->get_system_type_RTTI();
-        [[maybe_unused]] auto &system = add_system_(
-            std::move(const_cast<shiva::event::add_base_system &>(evt).system_ptr),
-            sys_type);
-        if (evt.prioritize) {
-            prioritize_system(system.get_name(), evt.system_name, sys_type);
-        }
+      auto sys_type = evt.system_ptr->get_system_type_RTTI();
+      [[maybe_unused]] auto &system = add_system_(
+          std::move(const_cast<shiva::event::add_base_system &>(evt).system_ptr),
+          sys_type);
+      if (evt.prioritize) {
+        prioritize_system(system.get_name(), evt.system_name, sys_type);
+      }
     }
 
     void system_manager::receive(const shiva::event::enable_system &evt)
     {
-        auto system_ptr = this->get_system_by_name(evt.system_name, evt.sys_type);
-        if (system_ptr)
-            system_ptr->enable();
+      auto system_ptr = this->get_system_by_name(evt.system_name, evt.sys_type);
+      if (system_ptr)
+        system_ptr->enable();
     }
 
     void system_manager::receive(const shiva::event::disable_system &evt)
     {
-        auto system_ptr = this->get_system_by_name(evt.system_name, evt.sys_type);
-        if (system_ptr)
-            system_ptr->disable();
+      auto system_ptr = this->get_system_by_name(evt.system_name, evt.sys_type);
+      if (system_ptr)
+        system_ptr->disable();
     }
 
     //! Constructor
@@ -334,332 +335,340 @@ namespace shiva::ecs
         ett_registry_(registry),
         plugins_registry_(plugins_registry)
     {
-        dispatcher_.sink<shiva::event::start_game>().connect(this);
-        dispatcher_.sink<shiva::event::quit_game>().connect(this);
-        dispatcher_.sink<shiva::event::add_base_system>().connect(this);
-        dispatcher_.sink<shiva::event::enable_system>().connect(this);
-        dispatcher_.sink<shiva::event::disable_system>().connect(this);
-        log_->info("system_manager successfully created");
+      dispatcher_.sink<shiva::event::start_game>().connect<::entt::overload<void(const shiva::event::start_game &evt)>(
+          &system_manager::receive)>(this);
+      dispatcher_.sink<shiva::event::quit_game>().connect<::entt::overload<void(const shiva::event::quit_game &evt)>(
+          &system_manager::receive)>(this);
+      dispatcher_.sink<shiva::event::add_base_system>().connect<::entt::overload<void(
+          const shiva::event::add_base_system &evt)>(
+          &system_manager::receive)>(this);
+      dispatcher_.sink<shiva::event::enable_system>().connect<::entt::overload<void(
+          const shiva::event::enable_system &evt)>(
+          &system_manager::receive)>(this);
+      dispatcher_.sink<shiva::event::disable_system>().connect<::entt::overload<void(
+          const shiva::event::disable_system &evt)>(
+          &system_manager::receive)>(this);
+      log_->info("system_manager successfully created");
     }
 
     //! Public member functions
     size_t system_manager::update() noexcept
     {
-        if (!nb_systems())
-            return 0u;
+      if (!nb_systems())
+        return 0u;
 
-        size_t nb_systems_updated = 0u;
-        timestep_.start_frame();
-        nb_systems_updated += update_systems(shiva::ecs::system_type::pre_update);
+      size_t nb_systems_updated = 0u;
+      timestep_.start_frame();
+      nb_systems_updated += update_systems(shiva::ecs::system_type::pre_update);
 
-        while (timestep_.is_update_required()) {
-            nb_systems_updated += update_systems(shiva::ecs::system_type::logic_update);
-            timestep_.perform_update();
-        }
+      while (timestep_.is_update_required()) {
+        nb_systems_updated += update_systems(shiva::ecs::system_type::logic_update);
+        timestep_.perform_update();
+      }
 
-        nb_systems_updated += update_systems(shiva::ecs::system_type::post_update);
+      nb_systems_updated += update_systems(shiva::ecs::system_type::post_update);
 
-        if (need_to_sweep_systems_) {
-            sweep_systems_();
-        }
+      if (need_to_sweep_systems_) {
+        sweep_systems_();
+      }
 
-        auto end = clock::now();
-        std::chrono::duration<double> elapsed_seconds = end - start_;
-        if (elapsed_seconds.count() > 5) {
-            this->hot_reload_plugins();
-            start_ = clock::now();
-        }
-
-        return nb_systems_updated;
+/*      auto end = clock::now();
+      std::chrono::duration<double> elapsed_seconds = end - start_;
+      if (elapsed_seconds.count() > 5) {
+        this->hot_reload_plugins();
+        start_ = clock::now();
+      }
+*/
+      return nb_systems_updated;
     }
 
     template <typename TSystem>
     const TSystem &system_manager::get_system() const noexcept
     {
-        const auto ret = get_system_<TSystem>().or_else([this](const std::error_code &ec) {
-            this->dispatcher_.trigger<shiva::event::fatal_error_occured>(ec);
-        });
-        return (*ret).get();
+      const auto ret = get_system_<TSystem>().or_else([this](const std::error_code &ec) {
+          this->dispatcher_.trigger<shiva::event::fatal_error_occured>(ec);
+      });
+      return (*ret).get();
     }
 
     template <typename TSystem>
     TSystem &system_manager::get_system() noexcept
     {
-        auto ret = get_system_<TSystem>().or_else([this](const std::error_code &ec) {
-            this->dispatcher_.trigger<shiva::event::fatal_error_occured>(ec);
-        });
-        return (*ret).get();
+      auto ret = get_system_<TSystem>().or_else([this](const std::error_code &ec) {
+          this->dispatcher_.trigger<shiva::event::fatal_error_occured>(ec);
+      });
+      return (*ret).get();
     }
 
     template <typename... TSystems>
     std::tuple<std::add_lvalue_reference_t<TSystems>...> system_manager::get_systems() noexcept
     {
-        return {get_system<TSystems>()...};
+      return {get_system<TSystems>()...};
     }
 
     template <typename... TSystems>
     std::tuple<std::add_lvalue_reference_t<std::add_const_t<TSystems>>...> system_manager::get_systems() const noexcept
     {
-        return {get_system<TSystems>()...};
+      return {get_system<TSystems>()...};
     }
 
     template <typename TSystem>
     bool system_manager::has_system() const noexcept
     {
-        static_assert(details::is_system_v<TSystem>,
-                      "The system type given as template parameter doesn't seems to be valid");
-        constexpr const auto sys_type = TSystem::get_system_type();
-        return shiva::ranges::any_of(systems_[sys_type], [](auto &&ptr) {
-            return ptr->get_name() == TSystem::class_name();
-        });
+      static_assert(details::is_system_v<TSystem>,
+                    "The system type given as template parameter doesn't seems to be valid");
+      constexpr const auto sys_type = TSystem::get_system_type();
+      return shiva::ranges::any_of(systems_[sys_type], [](auto &&ptr) {
+          return ptr->get_name() == TSystem::class_name();
+      });
     }
 
     template <typename... TSystems>
     bool system_manager::has_systems() const noexcept
     {
-        return (has_system<TSystems>() && ...);
+      return (has_system<TSystems>() && ...);
     }
 
     template <typename TSystem>
     bool system_manager::mark_system() noexcept
     {
-        static_assert(details::is_system_v<TSystem>,
-                      "The system type given as template parameter doesn't seems to be valid");
-        if (has_system<TSystem>()) {
-            get_system<TSystem>().mark();
-            need_to_sweep_systems_ = true;
-            return true;
-        }
-        need_to_sweep_systems_ = false;
-        return false;
+      static_assert(details::is_system_v<TSystem>,
+                    "The system type given as template parameter doesn't seems to be valid");
+      if (has_system<TSystem>()) {
+        get_system<TSystem>().mark();
+        need_to_sweep_systems_ = true;
+        return true;
+      }
+      need_to_sweep_systems_ = false;
+      return false;
     }
 
     template <typename... TSystems>
     bool system_manager::mark_systems() noexcept
     {
-        return (mark_system<TSystems>() && ...);
+      return (mark_system<TSystems>() && ...);
     }
 
     template <typename TSystem>
     bool system_manager::enable_system() noexcept
     {
-        static_assert(details::is_system_v<TSystem>,
-                      "The system type given as template parameter doesn't seems to be valid");
-        if (has_system<TSystem>()) {
-            get_system<TSystem>().enable();
-            return true;
-        }
-        return false;
+      static_assert(details::is_system_v<TSystem>,
+                    "The system type given as template parameter doesn't seems to be valid");
+      if (has_system<TSystem>()) {
+        get_system<TSystem>().enable();
+        return true;
+      }
+      return false;
     }
 
     template <typename... TSystems>
     bool system_manager::enable_systems() noexcept
     {
-        return (enable_system<TSystems>() && ...);
+      return (enable_system<TSystems>() && ...);
     }
 
     template <typename TSystem>
     bool system_manager::disable_system() noexcept
     {
-        static_assert(details::is_system_v<TSystem>,
-                      "The system type given as template parameter doesn't seems to be valid");
-        if (has_system<TSystem>()) {
-            get_system<TSystem>().disable();
-            return true;
-        }
-        return false;
+      static_assert(details::is_system_v<TSystem>,
+                    "The system type given as template parameter doesn't seems to be valid");
+      if (has_system<TSystem>()) {
+        get_system<TSystem>().disable();
+        return true;
+      }
+      return false;
     }
 
     template <typename... TSystems>
     bool system_manager::disable_systems() noexcept
     {
-        return (disable_system<TSystems>() && ...);
+      return (disable_system<TSystems>() && ...);
     }
 
     template <typename TSystem, typename... TSystemArgs>
     TSystem &system_manager::create_system(TSystemArgs &&... args) noexcept
     {
-        static_assert(details::is_system_v<TSystem>,
-                      "The system type given as template parameter doesn't seems to be valid");
-        auto creator = [this](auto &&... args_) {
-            return std::make_unique<TSystem>(this->dispatcher_,
-                                             this->ett_registry_,
-                                             this->timestep_.get_fixed_delta_time(),
-                                             std::forward<decltype(args_)>(args_)...);
-        };
-        system_ptr sys = creator(std::forward<TSystemArgs>(args)...);
-        return static_cast<TSystem &>(add_system_(std::move(sys), TSystem::get_system_type()));
+      static_assert(details::is_system_v<TSystem>,
+                    "The system type given as template parameter doesn't seems to be valid");
+      auto creator = [this](auto &&... args_) {
+          return std::make_unique<TSystem>(this->dispatcher_,
+                                           this->ett_registry_,
+                                           this->timestep_.get_fixed_delta_time(),
+                                           std::forward<decltype(args_)>(args_)...);
+      };
+      system_ptr sys = creator(std::forward<TSystemArgs>(args)...);
+      return static_cast<TSystem &>(add_system_(std::move(sys), TSystem::get_system_type()));
     }
 
     template <typename... TSystems, typename... TArgs>
     auto system_manager::load_systems(TArgs &&...args) noexcept
     {
-        (create_system<TSystems>(std::forward<TArgs>(args)...), ...);
-        return get_systems<TSystems ...>();
+      (create_system<TSystems>(std::forward<TArgs>(args)...), ...);
+      return get_systems<TSystems ...>();
     }
 
     size_t system_manager::nb_systems() const noexcept
     {
-        return std::accumulate(std::begin(systems_), std::end(systems_), static_cast<size_t>(0u),
-                               [](size_t accumulator, auto &&vec) {
-                                   return accumulator + vec.size();
-                               });
+      return std::accumulate(std::begin(systems_), std::end(systems_), static_cast<size_t>(0u),
+                             [](size_t accumulator, auto &&vec) {
+                                 return accumulator + vec.size();
+                             });
     }
 
     size_t system_manager::nb_systems(system_type sys_type) const noexcept
     {
-        return systems_[sys_type].size();
+      return systems_[sys_type].size();
     }
 
     bool system_manager::load_plugins() noexcept
     {
-        auto res = plugins_registry_.load_all_symbols();
-        auto functor = [this](auto &&dlls) {
-            system_ptr ptr = dlls.second.creator_function(this->dispatcher_, this->ett_registry_,
-                                                          this->timestep_.get_fixed_delta_time());
-            dlls.second.class_name = ptr->get_name();
-            dlls.second.type = static_cast<unsigned int>(ptr->get_system_type_RTTI());
-            add_system_(std::move(ptr), ptr->get_system_type_RTTI()).im_a_plugin();
-        };
+      auto res = plugins_registry_.load_all_symbols();
+      auto functor = [this](auto &&dlls) {
+          system_ptr ptr = dlls.second.creator_function(this->dispatcher_, this->ett_registry_,
+                                                        this->timestep_.get_fixed_delta_time());
+          dlls.second.class_name = ptr->get_name();
+          dlls.second.type = static_cast<unsigned int>(ptr->get_system_type_RTTI());
+          add_system_(std::move(ptr), ptr->get_system_type_RTTI()).im_a_plugin();
+      };
 
-        plugins_registry_.apply_on_each_symbols(functor);
-        dispatcher_.trigger<shiva::event::after_load_systems_plugins>();
-        return res;
+      plugins_registry_.apply_on_each_symbols(functor);
+      dispatcher_.trigger<shiva::event::after_load_systems_plugins>();
+      return res;
     }
 
     bool system_manager::hot_reload_plugins() noexcept
     {
-        plugins_registry_.apply_on_each_symbols([this](auto &&dlls) {
-            if (shiva::fs::last_write_time(dlls.first) != dlls.second.last_write_time) {
-                this->log_->info("{} -> need hot reload", dlls.first);
-                auto &&system_collection = systems_[static_cast<system_type>(dlls.second.type)];
-                auto it = shiva::ranges::find_if(system_collection, [&dlls](auto &&sys) {
-                    return sys->get_name() == dlls.second.class_name;
-                });
-                if (it != system_collection.end()) {
-                    it->reset(nullptr);
-                    *it = std::move(dlls.second.creator_function(this->dispatcher_, this->ett_registry_,
-                                                                 this->timestep_.get_fixed_delta_time()));
-                    this->dispatcher_.trigger<shiva::event::after_system_reload_plugins>((*it).get());
-                }
-                dlls.second.last_write_time = shiva::fs::last_write_time(dlls.first);
+      plugins_registry_.apply_on_each_symbols([this](auto &&dlls) {
+          if (shiva::fs::last_write_time(dlls.first) != dlls.second.last_write_time) {
+            this->log_->info("{} -> need hot reload", dlls.first);
+            auto &&system_collection = systems_[static_cast<system_type>(dlls.second.type)];
+            auto it = shiva::ranges::find_if(system_collection, [&dlls](auto &&sys) {
+                return sys->get_name() == dlls.second.class_name;
+            });
+            if (it != system_collection.end()) {
+              it->reset(nullptr);
+              *it = std::move(dlls.second.creator_function(this->dispatcher_, this->ett_registry_,
+                                                           this->timestep_.get_fixed_delta_time()));
+              this->dispatcher_.trigger<shiva::event::after_system_reload_plugins>((*it).get());
             }
-        });
-        return true;
+            dlls.second.last_write_time = shiva::fs::last_write_time(dlls.first);
+          }
+      });
+      return true;
     }
 
     const base_system *
     system_manager::get_system_by_name(std::string system_name, shiva::ecs::system_type type) const noexcept
     {
-        auto &&system_collection = systems_[type];
-        auto it = shiva::ranges::find_if(system_collection, [name = std::move(system_name)](auto &&sys) {
-            return sys->get_name() == name;
-        });
-        return (it != system_collection.end()) ? (*it).get() : nullptr;
+      auto &&system_collection = systems_[type];
+      auto it = shiva::ranges::find_if(system_collection, [name = std::move(system_name)](auto &&sys) {
+          return sys->get_name() == name;
+      });
+      return (it != system_collection.end()) ? (*it).get() : nullptr;
     }
 
     base_system *system_manager::get_system_by_name(std::string system_name, shiva::ecs::system_type type) noexcept
     {
-        auto &&system_collection = systems_[type];
-        auto it = shiva::ranges::find_if(system_collection, [name = std::move(system_name)](auto &&sys) {
+      auto &&system_collection = systems_[type];
+      auto it = shiva::ranges::find_if(system_collection, [name = std::move(system_name)](auto &&sys) {
 
-            return sys->get_name() == name;
-        });
-        return (it != system_collection.end()) ? (*it).get() : nullptr;
+          return sys->get_name() == name;
+      });
+      return (it != system_collection.end()) ? (*it).get() : nullptr;
     }
 
     //! Private member functions
 
     base_system &system_manager::add_system_(system_manager::system_ptr &&system, system_type sys_type) noexcept
     {
-        log_->info("successfully added system: {}", system->get_name());
-        return *systems_[sys_type].emplace_back(std::move(system));
+      log_->info("successfully added system: {}", system->get_name());
+      return *systems_[sys_type].emplace_back(std::move(system));
     }
 
     template <typename TSystem>
     tl::expected<std::reference_wrapper<TSystem>, std::error_code> system_manager::get_system_() noexcept
     {
-        static_assert(details::is_system_v<TSystem>,
-                      "The system type given as template parameter doesn't seems to be valid");
+      static_assert(details::is_system_v<TSystem>,
+                    "The system type given as template parameter doesn't seems to be valid");
 
 
-        if (!nb_systems(TSystem::get_system_type())) {
-            return tl::make_unexpected(std::make_error_code(std::errc::result_out_of_range));
-        }
-
-        constexpr const auto sys_type = TSystem::get_system_type();
-        auto it = shiva::ranges::find_if(systems_[sys_type], [](auto &&ptr) {
-            return ptr->get_name() == TSystem::class_name();
-        });
-
-        if (it != systems_[sys_type].end()) {
-            auto &system = static_cast<TSystem &>(*(*it));
-            return std::reference_wrapper<TSystem>(system);
-        }
+      if (!nb_systems(TSystem::get_system_type())) {
         return tl::make_unexpected(std::make_error_code(std::errc::result_out_of_range));
+      }
+
+      constexpr const auto sys_type = TSystem::get_system_type();
+      auto it = shiva::ranges::find_if(systems_[sys_type], [](auto &&ptr) {
+          return ptr->get_name() == TSystem::class_name();
+      });
+
+      if (it != systems_[sys_type].end()) {
+        auto &system = static_cast<TSystem &>(*(*it));
+        return std::reference_wrapper<TSystem>(system);
+      }
+      return tl::make_unexpected(std::make_error_code(std::errc::result_out_of_range));
     }
 
     template <typename TSystem>
     tl::expected<std::reference_wrapper<const TSystem>, std::error_code> system_manager::get_system_() const noexcept
     {
-        static_assert(details::is_system_v<TSystem>,
-                      "The system type given as template parameter doesn't seems to be valid");
+      static_assert(details::is_system_v<TSystem>,
+                    "The system type given as template parameter doesn't seems to be valid");
 
-        if (!nb_systems(TSystem::get_system_type())) {
-            return tl::make_unexpected(std::make_error_code(std::errc::result_out_of_range));
-        }
-
-        constexpr const auto sys_type = TSystem::get_system_type();
-        auto it = shiva::ranges::find_if(systems_[sys_type], [](auto &&ptr) {
-            return ptr->get_name() == TSystem::class_name();
-        });
-        if (it != systems_[sys_type].end()) {
-            const auto &system = static_cast<const TSystem &>(*(*it));
-            return std::reference_wrapper<const TSystem>(system);
-        }
+      if (!nb_systems(TSystem::get_system_type())) {
         return tl::make_unexpected(std::make_error_code(std::errc::result_out_of_range));
+      }
+
+      constexpr const auto sys_type = TSystem::get_system_type();
+      auto it = shiva::ranges::find_if(systems_[sys_type], [](auto &&ptr) {
+          return ptr->get_name() == TSystem::class_name();
+      });
+      if (it != systems_[sys_type].end()) {
+        const auto &system = static_cast<const TSystem &>(*(*it));
+        return std::reference_wrapper<const TSystem>(system);
+      }
+      return tl::make_unexpected(std::make_error_code(std::errc::result_out_of_range));
     }
 
     void system_manager::sweep_systems_() noexcept
     {
-        shiva::ranges::for_each(systems_, [](auto &&vec_system) -> void {
-            vec_system.erase(std::remove_if(std::begin(vec_system), std::end(vec_system), [](auto &&sys) {
-                return sys->is_marked();
-            }), std::end(vec_system));
-        });
-        this->need_to_sweep_systems_ = false;
+      shiva::ranges::for_each(systems_, [](auto &&vec_system) -> void {
+          vec_system.erase(std::remove_if(std::begin(vec_system), std::end(vec_system), [](auto &&sys) {
+              return sys->is_marked();
+          }), std::end(vec_system));
+      });
+      this->need_to_sweep_systems_ = false;
     }
 
     bool system_manager::prioritize_system(const std::string &system_to_swap, const std::string &system_b,
                                            shiva::ecs::system_type sys_type) noexcept
     {
-        auto &&system_collection = systems_[sys_type];
-        auto it_system_to_swap = shiva::ranges::find_if(system_collection, [name = system_to_swap](auto &&sys) {
-            return sys->get_name() == name;
-        });
-        auto it_system_b = shiva::ranges::find_if(system_collection, [name = system_b](auto &&sys) {
-            return sys->get_name() == name;
-        });
-        if (it_system_to_swap != systems_[sys_type].end() && it_system_b != systems_[sys_type].end()) {
-            if (it_system_to_swap > it_system_b) {
-                this->log_->info("{} > {}: swapp position", system_to_swap, system_b);
-                std::iter_swap(it_system_to_swap, it_system_b);
-            }
-            return true;
+      auto &&system_collection = systems_[sys_type];
+      auto it_system_to_swap = shiva::ranges::find_if(system_collection, [name = system_to_swap](auto &&sys) {
+          return sys->get_name() == name;
+      });
+      auto it_system_b = shiva::ranges::find_if(system_collection, [name = system_b](auto &&sys) {
+          return sys->get_name() == name;
+      });
+      if (it_system_to_swap != systems_[sys_type].end() && it_system_b != systems_[sys_type].end()) {
+        if (it_system_to_swap > it_system_b) {
+          this->log_->info("{} > {}: swapp position", system_to_swap, system_b);
+          std::iter_swap(it_system_to_swap, it_system_b);
         }
-        return false;
+        return true;
+      }
+      return false;
     }
 
     size_t system_manager::update_systems(shiva::ecs::system_type system_type_to_update) noexcept
     {
-        size_t nb_systems_updated = 0u;
-        auto &&systems_collection_to_update = systems_[system_type_to_update];
-        for (auto &&sys : systems_collection_to_update) {
-            if (sys->is_enabled()) {
-                sys->update();
-                nb_systems_updated++;
-            }
+      size_t nb_systems_updated = 0u;
+      auto &&systems_collection_to_update = systems_[system_type_to_update];
+      for (auto &&sys : systems_collection_to_update) {
+        if (sys->is_enabled()) {
+          sys->update();
+          nb_systems_updated++;
         }
-        return nb_systems_updated;
+      }
+      return nb_systems_updated;
     }
 }

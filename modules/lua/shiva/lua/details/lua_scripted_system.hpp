@@ -8,6 +8,7 @@
 #include <sol/state.hpp>
 #include <shiva/ecs/system.hpp>
 #include <shiva/filesystem/filesystem.hpp>
+#include <entt/core/utility.hpp>
 
 namespace shiva::ecs::details
 {
@@ -78,16 +79,16 @@ namespace shiva::ecs::details
         state_(state),
         table_name_(std::move(table_name))
     {
-        register_common_events_(shiva::event::common_events_list{});
-        class_name_ = std::move(class_name);
-        safe_function_("on_construct");
+      register_common_events_(shiva::event::common_events_list{});
+      class_name_ = std::move(class_name);
+      safe_function_("on_construct");
     }
 
     //! Destructor
     template <typename SystemType>
     lua_scripted_system<SystemType>::~lua_scripted_system() noexcept
     {
-        safe_function_("on_destruct");
+      safe_function_("on_destruct");
     }
 
     //! Callbacks
@@ -95,35 +96,35 @@ namespace shiva::ecs::details
     template <typename EventType>
     void lua_scripted_system<SystemType>::receive(const EventType &evt)
     {
-        using namespace std::string_literals;
-        this->log_->debug("event_type received: {}", EventType::class_name());
-        safe_function_("on_"s + EventType::class_name(), evt);
+      using namespace std::string_literals;
+      this->log_->debug("event_type received: {}", EventType::class_name());
+      safe_function_("on_"s + EventType::class_name(), evt);
     }
 
     //! Public member functions overriden
     template <typename SystemType>
     void lua_scripted_system<SystemType>::update() noexcept
     {
-        safe_function_("update");
+      safe_function_("update");
     }
 
     //! Reflection
     template <typename SystemType>
     const std::string &lua_scripted_system<SystemType>::class_name() noexcept
     {
-        return class_name_;
+      return class_name_;
     }
 
     template <typename SystemType>
     constexpr auto lua_scripted_system<SystemType>::reflected_functions() noexcept
     {
-        return meta::makeMap();
+      return meta::makeMap();
     }
 
     template <typename SystemType>
     constexpr auto lua_scripted_system<SystemType>::reflected_members() noexcept
     {
-        return meta::makeMap();
+      return meta::makeMap();
     }
 
     //! Private member functions
@@ -131,29 +132,30 @@ namespace shiva::ecs::details
     template <typename EventType>
     void lua_scripted_system<SystemType>::register_common_event_() noexcept
     {
-        this->dispatcher_.template sink<EventType>().connect(this);
-        this->log_->info("connect to event_type: {}", EventType::class_name());
+     /* this->dispatcher_.template sink<EventType>().connect<::entt::overload<void(const EventType &evt)>(
+          &lua_scripted_system<SystemType>::receive)>(this);*/
+      this->log_->info("connect to event_type: {}", EventType::class_name());
     }
 
     template <typename SystemType>
     template <typename... Types>
     void lua_scripted_system<SystemType>::register_common_events_(meta::type_list<Types...>) noexcept
     {
-        (register_common_event_<Types>(), ...);
+      (register_common_event_<Types>(), ...);
     }
 
     template <typename SystemType>
     template <typename... Args>
     void lua_scripted_system<SystemType>::safe_function_(const std::string &function, Args &&... args) noexcept
     {
-        try {
-            sol::optional<sol::function> f = (*state_)[table_name_][function];
-            if (f && f.value() != sol::lua_nil) {
-                f.value()(std::forward<Args>(args)...);
-            }
+      try {
+        sol::optional<sol::function> f = (*state_)[table_name_][function];
+        if (f && f.value() != sol::lua_nil) {
+          f.value()(std::forward<Args>(args)...);
         }
-        catch (const std::exception &error) {
-            this->log_->error("lua error: [function: {0}, err: {1}]", function, error.what());
-        }
+      }
+      catch (const std::exception &error) {
+        this->log_->error("lua error: [function: {0}, err: {1}]", function, error.what());
+      }
     }
 }

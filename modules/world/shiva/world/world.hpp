@@ -24,10 +24,14 @@ namespace shiva
             plugins_registry_(std::move(plugin_path), std::move(library_pattern_matching))
         {
 #if defined(_WIN32)
-            SetDllDirectoryA(plugin_path.string().c_str());
+          SetDllDirectoryA(plugin_path.string().c_str());
 #endif
-            dispatcher_.sink<shiva::event::quit_game>().connect(this);
-            dispatcher_.sink<shiva::event::window_config_update>().connect(this);
+          dispatcher_.sink<shiva::event::quit_game>().connect<::entt::overload<void(
+              const shiva::event::quit_game &evt)>(
+              &world::receive)>(this);
+          dispatcher_.sink<shiva::event::window_config_update>().connect<::entt::overload<void(
+              const shiva::event::window_config_update &evt)>(
+              &world::receive)>(this);
         }
 
 #elif defined(RELEASE)
@@ -47,33 +51,33 @@ namespace shiva
         //! Public member functions
         int run() noexcept
         {
-            if (!system_manager_.nb_systems() || init_corrupted) {
-                return game_return_value_;
-            }
-            dispatcher_.trigger<shiva::event::start_game>();
-            is_running = true;
-            while (is_running) {
-                system_manager_.update();
-            }
+          if (!system_manager_.nb_systems() || init_corrupted) {
             return game_return_value_;
+          }
+          dispatcher_.trigger<shiva::event::start_game>();
+          is_running = true;
+          while (is_running) {
+            system_manager_.update();
+          }
+          return game_return_value_;
         }
 
         //! Callbacks
         void receive(const shiva::event::quit_game &evt)
         {
-            is_running = false;
-            init_corrupted = true;
-            game_return_value_ = evt.return_value_;
+          is_running = false;
+          init_corrupted = true;
+          game_return_value_ = evt.return_value_;
         }
 
         void receive(const shiva::event::window_config_update &evt)
         {
-            auto[name, size, vsync, fullscreen, native_resolution] = evt.cfg;
-            window_cfg_.name = std::move(name);
-            window_cfg_.size = std::move(size);
-            window_cfg_.vsync = vsync;
-            window_cfg_.fullscreen = fullscreen;
-            window_cfg_.native_resolution = native_resolution;
+          auto[name, size, vsync, fullscreen, native_resolution] = evt.cfg;
+          window_cfg_.name = std::move(name);
+          window_cfg_.size = std::move(size);
+          window_cfg_.vsync = vsync;
+          window_cfg_.fullscreen = fullscreen;
+          window_cfg_.native_resolution = native_resolution;
         }
 
         //! Order declaration here is very important.

@@ -20,32 +20,39 @@
 // Using alias with good case
 namespace shiva::entt
 {
-    using dispatcher = ::entt::Dispatcher;
+    using dispatcher = ::entt::dispatcher;
 
-    class entity_registry : public ::entt::DefaultRegistry
+    class entity_registry : public ::entt::registry<uint32_t>
     {
     public:
         //! Reflection
         reflect_class(entity_registry)
 
-        using base_class_t = ::entt::DefaultRegistry;
+        using base_class_t = ::entt::registry<uint32_t>;
 
         static constexpr auto reflected_functions() noexcept
         {
-            using namespace std::string_view_literals;
-            return meta::makeMap("destroy"sv, &entity_registry::destroy_entity,
-                                 reflect_function(&entity_registry::valid),
-                                 reflect_function(&entity_registry::create));
+          using namespace std::string_view_literals;
+          return ::shiva::meta::makeMap("destroy"sv,
+                                        &entity_registry::destroy_entity,
+                                        reflect_function(&entity_registry::valid),
+                                        "create"sv,
+                                        &entity_registry::create_entity);
         }
 
         void destroy_entity(const base_class_t::entity_type entity)
         {
-            return base_class_t::destroy(entity);
+          return base_class_t::destroy(entity);
+        }
+
+        entity_type create_entity()
+        {
+          return base_class_t::create();
         }
 
         static constexpr auto reflected_members() noexcept
         {
-            return meta::makeMap();
+          return meta::makeMap();
         }
     };
 }

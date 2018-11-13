@@ -11,7 +11,7 @@ namespace shiva::ecs
     struct lua_script
     {
         lua_script(std::string script_, std::string table_name_) noexcept :
-            script(std::move(script_)), table_name(std::move(table_name_))
+            script(script_.c_str()), table_name(table_name_.c_str())
         {
         }
 
@@ -25,15 +25,15 @@ namespace shiva::ecs
 
         static constexpr auto reflected_functions() noexcept
         {
-            return meta::makeMap();
+          return meta::makeMap();
         }
 
         static constexpr auto reflected_members() noexcept
         {
-            return meta::makeMap(reflect_member(&lua_script::script), reflect_member(&lua_script::table_name));
+          return meta::makeMap(reflect_member(&lua_script::script), reflect_member(&lua_script::table_name));
         }
 
-        std::string script;
-        std::string table_name;
+        const char *script;
+        const char *table_name;
     };
 }
