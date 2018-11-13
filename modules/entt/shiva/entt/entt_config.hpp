@@ -48,6 +48,6 @@ namespace shiva::entt::details
         auto id = registry.create();
         init_events(dispatcher, shiva::event::common_events_list{});
         init_components(registry, id, shiva::ecs::common_components{});
-        registry.destroy_entity(id);
+        //registry.destroy_entity(id);
     }
 }

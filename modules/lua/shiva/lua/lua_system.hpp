@@ -171,7 +171,7 @@ namespace shiva::scripting
         (*state_)[entity_registry_.class_name()]["for_each_runtime"] = [](shiva::entt::entity_registry &self,
                                                                           std::vector<comp_type> array,
                                                                           sol::function functor) {
-            return self.view(std::cbegin(array), std::cend(array)).each([func = std::move(functor)](auto entity) {
+            return self.runtime_view(std::cbegin(array), std::cend(array)).each([func = std::move(functor)](auto entity) {
                 func(entity);
             });
         };

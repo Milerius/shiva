@@ -8,15 +8,19 @@ if (WIN32)
     set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 endif ()
 
+set(SHIVA_ROOT_REPO ${CMAKE_CURRENT_SOURCE_DIR})
+message(STATUS "shiva dir -> ${SHIVA_ROOT_REPO}")
+
 ##! Project
 project(shiva VERSION 1.0)
 
 ##! Prerequisites CTEST
 enable_testing()
+set(BUILD_TESTING false CACHE BOOL "")
 
 ##! Project options
 option(SHIVA_BUILD_TESTS "Build tests of shiva C++ engine" OFF)
-option(SHIVA_BUILD_EXAMPLES "Build examples of shiva C++ engine" OFF)
+option(SHIVA_BUILD_EXAMPLES "Build examples of shiva C++ engine" ON)
 option(SHIVA_USE_BOX2D "Build shiva with box2d plugin" OFF)
 option(SHIVA_USE_IMGUI "Build shiva with imgui plugin" OFF)
 option(SHIVA_USE_SFML_AS_RENDERER "Build shiva with SFML rendering" OFF)
@@ -25,6 +29,10 @@ option(DISABLE_INSTALL_SHIVA_CORE "Disable install main targets" OFF)
 option(USE_PROJECT_IN_AN_IDE "Workaround for install header only library option, put it to ON if u use CLION" OFF)
 option(SHIVA_BUILD_EDITOR "Shiva build editor" OFF)
 
+add_subdirectory(vendor/sol2)
+add_subdirectory(vendor/spdlog)
+add_subdirectory(vendor/entt)
+add_subdirectory(vendor/json)
 
 ##! CMake Path
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
@@ -61,10 +69,10 @@ target_link_libraries(shiva INTERFACE
         shiva::filesystem
         shiva::input
         shiva::json
-        shiva::lua
+#        shiva::lua
         shiva::meta
         shiva::pp
-        shiva::pyscripting
+#        shiva::pyscripting
         shiva::range
         shiva::reflection
         shiva::shiva-spdlog
