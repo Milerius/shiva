@@ -42,7 +42,7 @@ namespace shiva
 #if defined(_WIN32)
                         SetDllDirectoryA(plugin_path.string().c_str());
 #endif
-			
+
           dispatcher_.sink<shiva::event::quit_game>().connect<::entt::overload<void(
               const shiva::event::quit_game &evt)>(
               &world::receive)>(this);
